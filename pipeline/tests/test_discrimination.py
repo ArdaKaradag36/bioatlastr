@@ -4,6 +4,7 @@ import numpy as np
 
 from barcode_atlas.discrimination import (
     best_close_match,
+    find_cross_family_identical,
     group_by_species,
     nearest_relatives,
     species_distance_matrix,
@@ -141,3 +142,28 @@ def test_zero_distance_pairs_flags_singletons():
     assert len(pairs) == 1
     assert (pairs[0]["species_a"], pairs[0]["species_b"]) == ("A", "B")
     assert pairs[0]["involves_singleton"] is True
+
+
+def test_cross_family_identical_flags_every_copy():
+    rows = [
+        {"marker": "rbcL", "accession": "A1", "species": "Aaa aaa", "family": "FamA"},
+        {"marker": "rbcL", "accession": "B1", "species": "Bbb bbb", "family": "FamB"},
+        {"marker": "rbcL", "accession": "C1", "species": "Ccc ccc", "family": "FamA"},
+        {"marker": "matK", "accession": "D1", "species": "Ddd ddd", "family": "FamA"},
+        {"marker": "matK", "accession": "E1", "species": "Eee eee", "family": "FamA"},
+    ]
+    seqs = {
+        ("rbcL", "A1"): "ACGT", ("rbcL", "B1"): "ACGT", ("rbcL", "C1"): "TTTT",
+        ("matK", "D1"): "GGGG", ("matK", "E1"): "GGGG",
+    }
+    suspect, clusters = find_cross_family_identical(rows, seqs)
+    assert suspect == {("rbcL", "A1"), ("rbcL", "B1")}
+    assert {c["accession"] for c in clusters} == {"A1", "B1"}
+
+
+def test_cross_family_identical_ignores_empty_sequence():
+    rows = [
+        {"marker": "rbcL", "accession": "A1", "species": "Aaa aaa", "family": "FamA"},
+        {"marker": "rbcL", "accession": "B1", "species": "Bbb bbb", "family": "FamB"},
+    ]
+    assert find_cross_family_identical(rows, {})[0] == set()

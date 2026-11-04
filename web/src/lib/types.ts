@@ -102,6 +102,7 @@ export interface SequenceRecord {
   is_turkey: number; // 1 = specimen collected in Türkiye
   matched_via: string; // "accepted" | "synonym"
   sequence: string;
+  suspect?: boolean; // exact sequence also assigned to another family
 }
 
 export interface NearestRelative {

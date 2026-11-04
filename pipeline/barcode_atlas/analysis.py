@@ -22,6 +22,7 @@ from .align import AlignTimeout, align_sequences, find_mafft
 from .discrimination import (
     best_close_match,
     combined_species_distance,
+    find_cross_family_identical,
     species_level_status,
     group_by_species,
     nearest_relatives,
@@ -168,6 +169,11 @@ def analyse(cfg: dict[str, Any]) -> dict[str, Any]:
     if "endemic" not in species_df.columns:
         species_df["endemic"] = 0
     markers: list[str] = list(cfg["markers"])
+    kept_species = set(species_df["species"])
+    table = table[table["species"].isin(kept_species)].copy()
+    suspect_keys, suspect_clusters = find_cross_family_identical(table.to_dict("records"), seqs)
+    print(f"[phase 3] cross-family identical sequences: {len(suspect_keys)} records in "
+          f"{len({(c['marker'], c['length']) for c in suspect_clusters})} marker/length clusters", flush=True)
     a_cfg = cfg["analysis"]
     n_near = a_cfg["n_nearest"]
     min_n, max_n = int(a_cfg["min_group_sequences"]), int(a_cfg["max_group_sequences"])
@@ -177,24 +183,30 @@ def analyse(cfg: dict[str, Any]) -> dict[str, Any]:
     workers = int(a_cfg.get("workers", 4))
     print(f"[phase 3] aligner: {'MAFFT at ' + mafft if mafft else 'Biopython center-star fallback (MAFFT not found)'}", flush=True)
 
-    # one dict per (species, marker) that collects everything we know
+    # published records include suspects; discrimination jobs drop them
     sm: dict[tuple[str, str], dict[str, Any]] = {}
     for r in table.to_dict("records"):
         entry = sm.setdefault((r["species"], r["marker"]), {"sequences": []})
-        entry["sequences"].append({
+        rec = {
             "accession": r["accession"], "length": int(r["length"]),
             "source_title": r.get("source_title", ""), "definition": r["definition"],
             "country": r["country"], "voucher": r["voucher"],
             "is_turkey": int(r.get("is_turkey") or 0), "matched_via": r.get("matched_via", ""),
             "sequence": seqs.get((r["marker"], r["accession"]), ""),
-        })
+        }
+        if (r["marker"], r["accession"]) in suspect_keys:
+            rec["suspect"] = True
+        entry["sequences"].append(rec)
+    key_series = list(zip(table["marker"], table["accession"]))
+    table_analysis = table[[k not in suspect_keys for k in key_series]].copy()
+    print(f"[phase 3] sequences kept for discrimination: {len(table_analysis)} / {len(table)}", flush=True)
 
     family_marker: dict[tuple[str, str], dict[str, Any]] = {}
     jobs: list[dict[str, Any]] = []
     skipped: list[dict[str, Any]] = []
     subsampled: list[dict[str, Any]] = []
     for family in sorted(species_df["family"].unique()):
-        fam_tab = table[table["family"] == family]
+        fam_tab = table_analysis[table_analysis["family"] == family]
         split = any(int((fam_tab["marker"] == m).sum()) > max_n for m in markers)
         for marker in markers:
             sub = fam_tab[fam_tab["marker"] == marker].sort_values(["species", "accession"])
@@ -328,6 +340,7 @@ def analyse(cfg: dict[str, Any]) -> dict[str, Any]:
     return {
         "species": species_df,
         "table": table,
+        "suspect_clusters": pd.DataFrame(suspect_clusters),
         "sm": sm,
         "family_marker": family_marker,
         "trees": trees,
@@ -374,9 +387,10 @@ def combination_table(species_level: dict, species_df: pd.DataFrame, markers: li
             rows.append({"scope": scope, "combination": "+".join(combo), "n_markers": len(combo),
                          "species_evaluated": n, "success": c.get("success", 0),
                          "ambiguous": c.get("ambiguous", 0), "fail": c.get("fail", 0),
-                         "success_rate": (c.get("success", 0) / n) if n else None})
+                         "success_rate": (c.get("success", 0) / n) if n else None,
+                         "definition": "mean_min_distance"})
     return pd.DataFrame(rows, columns=["scope", "combination", "n_markers", "species_evaluated", "success",
-                                       "ambiguous", "fail", "success_rate"])
+                                       "ambiguous", "fail", "success_rate", "definition"])
 
 
 def data_gaps(species_df: pd.DataFrame, table: pd.DataFrame, markers: list[str]) -> dict[str, pd.DataFrame]:

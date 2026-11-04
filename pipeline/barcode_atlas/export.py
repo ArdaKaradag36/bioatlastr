@@ -112,7 +112,8 @@ def export_all(cfg: dict[str, Any], res: dict[str, Any]) -> None:
             if mm != m:
                 continue
             # Turkish sequences first, then longest: at most `ref_n` per species keep the search file small
-            best = sorted(e["sequences"], key=lambda x: (-x["is_turkey"], -x["length"], x["accession"]))[:ref_n]
+            pub = [x for x in e["sequences"] if not x.get("suspect")]
+            best = sorted(pub, key=lambda x: (-x["is_turkey"], -x["length"], x["accession"]))[:ref_n]
             refs += [[x["accession"], s, x["sequence"]] for x in best]
         refs.sort(key=lambda r: (r[1], r[0]))
         _dump(WEB_DATA / "reference" / f"{m}.json", refs)
@@ -197,6 +198,7 @@ def export_all(cfg: dict[str, Any], res: dict[str, Any]) -> None:
             "genera_without_sequence": int(len(gaps["genera"])),
             "families_without_sequence": int(len(gaps["families"])),
             "species_with_3_markers": int((sp_tab["markers_with_data"] == len(markers)).sum()),
+            "suspect_sequences": int(sum(1 for e in sm.values() for x in e["sequences"] if x.get("suspect"))),
         },
         "combinations": combos[combos["scope"] == "ALL"].drop(columns="scope").to_dict("records"),
         "markers": marker_stats,
@@ -300,6 +302,12 @@ def export_csv(res: dict[str, Any], markers: list[str], marker_stats: dict[str, 
     res["per_sequence"].to_csv(RESULTS / "discrimination_per_sequence.csv", index=False)
     res["pairs"].to_csv(RESULTS / "indistinguishable_pairs.csv", index=False)
     res["relatives"].to_csv(RESULTS / "nearest_relatives.csv", index=False)
+    clusters = res.get("suspect_clusters")
+    if clusters is None:
+        clusters = pd.DataFrame()
+    elif not isinstance(clusters, pd.DataFrame):
+        clusters = pd.DataFrame(clusters)
+    clusters.to_csv(RESULTS / "suspect_cross_family.csv", index=False)
     res["genera"].sort_values(["species_with_any", "species"], ascending=[True, False]).to_csv(
         RESULTS / "genera_data_summary.csv", index=False)
 

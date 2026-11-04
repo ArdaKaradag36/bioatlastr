@@ -7,11 +7,45 @@ are easy to test.
 
 from __future__ import annotations
 
+from collections import defaultdict
 from dataclasses import dataclass
+from typing import Iterable
 
 import numpy as np
 
 EPS = 1e-9  # distances closer than this are treated as equal (ties)
+
+
+def find_cross_family_identical(
+    rows: Iterable[dict],
+    sequences: dict[tuple[str, str], str],
+) -> tuple[set[tuple[str, str]], list[dict]]:
+    """Exact sequences shared by species of more than one family.
+
+    `rows` have at least marker, accession, species, family.
+    `sequences` is (marker, accession) -> DNA string.
+    Returns ({(marker, accession)}, cluster records) for every record in such a cluster.
+    """
+    by_seq: dict[tuple[str, str], list[tuple[str, str, str]]] = defaultdict(list)
+    for r in rows:
+        marker, acc = r["marker"], r["accession"]
+        seq = sequences.get((marker, acc), "")
+        if not seq:
+            continue
+        by_seq[(marker, seq)].append((acc, r["family"], r["species"]))
+    suspect: set[tuple[str, str]] = set()
+    clusters: list[dict] = []
+    for (marker, seq), members in by_seq.items():
+        families = {fam for _, fam, _ in members}
+        if len(families) < 2:
+            continue
+        for acc, fam, sp in members:
+            suspect.add((marker, acc))
+            clusters.append({
+                "marker": marker, "accession": acc, "family": fam, "species": sp,
+                "n_families": len(families), "length": len(seq),
+            })
+    return suspect, clusters
 
 
 @dataclass
