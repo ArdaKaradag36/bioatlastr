@@ -1,4 +1,4 @@
-"""Tests for the discrimination ("best close match") logic and nearest relatives."""
+"""Tests for the discrimination (threshold-free nearest-neighbour) logic and nearest relatives."""
 
 import numpy as np
 

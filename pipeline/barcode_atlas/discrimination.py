@@ -55,9 +55,11 @@ def species_distance_matrix(dist: np.ndarray, groups: SpeciesGroups) -> np.ndarr
 
 
 def best_close_match(dist: np.ndarray, species: list[str]) -> list[dict]:
-    """"Best close match" test (Meier et al. 2006) for sequences of species with 2+ sequences.
+    """Threshold-free nearest-neighbour test for sequences of species with 2+ sequences.
 
-    For each sequence we look for its nearest neighbour (smallest p-distance, itself excluded):
+    This is NOT Meier et al. 2006 "best close match": there is no distance threshold and no
+    "no match" class. For each sequence we look at its nearest neighbour (smallest p-distance,
+    itself excluded):
       success   - the nearest neighbour(s) are all the same species
       ambiguous - the nearest distance is shared by the same species AND another species (tie)
       fail      - the nearest neighbour belongs to another species

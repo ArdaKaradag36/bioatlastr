@@ -138,9 +138,9 @@ export const GLOSSARY: GlossaryEntry[] = [
     analogy: "İki metindeki farklı harflerin oranı gibi. %1 mesafe, her 100 harften yaklaşık 1'inin farklı olması demektir.",
   },
   {
-    id: "en-yakin-komsu", term: "En yakın komşu yöntemi", aka: "best close match", group: "Mesafe ve ağaç",
-    short: "Her dizi için, diğer tüm dizilerle mesafe hesaplanır ve en yakın olan bulunur; en yakın dizi aynı türdense tür ayırt edilmiş sayılır.",
-    more: "Bir dizinin en yakını başka bir türe aitse başarısız, aynı mesafeyle hem kendi türüne hem başka türe yakınsa belirsiz sayılır. Karşılaştırma aynı aile içinde (büyük ailelerde aynı cins içinde) yapılır.",
+    id: "en-yakin-komsu", term: "Eşiksiz en-yakın-komşu", aka: "en yakın komşu nearest neighbour", group: "Mesafe ve ağaç",
+    short: "Her dizi için, diğer tüm dizilerle mesafe hesaplanır ve en yakın olan bulunur; en yakın dizi aynı türdense o dizi için tür ayırt edilmiş sayılır.",
+    more: "Bu sitede mesafe eşiği yoktur ve \"eşleşme yok\" sınıfı kullanılmaz (eşikli \"best close match\" yönteminden farkı budur). En yakını başka bir türe aitse başarısız, aynı mesafeyle hem kendi türüne hem başka türe yakınsa belirsiz sayılır. Karşılaştırma aynı aile içinde (büyük ailelerde aynı cins içinde) yapılır.",
     analogy: "Bir kalabalıkta size en çok benzeyen kişinin kardeşiniz olup olmadığına bakmak gibi.",
   },
   {

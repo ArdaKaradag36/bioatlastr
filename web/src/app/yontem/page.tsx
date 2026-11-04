@@ -279,15 +279,17 @@ export default function MethodPage() {
 
       <Section id="olcum" title="5. Ayırt etme başarısı nasıl ölçülür?">
       <p className="text-stone-800">
-        <strong>&quot;En yakın eşleşme&quot; (best close match)</strong>: en az 2 dizisi olan türlerin her dizisi için, kendisi
-        dışındaki tüm dizilerle p-mesafesine bakılır. <strong>Başarılı:</strong> en yakın komşu aynı tür;{" "}
-        <strong>belirsiz:</strong> eşitlik; <strong>başarısız:</strong> en yakın komşu başka tür.
+        Resmî tanım <strong>eşiksiz en-yakın-komşu</strong> ve <strong>katıdır</strong>: birden çok dizisi olan her türün
+        her dizisi, aynı ailedeki (büyük ailelerde aynı cinsteki) diğer dizilerle <Term id="p-mesafesi">p-mesafesi</Term> üzerinden
+        karşılaştırılır. En yakın komşu aynı türse o dizi başarılıdır; eşitlik belirsiz, başka tür başarısızdır.
+        Bir tür ancak <em>bütün</em> değerlendirilen dizileri başarılıysa ayırt edilmiş sayılır. Mesafe eşiği yoktur;
+        uzak da olsa en yakın komşu seçilir, bu yüzden &quot;eşleşme yok&quot; sınıfı kullanılmaz.
       </p>
       <p className="mt-3 text-stone-800">
-        <strong>Barkod bölgesi kombinasyonları</strong> tür düzeyinde değerlendirilir: türün kendi içindeki en küçük mesafesi,
-        başka bir türe olan en küçük mesafeden küçükse başarılıdır; kombinasyon mesafesi, iki türün birlikte verisi olan
-        barkod bölgelerinin mesafe ortalamasıdır. Mesafesi 0 olan tür çiftleri ve her türün en yakın {num(meta.n_nearest)} akrabası
-        ayrıca verilir.
+        <strong>Birden fazla barkod bölgesini birlikte kullanmak</strong> ayrı ve <em>daha gevşek</em> bir tanımdır (aşağıdaki
+        kombinasyon tablosu): türün kendi içindeki en küçük mesafe, başka bir türe olan en küçük mesafeden küçükse başarılı
+        sayılır; mesafe, iki türün birlikte verisi olan bölgelerinin ortalamasıdır. Dizilerin tümünün geçmesi gerekmez.
+        Mesafesi 0 olan tür çiftleri ve her türün en yakın {num(meta.n_nearest)} akrabası ayrıca verilir.
       </p>
 
 </Section>
