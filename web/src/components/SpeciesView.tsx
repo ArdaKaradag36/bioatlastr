@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import Fold from "./Fold";
 import SequenceViewer from "./SequenceViewer";
 import TreeViewer from "./TreeViewer";
 import Term from "./Term";
@@ -239,6 +240,19 @@ export default function SpeciesView({
                 <span className="font-serif text-xl font-semibold">{m}</span>
                 <span className="text-sm text-stone-700">{num(d.n_sequences)} dizi</span>
               </div>
+              <span className="mt-2 flex min-h-11 items-center gap-2 text-sm font-medium text-stone-800 md:hidden">
+                {d.n_sequences > 0 ? (
+                  <>
+                    <span aria-hidden className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-100 text-link">✓</span>
+                    kayıtlı
+                  </>
+                ) : (
+                  <>
+                    <span aria-hidden className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-stone-200 text-stone-700">✕</span>
+                    eksik
+                  </>
+                )}
+              </span>
               <span className={`mt-2 inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${st.classes}`}>
                 {st.label}
               </span>
@@ -248,22 +262,34 @@ export default function SpeciesView({
       </div>
 
       <div className="mt-8">
-        <h2 className="text-2xl font-semibold">{marker} dizileri</h2>
-        <p className="mb-3 mt-1 text-stone-700">{DISCRIMINATION[md.discrimination].hint}</p>
-        <SequenceViewer species={data.name} marker={marker} records={md.sequences} />
+        <Fold title={`${marker} dizileri`} lead={DISCRIMINATION[md.discrimination].hint}>
+          <h2 className="mb-3 hidden text-2xl font-semibold md:block">{marker} dizileri</h2>
+          <p className="mb-3 mt-1 hidden text-stone-700 md:block">{DISCRIMINATION[md.discrimination].hint}</p>
+          <SequenceViewer species={data.name} marker={marker} records={md.sequences} />
+        </Fold>
       </div>
 
       {/* nearest relatives */}
       {md.n_sequences > 0 && (
         <div className="mt-10">
-          <h2 className="text-2xl font-semibold">En yakın akrabalar ({marker})</h2>
+          <Fold title={`En yakın akrabalar (${marker})`} lead="Aynı ailede en az farklı olandan başlar.">
+          <h2 className="hidden text-2xl font-semibold md:block">En yakın akrabalar ({marker})</h2>
           <p className="mb-3 mt-1 text-stone-700">
             Aynı ailedeki türler, bu türe en az farklı olandan başlayarak sıralanmıştır. Fark olarak <Term id="p-mesafesi">p-mesafesi</Term> kullanılır: 0, bu bölgede diziler arasında hiç fark olmadığı; sayı büyüdükçe dizilerin daha çok ayrıştığı anlamına gelir.
           </p>
           {md.nearest.length === 0 ? (
             <p className="text-stone-600">Karşılaştırılabilir başka tür bulunamadı.</p>
           ) : (
-            <div tabIndex={0} className="overflow-x-auto rounded-xl border border-stone-200 bg-white">
+            <>
+            <ul className="space-y-2 md:hidden">
+              {md.nearest.map((n, i) => (
+                <li key={n.slug} className="rounded-xl border border-stone-200 p-3">
+                  <Link className="italic text-link underline" href={`/turler/${n.slug}`}>{n.species}</Link>
+                  <p className="text-sm text-stone-700">#{i + 1} · fark {distancePct(n.distance)} · {n.same_genus ? "aynı cins" : "farklı cins"}</p>
+                </li>
+              ))}
+            </ul>
+            <div tabIndex={0} className="hidden overflow-x-auto rounded-xl border border-stone-200 bg-white md:block">
               <table className="w-full text-[0.95rem]">
                 <thead className="bg-stone-50 text-left text-stone-600">
                   <tr><th className="p-3">#</th><th className="p-3">Tür</th><th className="p-3"><Term id="p-mesafesi">p-mesafesi</Term> (fark)</th><th className="p-3">Cins</th></tr>
@@ -280,6 +306,7 @@ export default function SpeciesView({
                 </tbody>
               </table>
             </div>
+            </>
           )}
           {md.indistinguishable.length > 0 && (
             <p className="mt-3 rounded-lg bg-amber-50 p-3 text-sm text-amber-900">
@@ -292,12 +319,17 @@ export default function SpeciesView({
               ))}
             </p>
           )}
+          </Fold>
         </div>
       )}
 
       {/* tree */}
       <div className="mt-10">
-        <h2 className="text-2xl font-semibold">
+        <Fold
+          title={`${tree?.group.includes("/") ? `${data.genus} cinsi` : `${data.family}`} ağacında konumu (${marker})`}
+          lead="Diziler, ayırt etme ayrıntısı ve ağaç."
+        >
+        <h2 className="hidden text-2xl font-semibold md:block">
           {tree?.group.includes("/") ? `${data.genus} cinsi ağacında` : `${data.family} ağacında`} konumu ({marker})
         </h2>
         {md.n_sequences === 0 && <p className="mt-2 text-stone-700">Bu barkod bölgesi için dizi olmadığından tür ağaçta yer almıyor. Bu bir <Term id="veri-boslugu">veri boşluğudur</Term>.</p>}
@@ -320,6 +352,7 @@ export default function SpeciesView({
             <TreeViewer tree={tree} highlight={data.name} height={460} lockWheel />
           </>
         )}
+        </Fold>
       </div>
 
       <Purpose>

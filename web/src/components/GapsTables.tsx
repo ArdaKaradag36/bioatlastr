@@ -66,7 +66,19 @@ export function GeneraTable({ genera, families, markers }: { genera: GenusRow[];
         </select>
         <span className="ml-auto text-sm text-stone-600">{num(rows.length)} cins</span>
       </div>
-      <div tabIndex={0} className="overflow-x-auto rounded-xl border border-stone-200 bg-white">
+      <ul className="space-y-3 md:hidden">
+        {rows.slice(page * PAGE, (page + 1) * PAGE).map((g) => (
+          <li key={`${g.family}-${g.genus}`} className="rounded-2xl border border-stone-200 bg-white p-4">
+            <p className="font-medium italic">{g.genus}</p>
+            <p className="text-sm text-stone-700">{g.family} · {num(g.species_with_any)}/{num(g.species)} dizili</p>
+            <details className="mt-2">
+              <summary className="min-h-11 cursor-pointer list-none font-medium text-link">Ayrıntı</summary>
+              <p className="text-sm text-stone-600">toplam {num(g.sequences)} dizi</p>
+            </details>
+          </li>
+        ))}
+      </ul>
+      <div tabIndex={0} className="hidden overflow-x-auto rounded-xl border border-stone-200 bg-white md:block">
         <table className="w-full text-[0.95rem]">
           <thead className="bg-stone-50 text-left text-stone-600">
             <tr>
@@ -154,7 +166,16 @@ export function MissingSpeciesTable({ families, markers, initialEndemic = false 
         </label>
         <span className="ml-auto text-sm text-stone-600">{index ? `${num(rows.length)} tür` : "Yükleniyor…"}</span>
       </div>
-      <div tabIndex={0} className="overflow-x-auto rounded-xl border border-stone-200 bg-white">
+      <ul className="space-y-3 md:hidden">
+        {rows.slice(page * PAGE, (page + 1) * PAGE).map((s) => (
+          <li key={s.slug} className="rounded-2xl border border-stone-200 bg-white p-4">
+            <Link href={`/turler/${s.slug}`} className="block min-h-11 italic text-link underline">{s.name}</Link>
+            <p className="text-sm text-stone-700">{s.family}{s.tr ? ` · ${s.tr}` : ""}{s.endemic === 1 ? " · endemik" : ""}</p>
+          </li>
+        ))}
+        {index && rows.length === 0 && <li className="text-stone-600">Bu filtreyle eksik tür yok.</li>}
+      </ul>
+      <div tabIndex={0} className="hidden overflow-x-auto rounded-xl border border-stone-200 bg-white md:block">
         <table className="w-full text-[0.95rem]">
           <thead className="bg-stone-50 text-left text-stone-600">
             <tr><th className="p-3">Tür</th><th className="hidden p-3 sm:table-cell">Türkçe ad</th><th className="p-3">Aile</th><th className="p-3">Endemik</th></tr>

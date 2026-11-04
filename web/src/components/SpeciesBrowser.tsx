@@ -59,28 +59,64 @@ export default function SpeciesBrowser({ families, markers }: { families: string
           onChange={(e) => setFilterText(e.target.value)}
           placeholder="Listede filtrele…"
           aria-label="Listede filtrele"
-          className={`${select} w-56`}
+          className={`${select} w-full md:w-56`}
         />
-        <select className={select} value={family} onChange={(e) => setFamily(e.target.value)} aria-label="Aile">
-          <option value="">Tüm aileler</option>
-          {families.map((f) => (
-            <option key={f}>{f}</option>
-          ))}
-        </select>
         <select className={select} value={marker} onChange={(e) => setMarker(e.target.value)} aria-label="Barkod bölgesi">
           <option value="">Herhangi bir barkod bölgesi</option>
           {markers.map((m) => (
             <option key={m}>{m}</option>
           ))}
         </select>
-        <label className="flex min-h-11 items-center gap-2">
+        <select
+          className={`${select} md:hidden`}
+          value={onlyWith ? "with" : "any"}
+          onChange={(e) => setOnlyWith(e.target.value === "with")}
+          aria-label="Kayıtlı / eksik"
+        >
+          <option value="any">Kayıtlı veya eksik</option>
+          <option value="with">Yalnızca kayıtlı</option>
+        </select>
+        <details className="w-full md:hidden">
+          <summary className="flex min-h-11 cursor-pointer list-none items-center rounded-lg border border-stone-300 bg-white px-3 font-medium">
+            Filtrele
+          </summary>
+          <div className="mt-2 flex flex-col gap-2">
+            <select className={select} value={family} onChange={(e) => setFamily(e.target.value)} aria-label="Aile">
+              <option value="">Tüm aileler</option>
+              {families.map((f) => (
+                <option key={f}>{f}</option>
+              ))}
+            </select>
+          </div>
+        </details>
+        <select className={`${select} hidden md:inline`} value={family} onChange={(e) => setFamily(e.target.value)} aria-label="Aile">
+          <option value="">Tüm aileler</option>
+          {families.map((f) => (
+            <option key={f}>{f}</option>
+          ))}
+        </select>
+        <label className="hidden min-h-11 items-center gap-2 md:flex">
           <input type="checkbox" className="h-5 w-5" checked={onlyWith} onChange={(e) => setOnlyWith(e.target.checked)} />
           Yalnızca dizisi olanlar
         </label>
         <span className="ml-auto text-sm text-stone-600" aria-live="polite">{index ? `${num(filtered.length)} tür` : "Yükleniyor…"}</span>
       </div>
 
-      <div tabIndex={0} className="overflow-x-auto rounded-xl border border-stone-200 bg-white">
+      <ul className="space-y-3 md:hidden">
+        {rows.map((s) => {
+          const nAny = markers.reduce((n, m) => n + (s.counts[m] ?? 0), 0);
+          return (
+            <li key={s.slug} className="rounded-2xl border border-stone-200 bg-white p-4">
+              <Link href={`/turler/${s.slug}`} className="block min-h-11 italic text-link underline">{s.name}</Link>
+              <p className="mt-1 text-sm text-stone-700">{s.family}{s.tr ? ` · ${s.tr}` : ""}</p>
+              <p className="mt-1 text-sm text-stone-600">{nAny > 0 ? `${nAny} dizi` : "kayıt yok"}</p>
+            </li>
+          );
+        })}
+        {index && rows.length === 0 && <li className="text-stone-600">Sonuç yok.</li>}
+      </ul>
+
+      <div tabIndex={0} className="hidden overflow-x-auto rounded-xl border border-stone-200 bg-white md:block">
         <table className="w-full text-[0.95rem]">
           <caption className="sr-only">Türler, aileleri ve barkod bölgesi başına dizi sayıları</caption>
           <thead className="bg-stone-50 text-left text-stone-600">

@@ -31,6 +31,7 @@ export default function TreeExplorer({ families, markers }: Props) {
   const [loadedTree, setLoadedTree] = useState<TreeFile | null>(null);
   const [failedFile, setFailedFile] = useState<string | null>(null);
   const [index, setIndex] = useState<SpeciesIndexEntry[]>([]);
+  const [mobileTree, setMobileTree] = useState(false);
 
   useEffect(() => {
     loadSpeciesIndex().then(setIndex);
@@ -67,6 +68,13 @@ export default function TreeExplorer({ families, markers }: Props) {
   };
 
   const select = "min-h-11 rounded-lg border border-stone-300 bg-white px-3 py-2 text-base";
+  const familySpecies = index.filter((s) => s.family === family.family);
+  const byGenus = new Map<string, SpeciesIndexEntry[]>();
+  for (const s of familySpecies) {
+    const list = byGenus.get(s.genus) ?? [];
+    list.push(s);
+    byGenus.set(s.genus, list);
+  }
 
   return (
     <div>
@@ -157,8 +165,37 @@ export default function TreeExplorer({ families, markers }: Props) {
       )}
       {error && <p className="text-red-700">Ağaç yüklenemedi. Sayfayı yenileyip tekrar deneyin.</p>}
       {marker && !tree && !error && <p className="text-stone-600" role="status">Ağaç yükleniyor…</p>}
+      <div className="mb-4 md:hidden">
+        <p className="mb-2 text-stone-800">Cinslere göre tür listesi. İnce ağaç çizgisi ilk karede açılmaz.</p>
+        <ul className="max-h-[28rem] space-y-3 overflow-y-auto rounded-2xl border border-stone-200 bg-white p-3">
+          {[...byGenus.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([genus, species]) => (
+            <li key={genus}>
+              <p className="font-semibold italic">{genus}</p>
+              <ul className="mt-1 space-y-1">
+                {species.map((s) => (
+                  <li key={s.slug}>
+                    <Link className="flex min-h-11 items-center italic text-link underline" href={`/turler/${s.slug}`}>
+                      {s.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))}
+        </ul>
+        {tree && (
+          <button
+            type="button"
+            className="mt-3 flex min-h-12 w-full items-center justify-center rounded-xl bg-forest px-4 font-semibold text-on-dark"
+            onClick={() => setMobileTree((v) => !v)}
+          >
+            {mobileTree ? "Ağacı gizle" : "Ağacı aç"}
+          </button>
+        )}
+      </div>
+
       {tree && (
-        <>
+        <div className={mobileTree ? "block" : "hidden md:block"}>
           <p className="mb-3 text-stone-800">
             <strong>{tree.family}</strong> · {tree.marker}: {tree.n_leaves} dizi, {tree.n_species} tür. Ağaç, <Term id="p-mesafesi">p-mesafesi</Term> ve <Term id="nj">komşu birleştirme (NJ)</Term> yöntemiyle
             kuruldu; <Term id="hizalama">hizalama</Term>: <strong>{tree.aligner}</strong>{tree.aligner !== "MAFFT" && " — ön sonuç"}.
@@ -174,7 +211,7 @@ export default function TreeExplorer({ families, markers }: Props) {
             }}
           />
           <p className="mt-3 text-stone-700">{DISCRIMINATION_NOTE}</p>
-        </>
+        </div>
       )}
     </div>
   );

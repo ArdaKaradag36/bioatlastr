@@ -30,7 +30,7 @@ export default function CiteBox({ lang = "tr" }: { lang?: "tr" | "en" }) {
         {title}
       </h2>
       <p className="mt-1 text-sm text-stone-600">{hint}</p>
-      <pre className="mt-3 overflow-x-auto whitespace-pre-wrap rounded-lg bg-stone-50 p-3 text-sm text-stone-800">
+      <pre tabIndex={0} className="mt-3 overflow-x-auto whitespace-pre-wrap rounded-lg bg-stone-50 p-3 text-sm text-stone-800">
         {text}
       </pre>
       <button

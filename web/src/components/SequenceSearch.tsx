@@ -63,11 +63,18 @@ export default function SequenceSearch({ markers }: { markers: string[] }) {
   return (
     <div>
       <div role="note" className="mb-6 rounded-xl border border-amber-300 bg-amber-50 p-4 text-amber-900">
+        <p className="font-semibold md:hidden">BLAST değildir, kanıt değildir.</p>
         <strong>Uyarı:</strong> Sonuçlar yalnızca <em>gösterge niteliğindedir</em>, kesin tür tayini değildir. Referans veri ENA/INSDC kayıtlarından gelir
         ve hatalı tanımlanmış kayıtlar ya da eksik türler içerebilir. Kesin tanı için uzman doğrulaması ve morfolojik (görünüşe dayalı) inceleme gerekir.
       </div>
 
       <div className="rounded-2xl border border-stone-200 bg-white p-5 shadow-card">
+        <label className="mb-3 block font-medium text-stone-800 md:hidden">
+          Barkod bölgesi
+          <select value={marker} onChange={(e) => setMarker(e.target.value)} className="mt-1 min-h-11 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-base">
+            {markers.map((m) => <option key={m}>{m}</option>)}
+          </select>
+        </label>
         <label className="mb-1 block font-medium text-stone-800" htmlFor="seq">
           DNA dizisi (düz harfler ya da FASTA biçimi)
         </label>
@@ -80,8 +87,8 @@ export default function SequenceSearch({ markers }: { markers: string[] }) {
           placeholder={">örnek\nATGAGTCGTAGGGAGGGACTTATGTCACCACAAACAGAGACTAAAGCAAGTG…"}
           className="w-full rounded-xl border border-stone-300 p-3 font-mono text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent-line"
         />
-        <div className="mt-3 flex flex-wrap items-center gap-3">
-          <label>
+        <div className="mt-3 flex flex-col gap-3 md:flex-row md:flex-wrap md:items-center">
+          <label className="hidden md:inline">
             Barkod bölgesi:{" "}
             <select value={marker} onChange={(e) => setMarker(e.target.value)} className="ml-1 min-h-11 rounded-lg border border-stone-300 bg-white px-3 py-2 text-base">
               {markers.map((m) => <option key={m}>{m}</option>)}
@@ -110,7 +117,17 @@ export default function SequenceSearch({ markers }: { markers: string[] }) {
             <p className="text-stone-700">Benzer bir referans dizi bulunamadı. Bu, dizinizin türünün atlasta olmadığı anlamına da gelebilir.</p>
           ) : (
             <>
-              <div tabIndex={0} className="overflow-x-auto rounded-xl border border-stone-200 bg-white">
+              <ul className="space-y-3 md:hidden">
+                {hits.map((h, i) => (
+                  <li key={h.accession} className="rounded-2xl border border-stone-200 bg-white p-4">
+                    <p className="text-sm text-stone-500">#{i + 1}</p>
+                    <Link href={`/turler/${slugify(h.species)}`} className="block min-h-11 italic text-link underline">{h.species}</Link>
+                    <p className="mt-1 font-semibold">benzerlik {pct(h.identity)}</p>
+                    <a href={ncbiUrl(h.accession)} target="_blank" rel="noreferrer" className="font-mono text-sm text-link underline">{h.accession}</a>
+                  </li>
+                ))}
+              </ul>
+              <div tabIndex={0} className="hidden overflow-x-auto rounded-xl border border-stone-200 bg-white md:block">
                 <table className="w-full text-[0.95rem]">
                   <thead className="bg-stone-50 text-left text-stone-600">
                     <tr>
