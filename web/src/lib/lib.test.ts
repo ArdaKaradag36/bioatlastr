@@ -8,6 +8,7 @@ import {
   reverseComplement,
   searchReference,
 } from "./seqsearch";
+import { citationText, CONTACT_EMAIL, PROJECT_FUNDING, PROJECT_VERSION, REPO_URL } from "./site";
 import { normalize } from "./text";
 
 test("parseNewick reads leaves, lengths and nesting", () => {
@@ -113,4 +114,14 @@ test("a full-length near match beats a perfect match over a short overlap", asyn
   ];
   const hits = await searchReference(full, refs, 2);
   assert.equal(hits[0].species, "Species full");
+});
+
+test("citation text matches site identity fields", () => {
+  const text = citationText();
+  assert.match(text, /Karadağ/);
+  assert.match(text, /Menekşe/);
+  assert.ok(text.includes(PROJECT_VERSION));
+  assert.ok(text.includes(REPO_URL));
+  assert.equal(CONTACT_EMAIL.includes("@"), true);
+  assert.equal(PROJECT_FUNDING, "");
 });
