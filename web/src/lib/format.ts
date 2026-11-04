@@ -49,7 +49,7 @@ export const DISCRIMINATION: Record<
   none: {
     label: "Veri yok",
     classes: "bg-stone-100 text-stone-500",
-    hint: "Bu marker için filtreyi geçen dizi bulunamadı.",
+    hint: "Bu barkod bölgesi için filtreyi geçen dizi bulunamadı.",
   },
 };
 
