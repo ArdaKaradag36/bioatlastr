@@ -36,6 +36,10 @@ jobs:
           NEXT_PUBLIC_SITE_URL: https://ardakaradag36.github.io/bioatlastr
           NODE_OPTIONS: --max-old-space-size=4096
       - run: touch out/.nojekyll
+      - name: Drop RSC text files so Pages can finish the upload
+        run: |
+          find out -name '__next*.txt' -delete
+          find out -name 'index.txt' -delete
       - uses: actions/upload-pages-artifact@v3
         with:
           path: web/out
@@ -49,3 +53,5 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          timeout: 1800000
