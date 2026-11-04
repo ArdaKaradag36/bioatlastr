@@ -65,7 +65,7 @@ export const DROP_REASONS: Record<string, string> = {
   name_mismatch: "Kayıttaki ad ile kabul edilen ad farklı",
   unmatched_name: "Ad, Türkiye florası türleri (WCVP) arasında yok",
   ambiguous_synonym: "Ad, birden fazla türün eş adı (belirsiz)",
-  marker_not_in_description: "Kayıt açıklamasında marker adı yok",
+  marker_not_in_description: "Kayıt açıklamasında barkod bölgesi adı yok",
   missing_description: "Açıklama (tanım) alanı boş kayıt",
   wrong_region_or_genome: "Başka bölge (aralık bölgesi) veya genom kaydı",
   multi_marker_record: "Birden fazla marker içeren kayıt",

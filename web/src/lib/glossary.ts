@@ -30,8 +30,13 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     id: "nukleotid", term: "Nükleotid (A, C, G, T)", aka: "baz", group: "DNA ve barkod",
     short: "DNA'nın yapıtaşı. Dört çeşidi vardır ve harflerle gösterilir: A, C, G, T.",
-    more: "Bir dizideki her harf bir nükleotittir (\"baz\" da denir). Okunamayan ya da belirsiz kalan yerler N harfiyle gösterilir; çok fazla N içeren diziler bu sitede elenmiştir. Dizi uzunlukları \"bp\" (baz çifti) ile yazılır.",
+    more: "Bir dizideki her harf bir nükleotittir (\"baz\" da denir). Okunamayan ya da belirsiz kalan yerler N harfiyle gösterilir; çok fazla N içeren diziler bu sitede elenmiştir. Dizi uzunlukları bp (baz çifti) ile yazılır.",
     analogy: "Dört harfli bir alfabe.",
+  },
+  {
+    id: "bp", term: "bp (baz çifti)", aka: "base pair baz çifti", group: "DNA ve barkod",
+    short: "DNA uzunluk birimi: bir nükleotid çifti (karşılıklı iki harf) bir baz çiftidir.",
+    more: "Sitede bir dizinin uzunluğu bp olarak yazılır. Örneğin 600 bp, yaklaşık 600 harflik bir DNA parçası demektir.",
   },
   {
     id: "gen-bolge", term: "Gen / bölge", group: "DNA ve barkod",
