@@ -1,6 +1,6 @@
 import pandas as pd
 
-from barcode_atlas.wcvp import build_species_table
+from barcode_atlas.wcvp import build_species_table, is_binomial_species_name
 
 
 def names():
@@ -17,6 +17,7 @@ def names():
         ("8", "Species", "Synonym", "Fagaceae", "", "Quercus", "", "pedunculata", "", "1", ""),
         ("9", "Species", "Accepted", "Rosaceae", "", "Rosa", "", "abroad", "", "9", ""),
         ("10", "Species", "Synonym", "Lamiaceae", "", "Burgsdorfia", "", "endem", "", "7", ""),
+        ("11", "Species", "Accepted", "Asteraceae", "", "Taraxacum", "", "sect. Taraxacum", "F.H.Wigg.", "11", "p11"),
     ]
     return pd.DataFrame(rows, columns=cols)
 
@@ -29,6 +30,7 @@ def dist():
         ("4", "TUR", "Türkiye", "0", "0", "1"), ("5", "TUR", "Türkiye", "0", "0", "0"),
         ("6", "TUR", "Türkiye", "0", "0", "0"), ("7", "TUR", "Türkiye", "0", "0", "0"),
         ("7", "EGY", "Egypt", "1", "0", "0"), ("9", "FRA", "France", "0", "0", "0"),
+        ("11", "TUR", "Türkiye", "0", "0", "0"),
     ]
     return pd.DataFrame(rows, columns=cols)
 
@@ -38,6 +40,19 @@ def test_filters_and_endemic_flag():
     assert list(table["species"]) == ["Quercus robur", "Sideritis endem"]
     assert dict(zip(table["species"], table["endemic"])) == {"Quercus robur": 0, "Sideritis endem": 1}
     assert stats["hybrids_excluded"] == 1
+    assert stats["non_binomial_excluded"] == 1
+    assert "Taraxacum sect. Taraxacum" not in set(table["species"])
+
+
+def test_is_binomial_species_name():
+    assert is_binomial_species_name("Quercus robur")
+    assert is_binomial_species_name("Pinus brutia")
+    assert is_binomial_species_name("Eryngium trisectum")  # epithet contains "sect" but is not a section
+    assert not is_binomial_species_name("Taraxacum sect. Taraxacum")
+    assert not is_binomial_species_name("Taraxacum sect Taraxacum")
+    assert not is_binomial_species_name("Quercus robur subsp. robur")
+    assert not is_binomial_species_name("Quercus")
+    assert not is_binomial_species_name("")
 
 
 def test_synonyms_only_of_kept_species():

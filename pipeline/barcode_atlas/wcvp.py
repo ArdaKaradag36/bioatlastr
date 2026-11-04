@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import zipfile
 from datetime import date
 from pathlib import Path
@@ -26,6 +27,18 @@ NAME_COLS = ["plant_name_id", "taxon_rank", "taxon_status", "family", "genus_hyb
 DIST_COLS = ["plant_name_id", "area_code_l3", "area", "introduced", "extinct", "location_doubtful"]
 SPECIES_COLUMNS = ["species", "genus", "family", "authorship", "endemic", "wcvp_id", "powo_id",
                    "common_name_tr", "common_name_en"]
+
+# Genus + one epithet; "sect." aggregates and other non-binomial ranks are not species.
+_BINOMIAL = re.compile(r"^[A-Z][a-z]+(?:-[a-z]+)? [a-z][a-z-]*$")
+_SECT = re.compile(r"\bsect\.?\b", re.I)
+
+
+def is_binomial_species_name(name: str) -> bool:
+    """True for a clean 'Genus epithet' species name (no section, subsp., hybrid sign, etc.)."""
+    n = (name or "").strip()
+    if not n or _SECT.search(n):
+        return False
+    return _BINOMIAL.fullmatch(n) is not None
 
 
 def download_wcvp(url: str, dest: Path) -> None:
@@ -80,6 +93,9 @@ def build_species_table(names: pd.DataFrame, dist: pd.DataFrame, area_code: str 
     sp["endemic"] = sp["plant_name_id"].map(n_areas).fillna(0).astype(int).eq(1).astype(int)
 
     sp["species_name"] = sp["genus"] + " " + sp["species"]
+    binom = sp["species_name"].map(is_binomial_species_name)
+    stats["non_binomial_excluded"] = int((~binom).sum())
+    sp = sp[binom]
     sp = sp.drop_duplicates("species_name")
     out = pd.DataFrame({
         "species": sp["species_name"], "genus": sp["genus"], "family": sp["family"],
@@ -143,7 +159,8 @@ def run_phase1_wcvp(cfg: dict[str, Any]) -> pd.DataFrame:
         "wcvp_file_date": dates.get(NAMES_FILE), "downloaded": date.fromtimestamp(zip_path.stat().st_mtime).isoformat(),
         "sha256": sha.hexdigest(), "families_whitelist": fam, "max_species": cfg.get("max_species"),
         "rules": "taxon_rank=Species, taxon_status=Accepted, area_code_l3=TUR, introduced=0, extinct=0, "
-                 "location_doubtful=0, hybrids excluded; endemic = native in exactly one WGSRPD area (TUR)",
+                 "location_doubtful=0, hybrids excluded, non-binomial names (e.g. sect.) excluded; "
+                 "endemic = native in exactly one WGSRPD area (TUR)",
         "stats": stats, "species_in_file": int(len(table)), "endemic_in_file": int(table["endemic"].sum()),
         "synonyms_in_file": int(len(syn)),
     }
