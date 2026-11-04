@@ -104,9 +104,15 @@ export default function MethodPage() {
             diziler ENA&apos;dan {sq?.retrieved ?? "?"} tarihinde alındı.
           </li>
           <li>
-            <strong>Yöntem:</strong> p-mesafesine dayalı <Term id="en-yakin-komsu">en yakın komşu</Term> yöntemi; hizalama{" "}
-            <strong>{meta.aligner_label}</strong> ile yapıldı.
+            <strong>Yöntem:</strong> p-mesafesine dayalı <Term id="en-yakin-komsu">eşiksiz en-yakın-komşu</Term> (resmî tanım katıdır);
+            hizalama <strong>{meta.aligner_label}</strong> ile yapıldı.
           </li>
+          {typeof stats.totals.suspect_sequences === "number" && stats.totals.suspect_sequences > 0 && (
+            <li>
+              <strong>Şüpheli diziler:</strong> {num(stats.totals.suspect_sequences)} kayıt, aynı DNA dizisinin birden fazla aileye
+              atanmış kopyasıdır; ayırt etme analizinden çıkarıldı, tür sayfasında işaretlenir.
+            </li>
+          )}
         </ul>
       </Card>
 
@@ -152,7 +158,8 @@ export default function MethodPage() {
         </li>
         <li>
           Eşleşmeyen adlar atılır ve <code className="rounded bg-stone-100 px-1">data/unmatched_names.csv</code> dosyasına yazılır
-          ({num(stats.unmatched_names_total)} farklı ad).
+          ({num(stats.unmatched_names_total)} farklı ad). Bu kayıtların çoğu, cins düzeyindeki ENA aramasının getirdiği kültür bitkileri
+          ve Türkiye florasında kabul edilmeyen yabancı türlerdir; Türkiye listesine ait olmadıkları için elenirler.
         </li>
         <li>
           <em>sp.</em>, <em>cf.</em>, <em>aff.</em>, melez (×) ve <code className="rounded bg-stone-100 px-1">UNVERIFIED</code> kayıtları ile &quot;Cins tür&quot;
@@ -163,6 +170,11 @@ export default function MethodPage() {
 </Section>
 
       <Section id="filtreler" title="3. Kalite filtreleri">
+      <p className="mb-3 text-stone-800">
+        Aşağıdaki tablo, her barkod bölgesinde hangi kayıtların uzunluk ve belirsiz harf (N) süzgecinden geçtiğini gösterir.
+        ENA araması cins düzeyinde olduğu için Türkiye listesinde olmayan adlar da gelir; bunlar eşleşmeyen ad olarak sayılır
+        ({num(stats.unmatched_names_total)} farklı ad).
+      </p>
       <div tabIndex={0} className="overflow-x-auto rounded-xl border border-stone-200 bg-white">
         <table className="w-full text-[0.95rem]">
           <thead className="bg-stone-50 text-left text-stone-600">
@@ -323,6 +335,28 @@ export default function MethodPage() {
           <li>
             <strong>Dizi arama</strong> sayfası tarayıcıda çalışan basit bir k-mer + ikili hizalama yöntemidir; sonuçlar
             gösterge niteliğindedir, BLAST&apos;ın ve uzman doğrulamasının yerini tutmaz.
+          </li>
+          <li>
+            <strong>ITS nükleer ve çok kopyalıdır.</strong> Aynı bitkide farklı ITS kopyaları (paralog) bulunabilir; dizide
+            mantar DNA&apos;sı da okunmuş olabilir. ITS başarı oranı bu yüzden olduğundan iyi görünebilir.
+            {/* TODO(uzman: Buse): ITS süzgecinin fungal kontaminasyonu ne ölçüde elediği gözden geçirilmeli. */}
+          </li>
+          <li>
+            <strong>BOLD taranmadı.</strong> Diziler yalnızca ENA/INSDC&apos;den alındı. BOLD Systems&apos;ta olup ENA&apos;da
+            olmayan kayıtlar &quot;eksik&quot; görünebilir; BOLD taraması gelecek çalışma olarak planlandı.
+          </li>
+          <li>
+            <strong>Eşiksiz en-yakın-komşu.</strong> Mesafe eşiği ve &quot;eşleşme yok&quot; sınıfı yoktur; uzak da olsa en yakın
+            komşu seçilir.
+          </li>
+          <li>
+            <strong>Tür × bölge tavanı.</strong> Her türün her barkod bölgesinde en çok {num(meta.max_sequences_per_species_marker)} dizisi tutulur
+            (Türkiye örnekleri önce). Yaygın türlerin çeşitliliği bu tavan yüzünden eksik kalabilir.
+          </li>
+          <li>
+            <strong>Üç bölge.</strong> rbcL ve matK bitki barkodlamasında sık kullanılan kloroplast genleridir; ITS nükleer bir
+            ayırıcı bölgedir. trnH-psbA bu çalışmada yok; üç bölgeyle sınırlı kalındı.
+            {/* TODO(uzman: Buse): trnH-psbA'nın dışarıda bırakılması biyolojik gerekçeyle onaylanmalı. */}
           </li>
         </ul>
       </Card>
