@@ -1,0 +1,4 @@
+# Small TEST run: 2 families, 30 species.
+base: config.yaml
+families_whitelist: [Fagaceae, Pinaceae]
+max_species: 30

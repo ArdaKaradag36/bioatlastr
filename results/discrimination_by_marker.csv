@@ -1,0 +1,4 @@
+marker,sequences_evaluated,sequences_excluded,success,ambiguous,fail,species_evaluated,species_success,success_rate,species_success_rate,zero_distance_pairs,zero_distance_pairs_with_singleton
+rbcL,10365,14,4362,4835,1168,1746,458,0.4208393632416787,0.2623138602520046,2771,893
+matK,9029,39,5170,2629,1230,1715,644,0.5725994019271237,0.37551020408163266,1646,796
+ITS,2650,1,1864,373,413,655,371,0.7033962264150944,0.566412213740458,451,284

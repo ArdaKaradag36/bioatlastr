@@ -1,0 +1,45 @@
+# Python
+pipeline/.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+
+# Pipeline downloads (re-creatable; can be several hundred MB)
+data/cache/
+data/alignments/
+
+# Secrets
+.env
+.env.*
+
+# Node / Next.js
+web/node_modules/
+web/.next/
+web/out/
+web/*.tsbuildinfo
+web/next-env.d.ts
+.vercel/
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+
+# Large downloads
+data/raw/
+logs/
+runs/
+web/public/data.pilot_backup/
+results.pilot_backup/
+
+# Backups / large files
+*.pilot_backup/
+*.pilot_backup
+*.zip
+*.tsbuildinfo
+data/names/cache/
+
+# Private / non-publishable data
+data/names/private/
+
+# Never commit files over 20 MB (checked by scripts/check_large_files.sh and the local pre-commit hook)

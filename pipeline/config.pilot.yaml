@@ -1,0 +1,3 @@
+# PILOT run: four families only (verifies the whole chain quickly).
+base: config.yaml
+families_whitelist: [Fagaceae, Pinaceae, Rosaceae, Lamiaceae]

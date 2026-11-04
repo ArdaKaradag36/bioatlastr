@@ -1,0 +1,30 @@
+{
+ "source": "WCVP - World Checklist of Vascular Plants (Royal Botanic Gardens, Kew)",
+ "url": "http://sftp.kew.org/pub/data-repositories/WCVP/wcvp.zip",
+ "area_code_l3": "TUR",
+ "area_name": "Türkiye",
+ "wcvp_file_date": "2026-06-04",
+ "downloaded": "2026-11-03",
+ "sha256": "d32ea2b3a85e489b14e83bcc9eae7274532e1d113753f7be290d4b2dfde573fa",
+ "families_whitelist": [
+  "Fagaceae",
+  "Pinaceae",
+  "Rosaceae",
+  "Lamiaceae"
+ ],
+ "max_species": null,
+ "rules": "taxon_rank=Species, taxon_status=Accepted, area_code_l3=TUR, introduced=0, extinct=0, location_doubtful=0, hybrids excluded; endemic = native in exactly one WGSRPD area (TUR)",
+ "stats": {
+  "rows_in_area": 14871,
+  "accepted_species_total": 365813,
+  "native_in_area": 10268,
+  "hybrids_excluded": 261,
+  "species_kept": 10007,
+  "endemic": 3472,
+  "synonyms": 34305,
+  "families_total": 149
+ },
+ "species_in_file": 905,
+ "endemic_in_file": 334,
+ "synonyms_in_file": 3430
+}
