@@ -1,6 +1,6 @@
 # Data licence
 
-This project is a non-commercial university student research project. The data tables in this repository are **derived** from the
+This project is a non-commercial research project by Arda Karadağ (GitHub: ArdaKaradag36) and Buse Menekşe. The data tables in this repository are **derived** from the
 upstream sources below. You may reuse them, including commercially, **provided you give attribution to the upstream sources and respect
 the share-alike condition where it applies**. The data are provided "as is", for research purposes only: they are estimates, have not been
 verified by an expert and must not be used for scientific, regulatory or commercial decisions.
@@ -18,4 +18,4 @@ Excluded on purpose (not in the repository): iNaturalist and IUCN Red List names
 Personal data: voucher / collector strings, locality text and submitter details from sequence records are removed (`scripts/sanitize_public.py`).
 
 Suggested citation: see `CITATION.cff` and the "Atıf ve lisans" section on the site page `/kaynaklar`. Upstream licence evidence: `docs/licence_audit.md`.
-Contact / takedown: karadagardaa@gmail.com (software), busemenekse@ogr.eskisehir.edu.tr (biological content)
+Contact / takedown: karadagardaa@gmail.com

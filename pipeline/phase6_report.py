@@ -1,4 +1,4 @@
-"""Phase 6 - Turkish TÜBİTAK-style report draft (docs/rapor_taslagi.md), numbers from generated data only.
+"""Phase 6 - internal Turkish report draft (docs/rapor_taslagi.md), numbers from generated data only.
 
 Usage (from the repository root):  python pipeline/phase6_report.py
 """
@@ -98,7 +98,7 @@ def main() -> None:
     md = f"""# Türkiye Bitki Florası için DNA Barkod Atlası — Rapor Taslağı
 
 *Bu taslak `pipeline/phase6_report.py` ile {date.today().isoformat()} tarihinde üretilmiştir. Sayılar yalnızca üretilmiş veriden gelir
-(`web/public/data`, `results/`). Köşeli işaretli bölümler biyolog/danışman tarafından doldurulmalıdır.*
+(`web/public/data`, `results/`). Köşeli işaretli bölümler biyolog tarafından doldurulmalıdır.*
 
 {"**UYARI: Bu taslak kısmi bir çalıştırmaya aittir** (aileler: " + ", ".join(meta["families"]) + (f"; en çok {meta['max_species']} tür" if meta["max_species"] else "") + "). Tam çalıştırmadan sonra yeniden üretin." if partial else ""}
 
@@ -119,7 +119,7 @@ en az bir markerde dizisi vardır; {n(t["species_without_sequences"])} türün h
 **Araştırma sorusu:** Kısa bir DNA barkod bölgesi (rbcL, matK, ITS) Türkiye'de yetişen bitki türlerini birbirinden ayırmaya yeter mi? Hangi türler ve
 gruplar için veri yoktur?
 
-{TODO.format("Çalışmanın amacı, hipotezler ve özgün değer (öğrenci/danışman)")}
+{TODO.format("Çalışmanın amacı, hipotezler ve özgün değer")}
 
 ## 2. Yöntem
 

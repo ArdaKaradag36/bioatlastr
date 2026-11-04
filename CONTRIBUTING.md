@@ -4,7 +4,7 @@ This atlas is maintained by **Arda Karadağ** (software, pipeline, website) and 
 
 ## Report an error
 
-Write to `karadagardaa@gmail.com` (software / records on the site) or `busemenekse@ogr.eskisehir.edu.tr` (biology). Include the species name or accession and what is wrong.
+Write to `karadagardaa@gmail.com`. Include the species name or accession and what is wrong.
 
 Do not send unpublished DNA sequences by e-mail. Deposit them in ENA, GenBank or DDBJ:
 

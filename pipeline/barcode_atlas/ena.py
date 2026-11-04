@@ -73,7 +73,7 @@ class EnaClient:
         self.max_retries = int(ena_cfg["max_retries"])
         self.cache = DiskCache("ena")
         self.session = session or requests.Session()
-        self.session.headers.update({"User-Agent": "turkey-plant-barcode-atlas/0.2 (student research)"})
+        self.session.headers.update({"User-Agent": "turkey-plant-barcode-atlas/0.2 (research project; github.com/ArdaKaradag36/bioatlastr)"})
         self._sleep = sleep
         self.network_calls = 0
         self.cache_hits = 0

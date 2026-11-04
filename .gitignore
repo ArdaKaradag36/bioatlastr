@@ -1,16 +1,30 @@
 # Python
 pipeline/.venv/
+.venv/
 __pycache__/
 .pytest_cache/
-*.pyc
+*.py[cod]
+*$py.class
+*.egg-info/
 
-# Pipeline downloads (re-creatable; can be several hundred MB)
+# Pipeline downloads and run state (re-creatable, can be hundreds of MB)
 data/cache/
 data/alignments/
+data/raw/
+data/.confirm_full_run
+data/names/cache/
+data/names/private/
+logs/
+runs/
+nohup.out
 
-# Secrets
+# Secrets and local env
 .env
 .env.*
+!.env.example
+*.pem
+id_rsa
+id_ed25519
 
 # Node / Next.js
 web/node_modules/
@@ -18,28 +32,34 @@ web/.next/
 web/out/
 web/*.tsbuildinfo
 web/next-env.d.ts
+web/coverage/
+web/test-results/
+web/playwright-report/
+web/blob-report/
+web/playwright/.cache/
+web/e2e/screenshots/
 .vercel/
 
-# Editor / OS
+# Editor / OS / AI tooling (do not publish)
 .DS_Store
+Thumbs.db
 .idea/
 .vscode/
+.cursor/
+*.swp
+web/AGENTS.md
+**/AGENTS.md
 
-# Large downloads
-data/raw/
-logs/
-runs/
-web/public/data.pilot_backup/
-results.pilot_backup/
+# Internal drafts and local review (not for GitHub)
+REVIEW_REPORT.md
+review_artifacts/
+docs/rapor_taslagi.md
+STATUS.md
 
 # Backups / large files
 *.pilot_backup/
 *.pilot_backup
+web/public/data.pilot_backup/
+results.pilot_backup/
 *.zip
 *.tsbuildinfo
-data/names/cache/
-
-# Private / non-publishable data
-data/names/private/
-
-# Never commit files over 20 MB (checked by scripts/check_large_files.sh and the local pre-commit hook)

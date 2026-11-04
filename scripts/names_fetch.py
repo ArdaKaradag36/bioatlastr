@@ -7,7 +7,7 @@ import pandas as pd, requests
 
 ROOT = Path(__file__).resolve().parents[1]
 CACHE = ROOT / "data" / "names" / "cache"
-UA = {"User-Agent": "bio-web-turkish-names/0.1 (student research project; open-source; low rate)"}
+UA = {"User-Agent": "bio-web-turkish-names/0.2 (research project; github.com/ArdaKaradag36/bioatlastr; low rate)"}
 sp = pd.read_csv(ROOT / "runs/full/data/species.csv", keep_default_na=False)
 syn = pd.read_csv(ROOT / "runs/full/data/synonyms.csv", keep_default_na=False)
 SPECIES = list(sp["species"]); GENERA = sorted(set(sp["genus"])); FAMILIES = sorted(set(sp["family"]))

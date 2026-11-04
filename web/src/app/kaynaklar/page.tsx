@@ -81,7 +81,7 @@ export default function SourcesPage() {
         <li>Tam liste: <code>data/names/LICENSES.md</code>; adların her satırında kaynak bağlantısı ve lisans vardır (<code>data/names/turkish_names.csv</code>).</li>
       </ul>
 
-      <SectionTitle>Ekip</SectionTitle>
+      <SectionTitle>Yapımcılar</SectionTitle>
       <ul className="mb-8 list-disc space-y-1 pl-6 text-stone-800">
         {AUTHORS.map((a) => (
           <li key={a.family}>

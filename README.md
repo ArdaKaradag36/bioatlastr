@@ -1,5 +1,7 @@
 # Türkiye Bitki DNA Barkod Atlası (Turkey Plant DNA Barcode Atlas)
 
+Research project by **Arda Karadağ** (GitHub: [ArdaKaradag36](https://github.com/ArdaKaradag36)) and **Buse Menekşe**. Contact: karadagardaa@gmail.com.
+
 > **Research question:** Is a short DNA barcode region (rbcL, matK, ITS) enough to distinguish the plant species of
 > Türkiye from each other, and where are the data gaps?
 
@@ -11,7 +13,7 @@ WCVP (Kew) ─► species.csv ─► ENA (INSDC mirror) ─► FASTA + tables �
 * **No accounts, no API keys, no e-mail.** Default sources: WCVP (species list) and ENA (sequences).
 * **No database.** The website reads static JSON files; every number comes from generated data.
 * NCBI and GBIF code is kept only as optional sources (`sequence_source: ncbi`, `species_source: gbif`); the default run never contacts them.
-* `STATUS.md` always says what is done / running / next (use it to resume).
+* Pipeline progress is logged under `logs/` (gitignored).
 
 ## Layout
 
@@ -21,7 +23,6 @@ WCVP (Kew) ─► species.csv ─► ENA (INSDC mirror) ─► FASTA + tables �
 | `data/` | `species.csv`, `species_meta.json`, `synonyms.csv`, `sequence_table.csv`, `sequences/*.fasta`, filter logs; `raw/`, `cache/`, `alignments/` are git-ignored |
 | `results/` | CSV summaries, Newick trees, `figures/*.png` |
 | `web/` | Next.js (App Router, TypeScript, Tailwind) site; reads `web/public/data/*.json` |
-| `docs/rapor_taslagi.md` | Internal Turkish report draft (generated; placeholders for the biologist; not a public page) |
 
 ## 0. Requirements and install
 
@@ -172,7 +173,7 @@ Names are not expert-verified; ambiguous names are flagged ("birden fazla türe 
 ## 8. Privacy
 
 The site has no analytics, cookies or trackers; the sequence search runs in the browser only. Voucher/collector strings, locality text and submitter details
-are removed from published sequence records (`scripts/sanitize_public.py`). Contact and repository URLs live in `web/src/lib/site.ts` (`CONTACT_EMAIL`, `CONTACT_EMAIL_BIOLOGY`, `REPO_URL`). `PROJECT_FUNDING` is empty on purpose and the footer renders nothing for it.
+are removed from published sequence records (`scripts/sanitize_public.py`). Contact is `karadagardaa@gmail.com`; repository URL lives in `web/src/lib/site.ts` (`CONTACT_EMAIL`, `REPO_URL`). `PROJECT_FUNDING` is empty on purpose and the footer renders nothing for it.
 
 ## 9. Citation, Zenodo, maintenance
 

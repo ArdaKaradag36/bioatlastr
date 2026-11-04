@@ -7,7 +7,7 @@ import { Bar, Card, COVERAGE_COLORS, Legend, PageIntro, Purpose, SectionTitle, S
 import { getFamilies, getMeta, getStats } from "@/lib/data.server";
 import { num, pct } from "@/lib/format";
 import { per100, sequenceRateSentence, speciesRateSentence } from "@/lib/plain";
-import { AUTHORS, PROJECT_TITLE, PROJECT_TITLE_EN, PROJECT_YEAR, REPO_URL, siteUrl } from "@/lib/site";
+import { AUTHORS, PROJECT_KIND_TR, PROJECT_TITLE, PROJECT_TITLE_EN, PROJECT_YEAR, REPO_URL, siteUrl } from "@/lib/site";
 
 const MARKER_TERM: Record<string, string> = { rbcL: "rbcl", matK: "matk", ITS: "its" };
 
@@ -57,7 +57,7 @@ export default function HomePage() {
       <section className="rise relative overflow-hidden rounded-3xl bg-gradient-to-br from-forest to-forest-2 px-6 py-10 text-on-dark sm:px-12 sm:py-14">
         <div className="grid items-center gap-8 md:grid-cols-[1.25fr_1fr]">
           <div>
-            <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-leaf">Üniversite öğrenci araştırma projesi</p>
+            <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-leaf">{PROJECT_KIND_TR}</p>
             <h1 className="font-serif text-3xl font-bold leading-tight text-on-dark sm:text-5xl">
               Bir bitkiyi, DNA&apos;sının kısa bir bölümünden tanıyabilir miyiz?
             </h1>

@@ -122,7 +122,7 @@ test("citation text matches site identity fields", () => {
   assert.match(text, /Menekşe/);
   assert.ok(text.includes(PROJECT_VERSION));
   assert.ok(text.includes(REPO_URL));
-  assert.equal(CONTACT_EMAIL.includes("@"), true);
+  assert.equal(CONTACT_EMAIL, "karadagardaa@gmail.com");
   assert.equal(PROJECT_FUNDING, "");
 });
 

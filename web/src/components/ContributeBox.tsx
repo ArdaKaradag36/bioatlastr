@@ -1,4 +1,4 @@
-import { CONTACT_EMAIL, CONTACT_EMAIL_BIOLOGY } from "@/lib/site";
+import { CONTACT_EMAIL } from "@/lib/site";
 
 export default function ContributeBox({ lang = "tr" }: { lang?: "tr" | "en" }) {
   if (lang === "en") {
@@ -18,10 +18,7 @@ export default function ContributeBox({ lang = "tr" }: { lang?: "tr" | "en" }) {
           </li>
           <li>
             To report a wrong record or a site error, write to{" "}
-            <a className="text-link underline" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
-            {" "}(software) or{" "}
-            <a className="text-link underline" href={`mailto:${CONTACT_EMAIL_BIOLOGY}`}>{CONTACT_EMAIL_BIOLOGY}</a>
-            {" "}(biological content).
+            <a className="text-link underline" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
           </li>
         </ul>
       </section>
@@ -45,9 +42,7 @@ export default function ContributeBox({ lang = "tr" }: { lang?: "tr" | "en" }) {
         <li>
           Hatalı bir kayıt, yanlış Türkçe ad veya sitedeki bir yazım için{" "}
           <a className="text-link underline" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
-          {" "}(yazılım) ya da{" "}
-          <a className="text-link underline" href={`mailto:${CONTACT_EMAIL_BIOLOGY}`}>{CONTACT_EMAIL_BIOLOGY}</a>
-          {" "}(biyolojik içerik) adresine yazın; erişim numarasını ve neyin yanlış olduğunu belirtin.
+          {" "}adresine yazın; erişim numarasını ve neyin yanlış olduğunu belirtin.
         </li>
       </ul>
     </section>

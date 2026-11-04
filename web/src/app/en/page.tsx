@@ -3,7 +3,7 @@ import CiteBox from "@/components/CiteBox";
 import ContributeBox from "@/components/ContributeBox";
 import { Card, PageTitle } from "@/components/ui";
 import { getMeta, getStats } from "@/lib/data.server";
-import { CONTACT_EMAIL, CONTACT_EMAIL_BIOLOGY, PROJECT_TITLE, PROJECT_TITLE_EN, REPO_URL } from "@/lib/site";
+import { CONTACT_EMAIL, PROJECT_KIND_EN, PROJECT_TITLE, PROJECT_TITLE_EN, PRODUCERS_EN, REPO_URL } from "@/lib/site";
 
 function n(value: number): string {
   return value.toLocaleString("en-GB");
@@ -32,7 +32,7 @@ export default function EnglishSummaryPage() {
         <span>English summary</span>
       </p>
       <PageTitle eyebrow="English summary" title={PROJECT_TITLE_EN}>
-        {PROJECT_TITLE}. A student research atlas: can short DNA barcode regions separate the vascular plant species of Turkey, and where are the public-data gaps?
+        {PROJECT_TITLE}. A {PROJECT_KIND_EN.toLowerCase()} by {PRODUCERS_EN}: can short DNA barcode regions separate the vascular plant species of Turkey, and where are the public-data gaps?
       </PageTitle>
 
       <Card className="mb-6">
@@ -102,13 +102,11 @@ export default function EnglishSummaryPage() {
       </div>
 
       <p className="text-stone-800">
-        Code and data:{" "}
+        Producers: {PRODUCERS_EN}. Code and data:{" "}
         <a className="text-link underline" href={REPO_URL}>{REPO_URL}</a>
         . Contact:{" "}
         <a className="text-link underline" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
-        {" "}(software),{" "}
-        <a className="text-link underline" href={`mailto:${CONTACT_EMAIL_BIOLOGY}`}>{CONTACT_EMAIL_BIOLOGY}</a>
-        {" "}(biology). Full method (Turkish): <Link className="text-link underline" href="/yontem">/yontem</Link>.
+        . Full method (Turkish): <Link className="text-link underline" href="/yontem">/yontem</Link>.
       </p>
     </div>
   );
