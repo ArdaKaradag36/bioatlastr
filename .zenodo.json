@@ -1,0 +1,21 @@
+{
+  "title": "Türkiye Bitki DNA Barkod Atlası (Turkey Plant DNA Barcode Atlas)",
+  "upload_type": "software",
+  "description": "A research atlas that asks whether short DNA barcode regions (rbcL, matK, ITS) can separate the vascular plant species of Turkey. Species names come from WCVP (Kew); sequences come from ENA/INSDC. Success is measured with a threshold-free nearest-neighbour test. BOLD was not searched. Results are estimates without expert verification.",
+  "creators": [
+    { "name": "Karadağ, Arda" },
+    { "name": "Menekşe, Buse" }
+  ],
+  "access_right": "open",
+  "license": "mit",
+  "keywords": ["DNA barcoding", "rbcL", "matK", "ITS", "Turkey", "flora", "plants"],
+  "version": "0.2.0",
+  "language": "tur",
+  "related_identifiers": [
+    {
+      "relation": "isSupplementTo",
+      "identifier": "https://github.com/ArdaKaradag36/bioatlastr",
+      "scheme": "url"
+    }
+  ]
+}
