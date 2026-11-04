@@ -3,7 +3,9 @@ import Term from "@/components/Term";
 import { Card, PageIntro, PageTitle, Purpose, SectionTitle } from "@/components/ui";
 import { getMeta, getTaxonNames } from "@/lib/data.server";
 import { num } from "@/lib/format";
-import { CONTACT_EMAIL, PROJECT_TITLE, REPO_URL } from "@/lib/site";
+import CiteBox from "@/components/CiteBox";
+import ContributeBox from "@/components/ContributeBox";
+import { AUTHORS, CONTACT_EMAIL, PROJECT_TITLE, REPO_URL } from "@/lib/site";
 
 export const metadata: Metadata = { title: "Kaynaklar ve lisanslar" };
 
@@ -79,6 +81,22 @@ export default function SourcesPage() {
         <li>Tam liste: <code>data/names/LICENSES.md</code>; adların her satırında kaynak bağlantısı ve lisans vardır (<code>data/names/turkish_names.csv</code>).</li>
       </ul>
 
+      <SectionTitle>Ekip</SectionTitle>
+      <ul className="mb-8 list-disc space-y-1 pl-6 text-stone-800">
+        {AUTHORS.map((a) => (
+          <li key={a.family}>
+            {a.given} {a.family} — {a.roleTr}
+          </li>
+        ))}
+      </ul>
+
+      <div id="atif" className="mb-6">
+        <CiteBox />
+      </div>
+      <div id="katki" className="mb-8">
+        <ContributeBox />
+      </div>
+
       <SectionTitle>Atıf ve lisans</SectionTitle>
       <div className="max-w-3xl space-y-3 text-stone-800">
         <p>
@@ -106,7 +124,8 @@ export default function SourcesPage() {
           <strong>Cichorieae Systematics Portal</strong> (CC BY 4.0): Kilian N. (2024) Botanic Garden and Botanical Museum Berlin. https://doi.org/10.15468/gzcrwf.
         </Cite>
         <Cite>
-          <strong>Bu proje:</strong> {PROJECT_TITLE} (2026). Üniversite öğrenci araştırma projesi. Kod ve veri: {REPO_URL}
+          <strong>Bu proje:</strong> {PROJECT_TITLE} (2026). {AUTHORS.map((a) => `${a.given} ${a.family}`).join(", ")}. Kod ve veri:{" "}
+          <a className="text-link underline" href={REPO_URL}>{REPO_URL}</a>
         </Cite>
         <p className="rounded-md border border-amber-300 bg-amber-50 p-3 text-amber-900">
           <strong>Sorumluluk reddi:</strong> Bu site araştırma amaçlıdır; sonuçlar tahmin niteliğindedir, uzman doğrulaması yoktur ve

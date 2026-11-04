@@ -157,6 +157,11 @@ export default function DataGapsPage() {
       </p>
       <MissingSpeciesTable families={families} markers={markers} initialEndemic />
 
+      <p className="mt-8 max-w-3xl text-stone-800">
+        Eksik bir tür için dizi üretmek veya hatalı bir kaydı bildirmek istiyorsanız{" "}
+        <Link className="font-medium text-link underline" href="/kaynaklar#katki">Nasıl katkı verilir</Link> kutusuna bakın.
+      </p>
+
       <Purpose>
         Hangi türlerin DNA barkodunun eksik olduğunu açıkça göstermek; böylece sonraki saha ve laboratuvar çalışmaları önce bu boşlukları doldurmaya yönelebilsin. <Link className="font-medium text-on-dark underline" href="/turler">Türlere göz atın</Link>.
       </Purpose>

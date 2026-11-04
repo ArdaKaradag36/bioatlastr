@@ -3,7 +3,7 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import { Logo } from "@/components/Icons";
 import { getMeta } from "@/lib/data.server";
-import { PROJECT_FUNDING, PROJECT_TITLE } from "@/lib/site";
+import { AUTHORS, PROJECT_FUNDING, PROJECT_TITLE } from "@/lib/site";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -52,7 +52,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </div>
               <p className="max-w-xl text-sm leading-relaxed text-snow/85">
                 Bu site, kısa DNA barkodlarının Türkiye&apos;deki bitki türlerini birbirinden ayırmaya yetip yetmediğini herkes için anlaşılır biçimde
-                gösteren bir üniversite öğrenci araştırma projesidir. {PROJECT_FUNDING}
+                gösteren bir üniversite öğrenci araştırma projesidir.
+                {PROJECT_FUNDING ? <> {PROJECT_FUNDING}</> : null}
+              </p>
+              <p className="mt-3 text-sm leading-relaxed text-snow/85">
+                <strong>Ekip:</strong>{" "}
+                {AUTHORS.map((a, i) => (
+                  <span key={a.family}>
+                    {i > 0 ? "; " : ""}
+                    {a.given} {a.family} ({a.roleTr})
+                  </span>
+                ))}
+                .
               </p>
               <p className="mt-3 max-w-xl rounded-lg bg-snow/10 p-3 text-sm leading-relaxed text-snow/90">
                 <strong>Sorumluluk reddi:</strong> Araştırma amaçlıdır; sonuçlar tahmin niteliğindedir, uzman doğrulaması yoktur ve bilimsel ya da
@@ -70,7 +81,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 Veri kaynakları:{" "}
                 <a className="text-snow underline" href="https://powo.science.kew.org" target="_blank" rel="noreferrer">WCVP (Kew)</a> ve{" "}
                 <a className="text-snow underline" href="https://www.ebi.ac.uk/ena/browser/home" target="_blank" rel="noreferrer">ENA (INSDC)</a>.
-                Lisanslar ve atıf: <Link className="text-snow underline" href="/kaynaklar">Kaynaklar ve lisanslar</Link>. Veriler son güncelleme: {date}.
+                Lisanslar ve atıf: <Link className="text-snow underline" href="/kaynaklar">Kaynaklar ve lisanslar</Link>
+                {" · "}
+                <Link className="text-snow underline" href="/kaynaklar#atif">Nasıl atıf yapılır</Link>
+                . Veriler son güncelleme: {date}.
               </p>
             </div>
           </div>
