@@ -687,6 +687,7 @@ Zelkova,Ulmaceae,1,0,1,0,1,0,1,0,7,scientific-name
 Adoxa,Viburnaceae,1,0,1,1,0,0,1,0,20,scientific-name
 Vitis,Vitaceae,1,0,1,1,0,0,1,0,20,scientific-name
 Tribulus,Zygophyllaceae,1,0,1,1,0,0,1,0,20,scientific-name
+Taraxacum,Asteraceae,54,15,0,1,2,14,2,52,3,scientific-name
 Anthemis,Asteraceae,41,15,2,2,0,15,2,39,12,scientific-name
 Odontarrhena,Brassicaceae,39,20,2,1,1,20,2,37,7,scientific-name
 Psephellus,Asteraceae,35,28,2,1,1,28,2,33,4,scientific-name
@@ -833,7 +834,6 @@ Selaginella,Selaginellaceae,2,0,2,0,1,0,2,0,12,scientific-name
 Smilax,Smilacaceae,2,0,1,2,0,0,2,0,21,scientific-name
 Verbena,Verbenaceae,2,0,1,1,1,0,2,0,21,scientific-name
 Sambucus,Viburnaceae,2,0,2,2,2,0,2,0,49,scientific-name
-Taraxacum,Asteraceae,55,15,1,2,3,14,3,52,28,scientific-name
 Aethionema,Brassicaceae,49,33,2,2,2,33,3,46,8,scientific-name
 Cousinia,Asteraceae,35,23,0,0,3,23,3,32,3,scientific-name
 Paronychia,Caryophyllaceae,34,22,2,3,0,22,3,31,7,scientific-name

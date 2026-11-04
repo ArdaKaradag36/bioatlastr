@@ -56,7 +56,6 @@ Asteraceae/Sigesbeckia,Asteraceae,Sigesbeckia,rbcL,8,1,single_species
 Asteraceae/Silybum,Asteraceae,Silybum,rbcL,10,1,single_species
 Asteraceae/Solidago,Asteraceae,Solidago,rbcL,10,1,single_species
 Asteraceae/Stizolophus,Asteraceae,Stizolophus,rbcL,2,2,too_few_sequences
-Asteraceae/Taraxacum,Asteraceae,Taraxacum,rbcL,10,1,single_species
 Asteraceae/Tephroseris,Asteraceae,Tephroseris,rbcL,3,1,single_species
 Asteraceae/Tolpis,Asteraceae,Tolpis,rbcL,1,1,too_few_sequences
 Asteraceae/Tripleurospermum,Asteraceae,Tripleurospermum,rbcL,8,1,single_species
@@ -116,6 +115,7 @@ Asteraceae/Siebera,Asteraceae,Siebera,matK,1,1,too_few_sequences
 Asteraceae/Sigesbeckia,Asteraceae,Sigesbeckia,matK,6,1,single_species
 Asteraceae/Silybum,Asteraceae,Silybum,matK,8,1,single_species
 Asteraceae/Solidago,Asteraceae,Solidago,matK,7,1,single_species
+Asteraceae/Taraxacum,Asteraceae,Taraxacum,matK,1,1,too_few_sequences
 Asteraceae/Tephroseris,Asteraceae,Tephroseris,matK,3,1,single_species
 Asteraceae/Tripleurospermum,Asteraceae,Tripleurospermum,matK,5,1,single_species
 Asteraceae/Tripolium,Asteraceae,Tripolium,matK,9,1,single_species
@@ -165,6 +165,7 @@ Asteraceae/Reichardia,Asteraceae,Reichardia,ITS,2,2,too_few_sequences
 Asteraceae/Rhaponticum,Asteraceae,Rhaponticum,ITS,1,1,too_few_sequences
 Asteraceae/Silybum,Asteraceae,Silybum,ITS,3,1,single_species
 Asteraceae/Solidago,Asteraceae,Solidago,ITS,2,1,too_few_sequences
+Asteraceae/Taraxacum,Asteraceae,Taraxacum,ITS,2,2,too_few_sequences
 Asteraceae/Telekia,Asteraceae,Telekia,ITS,1,1,too_few_sequences
 Asteraceae/Tolpis,Asteraceae,Tolpis,ITS,1,1,too_few_sequences
 Asteraceae/Urospermum,Asteraceae,Urospermum,ITS,2,1,too_few_sequences
@@ -478,7 +479,7 @@ Lauraceae,Lauraceae,,ITS,1,1,too_few_sequences
 Linderniaceae,Linderniaceae,,matK,3,1,single_species
 Loranthaceae,Loranthaceae,,rbcL,1,1,too_few_sequences
 Loranthaceae,Loranthaceae,,matK,1,1,too_few_sequences
-Mazaceae,Mazaceae,,rbcL,5,1,single_species
+Mazaceae,Mazaceae,,rbcL,4,1,single_species
 Mazaceae,Mazaceae,,matK,6,1,single_species
 Melanthiaceae,Melanthiaceae,,ITS,1,1,too_few_sequences
 Menyanthaceae,Menyanthaceae,,rbcL,10,1,single_species
@@ -492,7 +493,7 @@ Myrtaceae,Myrtaceae,,rbcL,8,1,single_species
 Myrtaceae,Myrtaceae,,matK,10,1,single_species
 Myrtaceae,Myrtaceae,,ITS,10,1,single_species
 Nitrariaceae,Nitrariaceae,,rbcL,10,1,single_species
-Nitrariaceae,Nitrariaceae,,matK,10,1,single_species
+Nitrariaceae,Nitrariaceae,,matK,9,1,single_species
 Osmundaceae,Osmundaceae,,rbcL,10,1,single_species
 Oxalidaceae,Oxalidaceae,,rbcL,10,1,single_species
 Oxalidaceae,Oxalidaceae,,matK,10,1,single_species
@@ -732,7 +733,7 @@ Verbenaceae,Verbenaceae,,rbcL,10,1,single_species
 Verbenaceae,Verbenaceae,,matK,10,1,single_species
 Verbenaceae,Verbenaceae,,ITS,1,1,too_few_sequences
 Violaceae,Violaceae,,ITS,2,1,too_few_sequences
-Vitaceae,Vitaceae,,rbcL,10,1,single_species
+Vitaceae,Vitaceae,,rbcL,9,1,single_species
 Vitaceae,Vitaceae,,matK,10,1,single_species
 Zosteraceae,Zosteraceae,,rbcL,10,1,single_species
 Zosteraceae,Zosteraceae,,matK,10,1,single_species

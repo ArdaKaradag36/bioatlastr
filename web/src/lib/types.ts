@@ -242,6 +242,7 @@ export interface Stats {
     genera_without_sequence: number;
     families_without_sequence: number;
     species_with_3_markers: number;
+    suspect_sequences: number;
   };
   combinations: CombinationRow[];
   markers: Record<string, MarkerStats>;
@@ -262,6 +263,7 @@ export interface CombinationRow {
   ambiguous: number;
   fail: number;
   success_rate: number | null;
+  definition?: string; // "mean_min_distance" = looser than official BCM
 }
 
 export interface GapsFile {
