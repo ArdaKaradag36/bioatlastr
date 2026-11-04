@@ -125,3 +125,9 @@ test("citation text matches site identity fields", () => {
   assert.equal(CONTACT_EMAIL.includes("@"), true);
   assert.equal(PROJECT_FUNDING, "");
 });
+
+test("static path list stays small and includes English summary", async () => {
+  const { STATIC_PATHS } = await import("./site");
+  assert.ok(STATIC_PATHS.includes("/en"));
+  assert.ok(STATIC_PATHS.length < 50);
+});
