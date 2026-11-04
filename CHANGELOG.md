@@ -1,5 +1,7 @@
 # Changelog
 
+Public notes for this research project. This is not a software-release log for third-party installers.
+
 ## 0.2.0 — 2026-11-04
 
 - Official success definition is the strict, threshold-free nearest-neighbour test (every evaluated sequence of a species must pass). Multi-marker combination rows are labelled as a looser, different definition.

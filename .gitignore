@@ -1,3 +1,6 @@
+# This repository is the published output of Arda Karadağ & Buse Menekşe's
+# research project. The entries below keep local/private/tooling files off GitHub.
+
 # Python
 pipeline/.venv/
 .venv/
