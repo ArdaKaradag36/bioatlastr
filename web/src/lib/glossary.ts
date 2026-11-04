@@ -211,7 +211,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     id: "endemik", term: "Endemik tür", group: "Bitki sınıflandırması",
     short: "Doğal olarak yalnızca belirli bir bölgede yetişen tür; bu sitede WCVP verisine göre yalnızca Türkiye'de yetişenler.",
-    more: "Endemik türler yalnızca burada bulunduğu için koruma açısından özellikle önemlidir; barkod verisi eksikse bu bilgi başka yerden tamamlanamaz.",
+    more: "Endemik türler yalnızca burada bulunduğu için koruma açısından özellikle önemlidir; barkod verisi eksikse bu bilgi başka yerden tamamlanamaz. Bu sitedeki etiket WCVP yayılışına dayanır; IUCN veya Türkiye Kırmızı Listesi değerlendirmesi değildir.",
   },
   {
     id: "halk-adi", term: "Halk adı (Türkçe ad)", group: "Bitki sınıflandırması",

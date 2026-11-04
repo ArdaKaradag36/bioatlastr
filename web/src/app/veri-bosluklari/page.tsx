@@ -47,12 +47,12 @@ export default function DataGapsPage() {
         <Card>
           <div className="text-sm font-semibold text-stone-600">Hiçbir bölgede dizisi olmayan tür</div>
           <div className="font-serif text-4xl font-bold text-link">{num(t.species_without_sequences)}</div>
-          <p className="mt-2 border-t border-stone-100 pt-2 text-sm text-stone-700">{num(t.species)} türün {num(t.species_without_sequences)} tanesinin ({pct(t.species_without_sequences / t.species)}) üç barkod bölgesinin hiçbirinde kayıtlı dizisi yok.</p>
+          <p className="mt-2 border-t border-stone-100 pt-2 text-sm text-stone-700">{num(t.species)} türün {num(t.species_without_sequences)} tanesinin ({pct(t.species_without_sequences / t.species)}) üç barkod bölgesinin hiçbirinde ENA/INSDC kaydı yok. BOLD taranmadı; gelecek çalışma olarak planlandı.</p>
         </Card>
         <Card>
           <div className="text-sm font-semibold text-stone-600">Dizisi olmayan endemik tür</div>
           <div className="font-serif text-4xl font-bold text-red-800">{num(t.endemic_without_sequence)}</div>
-          <p className="mt-2 border-t border-stone-100 pt-2 text-sm text-stone-700">{num(t.endemic_species)} endemik türün {num(t.endemic_without_sequence)} tanesinin ({pct(t.endemic_species ? t.endemic_without_sequence / t.endemic_species : null)}) hiç dizisi yok. Bu türler yalnızca Türkiye&apos;de yetiştiği için öncelikli toplama hedefleridir.</p>
+          <p className="mt-2 border-t border-stone-100 pt-2 text-sm text-stone-700">{num(t.endemic_species)} endemik (WCVP; Kırmızı Liste değil) türün {num(t.endemic_without_sequence)} tanesinin ({pct(t.endemic_species ? t.endemic_without_sequence / t.endemic_species : null)}) hiç dizisi yok. Bu türler yalnızca Türkiye&apos;de yetiştiği için öncelikli toplama hedefleridir.</p>
         </Card>
         <Card>
           <div className="text-sm font-semibold text-stone-600">Hiç dizisi olmayan cins / aile</div>
