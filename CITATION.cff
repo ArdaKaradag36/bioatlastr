@@ -3,14 +3,16 @@ message: "If you use this software or data, please cite it as below and also cit
 title: "Türkiye Bitki DNA Barkod Atlası (Turkey Plant DNA Barcode Atlas)"
 type: software
 authors:
-  - family-names: "PLACEHOLDER_SURNAME"
-    given-names: "PLACEHOLDER_GIVEN_NAME"
-repository-code: "PLACEHOLDER_GITHUB_REPO_URL"
+  - family-names: "Karadağ"
+    given-names: "Arda"
+  - family-names: "Menekşe"
+    given-names: "Buse"
+repository-code: "https://github.com/ArdaKaradag36/bioatlastr"
 license: MIT
 date-released: "2026-11-04"
-version: "1.0.0"
+version: "0.2.0"
 keywords: [DNA barcoding, rbcL, matK, ITS, Turkey, flora, plants]
-abstract: "A research atlas that asks whether short DNA barcode regions can separate the vascular plant species of Turkey, built from WCVP and ENA/INSDC data. Student research project; results are estimates without expert verification."
+abstract: "A research atlas that asks whether short DNA barcode regions (rbcL, matK, ITS) can separate the vascular plant species of Turkey. Species names come from WCVP (Kew); sequences come from ENA/INSDC. Success is measured with a threshold-free nearest-neighbour test: every evaluated sequence of a species must match its own species. BOLD was not searched. Results are estimates without expert verification and must not be used for scientific, regulatory or commercial decisions."
 references:
   - type: article
     authors: [{family-names: "Govaerts", given-names: "R."}, {family-names: "Nic Lughadha", given-names: "E."}]
