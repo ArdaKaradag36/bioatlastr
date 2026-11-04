@@ -15,7 +15,11 @@ export default function HomePage() {
   const families = getFamilies();
   const markers = Object.keys(meta.markers);
   const t = stats.totals;
-  const best = [...stats.combinations].filter((c) => c.success_rate !== null).sort((a, b) => (b.success_rate ?? 0) - (a.success_rate ?? 0))[0];
+  const comboRows = stats.combinations.filter((c) => c.n_markers > 1);
+  const bestStrict = markers
+    .map((m) => ({ m, d: stats.markers[m].discrimination }))
+    .filter((x) => x.d.species_success_rate != null)
+    .sort((a, b) => (b.d.species_success_rate ?? 0) - (a.d.species_success_rate ?? 0))[0];
   const markerList = markers.map((m, i) => (
     <span key={m}>
       {i > 0 && (i === markers.length - 1 ? " ve " : ", ")}
@@ -116,7 +120,7 @@ export default function HomePage() {
           label="Türkiye florasındaki tür sayısı"
           value={num(t.species)}
           note={`${num(t.families)} aile, ${num(t.genera)} cins`}
-          meaning={<>Bunların {num(t.endemic_species)} tanesi ({pct(t.endemic_species / t.species)}) yalnızca Türkiye&apos;de yetişen <Term id="endemik">endemik</Term> türdür.</>}
+          meaning={<>Bunların {num(t.endemic_species)} tanesi ({pct(t.endemic_species / t.species)}) WCVP&apos;ye göre yalnızca Türkiye&apos;de yetişen <Term id="endemik">endemik</Term> türdür. Bu bir Kırmızı Liste (IUCN) değerlendirmesi değildir.</>}
         />
         <StatCard
           label="DNA barkodu olan tür"
@@ -134,16 +138,16 @@ export default function HomePage() {
           label="DNA barkodu eksik tür"
           value={num(t.species_without_sequences)}
           note={pct(t.species_without_sequences / t.species)}
-          meaning={<>Bunların {num(t.endemic_without_sequence)} tanesi endemik. <Link className="font-medium text-link underline" href="/veri-bosluklari">Hangileri?</Link></>}
+          meaning={<>ENA/INSDC&apos;de kayıt bulunamadı. BOLD taranmadı; gelecek çalışma olarak planlandı. Bunların {num(t.endemic_without_sequence)} tanesi endemik. <Link className="font-medium text-link underline" href="/veri-bosluklari">Hangileri?</Link></>}
         />
       </div>
 
       {/* ---------------- Per marker */}
       <SectionTitle id="bolgeler">Hangi barkod bölgesi türleri ne kadar ayırıyor?</SectionTitle>
       <p className="mb-4 max-w-3xl text-stone-700">
-        Üç <Term id="barkod-bolgesi">barkod bölgesini</Term> ayrı ayrı sınadık. Yöntem basit: her diziyi aynı ailedeki (çok büyük ailelerde aynı cinsteki) öteki dizilerle
-        karşılaştırıyoruz; <Term id="en-yakin-komsu">en yakın komşusu</Term> aynı türdense o dizi için &quot;ayırt edildi&quot; diyoruz. Yalnızca birden çok dizisi olan türler
-        sınanabilir. Hizalama: <strong>{meta.aligner_label}</strong>.
+        Üç <Term id="barkod-bolgesi">barkod bölgesini</Term> ayrı ayrı sınadık. Resmî başarı tanımı <strong>katıdır</strong>: bir türün değerlendirilen
+        bütün dizilerinin <Term id="en-yakin-komsu">en yakın komşusu</Term> aynı tür olmalıdır. Karşılaştırma aynı aile içindedir (çok büyük ailelerde aynı cins);
+        bu, başarıyı biraz iyimser gösterebilir. Yalnızca birden çok dizisi olan türler sınanabilir. Hizalama: <strong>{meta.aligner_label}</strong>.
       </p>
       <div className="grid gap-4 md:grid-cols-3">
         {markers.map((m) => {
@@ -157,8 +161,14 @@ export default function HomePage() {
               </div>
               <div className="mt-3 font-serif text-5xl font-bold text-link">{pct(d.species_success_rate)}</div>
               <p className="mt-1 text-sm font-medium text-stone-700">türlerde ayırt etme başarısı</p>
-              <p className="mt-2 text-stone-800">{speciesRateSentence(d.species_success_rate, d.species_evaluated)}</p>
+              <p className="mt-2 text-stone-800">{speciesRateSentence(d.species_success_rate, d.species_evaluated)} Karşılaştırma aile/cins içidir.</p>
               <p className="mt-2 text-sm text-stone-600">{sequenceRateSentence(d.success_rate, d.sequences_evaluated)}</p>
+              {m === "ITS" && (
+                <p className="mt-2 rounded-lg bg-amber-50 p-2 text-sm text-amber-900">
+                  ITS nükleer, çok kopyalı bir bölgedir; paralog kopyalar ve mantar bulaşması sonucu bozabilir. Aşağıdaki &quot;en yüksek
+                  katı başarı&quot; cümlesi de bu bölgeye aitse bu uyarı geçerlidir ({num(d.species_evaluated)} tür).
+                </p>
+              )}
               <div className="mt-4">
                 <div className="mb-1 text-sm font-medium text-stone-700">Kaç türün bu bölgede dizisi var?</div>
                 <StackedBar
@@ -192,14 +202,20 @@ export default function HomePage() {
       {/* ---------------- Combinations */}
       <SectionTitle id="kombinasyonlar">Bölgeleri birlikte kullanırsak?</SectionTitle>
       <p className="mb-3 max-w-3xl text-stone-700">
-        Bir bölge bazı türleri ayıramazken başka bir bölge ayırabilir; bu yüzden bölgeleri birlikte de sınadık. Bir tür, kendi dizileri arasındaki en küçük fark,
-        başka herhangi bir türe olan en küçük farktan küçükse &quot;ayırt edildi&quot; sayılır. Yalnızca ilgili bölgelerin hepsinde değerlendirilebilen türler tabloya girer.
-        {best && (
+        {bestStrict && (
           <>
-            {" "}En yüksek başarı <strong>{best.combination.replaceAll("+", " + ")}</strong> için: değerlendirilen her 100 türden yaklaşık {per100(best.success_rate)} tanesi
-            ayırt edildi ({num(best.species_evaluated)} tür üzerinden).
+            Resmî (katı) tanıma göre tek bölgeler arasında en yüksek tür başarısı <strong>{bestStrict.m}</strong> içindir:
+            değerlendirilen her 100 türden yaklaşık {per100(bestStrict.d.species_success_rate)} tanesi ayırt edildi
+            ({num(bestStrict.d.species_evaluated)} tür üzerinden).
+            {bestStrict.m === "ITS" && (
+              <> ITS nükleer ve çok kopyalıdır; bu yüzde paralog veya mantar bulaşması nedeniyle şişmiş olabilir.</>
+            )}
+            {" "}
           </>
         )}
+        Aşağıdaki tablo <strong>farklı, daha gevşek bir tanımdır</strong>: bir tür, kendi dizileri arasındaki en küçük fark başka bir türe
+        olan en küçük farktan küçükse &quot;ayırt edildi&quot; sayılır (bölge mesafelerinin ortalaması). Dizilerin tümünün geçmesi gerekmez.
+        Yalnızca ilgili bölgelerin hepsinde değerlendirilebilen türler tabloya girer.
       </p>
       <div tabIndex={0} className="overflow-x-auto rounded-2xl border border-stone-200 bg-white shadow-card">
         <table className="w-full text-[0.95rem]">
@@ -215,7 +231,7 @@ export default function HomePage() {
             </tr>
           </thead>
           <tbody>
-            {stats.combinations.map((c) => (
+            {comboRows.map((c) => (
               <tr key={c.combination} className="border-t border-stone-100">
                 <th scope="row" className="p-3 text-left font-medium">{c.combination.replaceAll("+", " + ")}</th>
                 <td className="p-3 text-right">{num(c.species_evaluated)}</td>
