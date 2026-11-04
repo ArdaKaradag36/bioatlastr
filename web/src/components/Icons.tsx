@@ -84,7 +84,10 @@ export function HeroArt() {
         <path d="M6 86c26-40 56-66 100-84" stroke="#0f3d24" strokeWidth="3" fill="none" strokeLinecap="round" />
         <path d="M30 70l22-22M50 54l22-22M70 40l16-16" stroke="#cfe8d6" strokeWidth="2" strokeLinecap="round" />
       </g>
-      <text x="200" y="262" fill="#cfe8d6" fontSize="14">Kısa bir DNA bölümü, bitkiyi tanımak için ipucu verir.</text>
+      <text fill="#cfe8d6" fontSize="14">
+        <tspan x="200" y="248">Kısa bir DNA bölümü</tspan>
+        <tspan x="200" y="268">türü tanımaya ipucu verir.</tspan>
+      </text>
     </svg>
   );
 }
