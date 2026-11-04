@@ -3,16 +3,38 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import { Logo } from "@/components/Icons";
 import { getMeta } from "@/lib/data.server";
-import { AUTHORS, PROJECT_FUNDING, PROJECT_TITLE } from "@/lib/site";
+import { AUTHORS, PROJECT_FUNDING, PROJECT_TITLE, siteUrl } from "@/lib/site";
 import "./globals.css";
 
+const DESCRIPTION =
+  "Kısa DNA barkod bölgeleri (rbcL, matK, ITS) Türkiye'de yetişen bitki türlerini birbirinden ayırmaya yeter mi? Herkese açık verilerle hazırlanmış, herkesin anlayabileceği bir araştırma atlası.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl()),
   title: {
     default: PROJECT_TITLE,
     template: `%s · ${PROJECT_TITLE}`,
   },
-  description:
-    "Kısa DNA barkod bölgeleri (rbcL, matK, ITS) Türkiye'de yetişen bitki türlerini birbirinden ayırmaya yeter mi? Herkese açık verilerle hazırlanmış, herkesin anlayabileceği bir araştırma atlası.",
+  description: DESCRIPTION,
+  alternates: {
+    canonical: "/",
+    languages: { "tr-TR": "/", en: "/en" },
+  },
+  openGraph: {
+    type: "website",
+    locale: "tr_TR",
+    alternateLocale: ["en_GB"],
+    siteName: PROJECT_TITLE,
+    title: PROJECT_TITLE,
+    description: DESCRIPTION,
+    url: "/",
+  },
+  twitter: {
+    card: "summary",
+    title: PROJECT_TITLE,
+    description: DESCRIPTION,
+  },
+  robots: { index: true, follow: true },
 };
 
 const FOOT = [
@@ -24,6 +46,7 @@ const FOOT = [
   { href: "/sozluk", label: "Sözlük" },
   { href: "/yontem", label: "Yöntem ve sınırlar" },
   { href: "/kaynaklar", label: "Kaynaklar ve lisanslar" },
+  { href: "/en", label: "English" },
 ];
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

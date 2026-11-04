@@ -6,6 +6,7 @@ import { Bar, Card, COVERAGE_COLORS, Legend, PageIntro, Purpose, SectionTitle, S
 import { getFamilies, getMeta, getStats } from "@/lib/data.server";
 import { num, pct } from "@/lib/format";
 import { per100, sequenceRateSentence, speciesRateSentence } from "@/lib/plain";
+import { AUTHORS, PROJECT_TITLE, PROJECT_TITLE_EN, PROJECT_YEAR, REPO_URL, siteUrl } from "@/lib/site";
 
 const MARKER_TERM: Record<string, string> = { rbcL: "rbcl", matK: "matk", ITS: "its" };
 
@@ -27,8 +28,26 @@ export default function HomePage() {
     </span>
   ));
 
+  const datasetLd = {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    name: `${PROJECT_TITLE} (${PROJECT_TITLE_EN})`,
+    description:
+      "Open research atlas of DNA barcode coverage and nearest-neighbour discrimination for the vascular plants of Turkey (rbcL, matK, ITS; WCVP + ENA/INSDC). BOLD was not searched.",
+    url: siteUrl(),
+    identifier: REPO_URL,
+    creator: AUTHORS.map((a) => ({ "@type": "Person", name: `${a.given} ${a.family}` })),
+    license: "https://opensource.org/license/mit",
+    isAccessibleForFree: true,
+    spatialCoverage: "Turkey",
+    temporalCoverage: String(PROJECT_YEAR),
+    variableMeasured: markers,
+    numberOfItems: t.species,
+  };
+
   return (
     <div>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(datasetLd) }} />
       {/* ---------------- Hero */}
       <section className="rise relative overflow-hidden rounded-3xl bg-gradient-to-br from-forest to-forest-2 px-6 py-10 text-on-dark sm:px-12 sm:py-14">
         <div className="grid items-center gap-8 md:grid-cols-[1.25fr_1fr]">
