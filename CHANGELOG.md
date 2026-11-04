@@ -8,6 +8,7 @@ Public notes for this research project. This is not a software-release log for t
 - Non-binomial WCVP names (for example `Taraxacum sect. Taraxacum`) are dropped from the species list.
 - Exact DNA strings shared across families are flagged `suspect: true`, excluded from discrimination, and shown on species pages.
 - Public identity: authors Arda Karadağ and Buse Menekşe; contact and repository fields live in `web/src/lib/site.ts`.
+- Public site is published at https://ardakaradag36.github.io/bioatlastr/ .
 - Citation (`CITATION.cff`), Zenodo metadata (`.zenodo.json`), contributing and changelog files added.
 
 ## 0.1.0 — 2026-11-04

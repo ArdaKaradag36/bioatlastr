@@ -9,8 +9,8 @@
 //   3. build a client component that posts to /api/identify and links each candidate
 //      to /turler/[slug] using the slugs from public/data/species_index.json
 //
-// The site is deployed with normal Next.js output (no `output: "export"`), so an API
-// route works on Vercel without further configuration.
+// Localhost / Vercel use a Next.js server, so an API route can live at
+// /api/identify. GitHub Pages is a static export and cannot host that endpoint.
 // ---------------------------------------------------------------------------
 
 export interface IdentificationCandidate {

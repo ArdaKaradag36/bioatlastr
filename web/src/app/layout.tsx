@@ -3,7 +3,8 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import { Logo } from "@/components/Icons";
 import { getMeta } from "@/lib/data.server";
-import { AUTHORS, CONTACT_EMAIL, GITHUB_USER, PROJECT_FUNDING, PROJECT_KIND_TR, PROJECT_TITLE, PROJECT_YEAR, PRODUCERS_TR, REPO_URL, siteUrl } from "@/lib/site";
+import { FONT_FACE_CSS } from "@/lib/fonts";
+import { AUTHORS, CONTACT_EMAIL, GITHUB_USER, PROJECT_FUNDING, PROJECT_KIND_TR, PROJECT_TITLE, PROJECT_YEAR, PRODUCERS_TR, REPO_URL, publicUrl, siteUrl } from "@/lib/site";
 import "./globals.css";
 
 const DESCRIPTION =
@@ -59,8 +60,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="tr">
       <head>
-        <link rel="preload" href="/fonts/sans-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-        <link rel="preload" href="/fonts/serif-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <style dangerouslySetInnerHTML={{ __html: FONT_FACE_CSS }} />
+        <link rel="preload" href={publicUrl("/fonts/sans-latin.woff2")} as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href={publicUrl("/fonts/serif-latin.woff2")} as="font" type="font/woff2" crossOrigin="anonymous" />
       </head>
       <body className="flex min-h-screen flex-col">
         <a href="#icerik" className="skip-link">Ana içeriğe geç</a>

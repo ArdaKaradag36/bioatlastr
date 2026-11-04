@@ -2,14 +2,18 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import SpeciesView from "@/components/SpeciesView";
-import { getMeta, getSpeciesBySlug } from "@/lib/data.server";
+import { getMeta, getSpeciesBySlug, getSpeciesIndex } from "@/lib/data.server";
 import { PROJECT_TITLE, siteUrl } from "@/lib/site";
 
+const isGithubPages = process.env.GITHUB_PAGES === "true";
+
+// Literal `true` is required by Next.js. GitHub Pages export rewrites this to
+// `false` in .github/workflows/pages.yml after every slug is prerendered.
 export const dynamicParams = true;
 
 export function generateStaticParams() {
-  // On-demand: do not prerender ~10 000 species HTML files (Vercel file/build limits).
-  return [];
+  if (!isGithubPages) return [];
+  return getSpeciesIndex().map((s) => ({ slug: s.slug }));
 }
 
 function summaryFor(slug: string) {

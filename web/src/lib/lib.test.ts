@@ -8,7 +8,7 @@ import {
   reverseComplement,
   searchReference,
 } from "./seqsearch";
-import { citationText, CONTACT_EMAIL, PROJECT_FUNDING, PROJECT_VERSION, REPO_URL } from "./site";
+import { citationText, CONTACT_EMAIL, PAGES_URL, PROJECT_FUNDING, PROJECT_VERSION, publicUrl, REPO_URL } from "./site";
 import { normalize } from "./text";
 
 test("parseNewick reads leaves, lengths and nesting", () => {
@@ -124,6 +124,8 @@ test("citation text matches site identity fields", () => {
   assert.ok(text.includes(REPO_URL));
   assert.equal(CONTACT_EMAIL, "karadagardaa@gmail.com");
   assert.equal(PROJECT_FUNDING, "");
+  assert.equal(PAGES_URL, "https://ardakaradag36.github.io/bioatlastr");
+  assert.equal(publicUrl("/data/meta.json"), "/data/meta.json");
 });
 
 test("static path list stays small and includes English summary", async () => {

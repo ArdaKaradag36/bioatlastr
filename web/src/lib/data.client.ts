@@ -1,4 +1,5 @@
 // Browser-side data access: fetch JSON files from /data and keep them in memory.
+import { publicUrl } from "./site";
 import type {
   FamilyEntry,
   GapsFile,
@@ -14,7 +15,7 @@ const cache = new Map<string, Promise<unknown>>();
 export function fetchJson<T>(path: string): Promise<T> {
   let p = cache.get(path) as Promise<T> | undefined;
   if (!p) {
-    p = fetch(`/data/${path}`).then((r) => {
+    p = fetch(publicUrl(`/data/${path}`)).then((r) => {
       if (!r.ok) throw new Error(`${path}: HTTP ${r.status}`);
       return r.json() as Promise<T>;
     });

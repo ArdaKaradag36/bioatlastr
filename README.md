@@ -6,6 +6,7 @@ Bu depo, başkalarının kendi bilgisayarında kurup çalıştırması için bir
 Arda Karadağ ve Buse Menekşe’nin projesinin **kamuya açık çıktısıdır**. Kaynak kod şeffaflık içindir.
 
 **İletişim:** [karadagardaa@gmail.com](mailto:karadagardaa@gmail.com)  
+**Site:** [ardakaradag36.github.io/bioatlastr](https://ardakaradag36.github.io/bioatlastr/)  
 **GitHub:** [ArdaKaradag36/bioatlastr](https://github.com/ArdaKaradag36/bioatlastr)
 
 ---

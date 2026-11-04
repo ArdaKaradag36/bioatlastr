@@ -4,24 +4,7 @@
 /* Fonts: self-hosted subsets of Source Sans 3 / Source Serif 4 (SIL OFL 1.1),
    renamed "Atlas Sans" / "Atlas Serif". No external requests.            */
 /* ------------------------------------------------------------------ */
-@font-face { font-family: "Atlas Sans"; font-style: normal; font-weight: 200 900; font-display: swap;
-  src: url("/fonts/sans-latin.woff2") format("woff2");
-  unicode-range: U+0020-007E, U+00A0-00FF, U+2013, U+2014, U+2018, U+2019, U+201C, U+201D, U+2022, U+2026, U+2212; }
-@font-face { font-family: "Atlas Sans"; font-style: normal; font-weight: 200 900; font-display: swap;
-  src: url("/fonts/sans-tr.woff2") format("woff2");
-  unicode-range: U+011E, U+011F, U+0130, U+0131, U+015E, U+015F; }
-@font-face { font-family: "Atlas Sans"; font-style: italic; font-weight: 200 900; font-display: swap;
-  src: url("/fonts/sans-italic-latin.woff2") format("woff2");
-  unicode-range: U+0020-007E, U+00A0-00FF, U+2013, U+2014, U+2018, U+2019, U+201C, U+201D, U+2022, U+2026, U+2212; }
-@font-face { font-family: "Atlas Sans"; font-style: italic; font-weight: 200 900; font-display: swap;
-  src: url("/fonts/sans-italic-tr.woff2") format("woff2");
-  unicode-range: U+011E, U+011F, U+0130, U+0131, U+015E, U+015F; }
-@font-face { font-family: "Atlas Serif"; font-style: normal; font-weight: 200 900; font-display: swap;
-  src: url("/fonts/serif-latin.woff2") format("woff2");
-  unicode-range: U+0020-007E, U+00A0-00FF, U+2013, U+2014, U+2018, U+2019, U+201C, U+201D, U+2022, U+2026, U+2212; }
-@font-face { font-family: "Atlas Serif"; font-style: normal; font-weight: 200 900; font-display: swap;
-  src: url("/fonts/serif-tr.woff2") format("woff2");
-  unicode-range: U+011E, U+011F, U+0130, U+0131, U+015E, U+015F; }
+/* @font-face lives in layout.tsx so GitHub Pages can prefix /bioatlastr. */
 
 /* ------------------------------------------------------------------ */
 /* Colour tokens: forest / leaf greens, sage background, a little blue.  */
