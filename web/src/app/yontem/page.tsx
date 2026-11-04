@@ -1,18 +1,31 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Card, PageTitle, SectionTitle } from "@/components/ui";
+import Term from "@/components/Term";
+import { Card, PageIntro, PageTitle, Purpose } from "@/components/ui";
 import { getMeta, getStats, getTaxonNames } from "@/lib/data.server";
 import { DROP_REASONS, num, pct } from "@/lib/format";
 
 export const metadata: Metadata = { title: "Yöntem ve sınırlılıklar" };
 
 function stepLabel(step: string): string {
-  if (step === "raw_records") return "ENA'dan gelen ham kayıt (marker sınıflandırması sonrası)";
+  if (step === "raw_records") return "ENA'dan gelen ham kayıt (barkod bölgesi sınıflandırması sonrası)";
   if (step === "name_matched") return "Türkiye florası adıyla eşleşen kayıt";
   if (step === "kept") return "Tutulan dizi (nihai)";
   if (step === "kept_from_turkey") return "…bunlardan Türkiye örneği";
   const reason = step.replace("dropped:", "");
   return `Atılan: ${DROP_REASONS[reason] ?? reason}`;
+}
+
+function Section({ id, title, children, open = false }: { id: string; title: string; children: React.ReactNode; open?: boolean }) {
+  return (
+    <details id={id} open={open} className="group mt-4 scroll-mt-24 rounded-2xl border border-stone-200 bg-white shadow-card">
+      <summary className="flex min-h-14 items-center justify-between gap-3 rounded-2xl px-5 py-3 font-serif text-xl font-semibold text-stone-900">
+        {title}
+        <span aria-hidden className="text-link transition group-open:rotate-180">▾</span>
+      </summary>
+      <div className="space-y-3 px-5 pb-5 text-stone-800">{children}</div>
+    </details>
+  );
 }
 
 export default function MethodPage() {
@@ -31,10 +44,28 @@ export default function MethodPage() {
   const cell = (m: string, step: string) => stats.filter_summary.find((r) => r.marker === m && r.step === step)?.count;
 
   return (
-    <div className="prose-custom max-w-3xl">
-      <PageTitle title="Yöntem ve sınırlılıklar">
-        Rakamların nereden geldiği, hangi filtrelerin uygulandığı ve sonuçlara ne kadar güvenilebileceği.
+    <div className="max-w-4xl">
+      <PageTitle eyebrow="Yöntem" title="Yöntem ve sınırlar">
+        Rakamlar nereden geliyor, nasıl hesaplandı ve sonuçlara ne kadar güvenilebilir? Önce kısa özeti okuyun; ayrıntılar aşağıdaki başlıkların içinde.
       </PageTitle>
+      <PageIntro
+        what={<p>Sitedeki sayıların, ağaçların ve yüzdelerin nasıl üretildiğini; hangi verilerin kullanıldığını, hangilerinin elendiğini ve yöntemin sınırlarını.</p>}
+        how={<p>Kısa özet herkes içindir. Başlıklara tıklayınca açılan bölümler, yöntemi ayrıntısıyla anlatır ve biyologlar için gerekli teknik bilgileri verir. Anlamadığınız sözcük için <Link className="font-medium text-accent underline" href="/sozluk">Sözlük</Link>.</p>}
+      />
+
+      <Card className="mb-6">
+        <h2 className="mb-2 font-serif text-2xl font-semibold">Kısaca: ne yaptık?</h2>
+        <ol className="list-decimal space-y-2 pl-5 text-stone-800">
+          <li><strong>Tür listesini aldık.</strong> Türkiye&apos;de doğal olarak yetişen bitki türleri, Kew&apos;in <Term id="wcvp">WCVP</Term> listesinden geldi.</li>
+          <li><strong>DNA dizilerini topladık.</strong> Bilim insanlarının <Term id="ena">ENA</Term> arşivine yüklediği, üç <Term id="barkod-bolgesi">barkod bölgesine</Term> ait dizileri indirdik; tür adı belirsiz, çok kısa ya da kalitesiz kayıtları eledik.</li>
+          <li><strong>Dizileri karşılaştırdık.</strong> Dizileri <Term id="hizalama">hizaladık</Term>, her iki dizi arasındaki farkı (<Term id="p-mesafesi">p-mesafesi</Term>) ölçtük ve benzerliğe göre <Term id="filogenetik-agac">akrabalık ağaçları</Term> çizdik.</li>
+          <li><strong>Başarıyı ölçtük.</strong> Her dizinin <Term id="en-yakin-komsu">en yakın komşusu</Term> aynı türdense, o barkod o dizi için türü ayırt edebilmiş sayıldı.</li>
+          <li><strong>Eksikleri not ettik.</strong> Hiç dizisi olmayan türleri <Term id="veri-boslugu">veri boşluğu</Term> olarak işaretledik.</li>
+        </ol>
+        <p className="mt-3 rounded-lg bg-amber-50 p-3 text-amber-900">
+          <strong>Bu bir araştırma çalışmasıdır.</strong> Sonuçlar tahmin niteliğindedir, bir uzman tarafından doğrulanmamıştır ve bilimsel ya da ticari karar için kullanılmamalıdır.
+        </p>
+      </Card>
 
       {meta.max_species !== null || meta.families.length > 0 ? (
         <div className="mb-6 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
@@ -46,20 +77,20 @@ export default function MethodPage() {
       ) : null}
 
       <Card>
-        <h2 className="mb-2 text-lg font-semibold text-stone-800">Sonuçları okurken bilinmesi gerekenler</h2>
-        <ul className="list-disc space-y-2 pl-5 text-stone-700">
+        <h2 className="mb-2 font-serif text-2xl font-semibold text-stone-900">Sonuçları okurken bilinmesi gerekenler</h2>
+        <ul className="list-disc space-y-2 pl-5 text-stone-800">
           <li>
-            <strong>Başarı yalnızca en az 2 dizisi olan türlerde ölçülür:</strong>{" "}
+            <strong>Başarı yalnızca birden çok dizisi olan türlerde ölçülür:</strong>{" "}
             {markers.map((m, i) => (
               <span key={m}>
                 {i > 0 && "; "}
                 {m}: {num(stats.markers[m].discrimination.species_evaluated)} tür
               </span>
             ))}{" "}
-            ({num(stats.totals.species)} türün çoğunda bu koşul sağlanmaz). Tek dizisi olan türler başarı oranına girmez.
+            ({num(stats.totals.species)} türün büyük bölümünde bu koşul sağlanmaz). Tek dizisi olan türler başarı oranına girmez; çünkü bir dizinin en yakın komşusu aynı türden olamaz.
           </li>
           <li>
-            <strong>Büyük aileler cinslere bölündü:</strong> bir markerde {num(meta.max_group_sequences)} diziden fazlası olan
+            <strong>Büyük aileler cinslere bölündü:</strong> bir barkod bölgesinde {num(meta.max_group_sequences)} diziden fazlası olan
             aileler (ör. Asteraceae, Fabaceae, Poaceae) cins cins analiz edildi; cins içi karşılaştırma ailenin tamamına göre
             daha kolaydır, başarı olduğundan iyimser olabilir.
           </li>
@@ -73,14 +104,14 @@ export default function MethodPage() {
             diziler ENA&apos;dan {sq?.retrieved ?? "?"} tarihinde alındı.
           </li>
           <li>
-            <strong>Yöntem:</strong> p-mesafesine dayalı en yakın komşu (best close match); hizalama{" "}
+            <strong>Yöntem:</strong> p-mesafesine dayalı <Term id="en-yakin-komsu">en yakın komşu</Term> yöntemi; hizalama{" "}
             <strong>{meta.aligner_label}</strong> ile yapıldı.
           </li>
         </ul>
       </Card>
 
-      <SectionTitle>1. Veri kaynakları</SectionTitle>
-      <ul className="list-disc space-y-2 pl-6 text-stone-700">
+      <Section id="kaynaklar" title="1. Veri kaynakları">
+      <ul className="list-disc space-y-2 pl-6 text-stone-800">
         <li>
           <strong>Tür listesi — WCVP</strong> (World Checklist of Vascular Plants, Royal Botanic Gardens, Kew).{" "}
           {sp ? (
@@ -98,7 +129,7 @@ export default function MethodPage() {
           {sq ? (
             <>
               Veri alma tarihi: <strong>{sq.retrieved}</strong>. {num(sq.genera_queried)} cins sorgulandı
-              (cins → ENA takson numarası; <code>tax_tree</code> sorgusu), {num(sq.genera_unresolved.length)} cins ENA
+              (cins → ENA takson numarası; <code className="rounded bg-stone-100 px-1">tax_tree</code> sorgusu), {num(sq.genera_unresolved.length)} cins ENA
               taksonomisinde bulunamadı (çoğu eş ad olan cins adlarıdır; kabul edilmiş cinslerden{" "}
               {num(sq.accepted_genera_without_ena_taxon?.length ?? 0)} tanesi bulunamadı).
             </>
@@ -110,29 +141,33 @@ export default function MethodPage() {
         </li>
       </ul>
 
-      <SectionTitle>2. Ad eşleştirme</SectionTitle>
-      <ul className="list-disc space-y-2 pl-6 text-stone-700">
+</Section>
+
+      <Section id="ad-eslestirme" title="2. Ad eşleştirme">
+      <ul className="list-disc space-y-2 pl-6 text-stone-800">
         <li>
           Kayıttaki bilimsel ad (alt türler/varyeteler cins + tür adına indirgenir) önce WCVP kabul edilmiş adıyla,
           sonra WCVP eş adlarıyla eşleştirilir; eş ad tek bir kabul edilmiş Türkiye türüne gidiyorsa kullanılır, birden
           fazlasına gidiyorsa <em>belirsiz</em> sayılıp atılır.
         </li>
         <li>
-          Eşleşmeyen adlar atılır ve <code>data/unmatched_names.csv</code> dosyasına yazılır
+          Eşleşmeyen adlar atılır ve <code className="rounded bg-stone-100 px-1">data/unmatched_names.csv</code> dosyasına yazılır
           ({num(stats.unmatched_names_total)} farklı ad).
         </li>
         <li>
-          <em>sp.</em>, <em>cf.</em>, <em>aff.</em>, melez (×) ve <code>UNVERIFIED</code> kayıtları ile &quot;Cins tür&quot;
+          <em>sp.</em>, <em>cf.</em>, <em>aff.</em>, melez (×) ve <code className="rounded bg-stone-100 px-1">UNVERIFIED</code> kayıtları ile &quot;Cins tür&quot;
           biçiminde olmayan adlar atılır.
         </li>
       </ul>
 
-      <SectionTitle>3. Kalite filtreleri</SectionTitle>
-      <div className="overflow-x-auto rounded-xl border border-stone-200 bg-white">
-        <table className="w-full text-sm">
+</Section>
+
+      <Section id="filtreler" title="3. Kalite filtreleri">
+      <div tabIndex={0} className="overflow-x-auto rounded-xl border border-stone-200 bg-white">
+        <table className="w-full text-[0.95rem]">
           <thead className="bg-stone-50 text-left text-stone-600">
             <tr>
-              <th className="p-3">Marker</th>
+              <th className="p-3">Barkod bölgesi</th>
               <th className="p-3 text-right">En az uzunluk (bp)</th>
               <th className="p-3 text-right">En çok uzunluk (bp)</th>
               <th className="p-3 text-right">En çok N oranı</th>
@@ -150,9 +185,9 @@ export default function MethodPage() {
           </tbody>
         </table>
       </div>
-      <ul className="mt-4 list-disc space-y-2 pl-6 text-stone-700">
+      <ul className="mt-4 list-disc space-y-2 pl-6 text-stone-800">
         <li>Aralık bölgeleri (ör. atpB-rbcL), tüm genom/plastom kayıtları ve sözde genler atılır; çok uzun kayıtlar elenir.</li>
-        <li>Birden fazla markeri aynı kayıtta taşıyan kayıtlar atılır.</li>
+        <li>Birden fazla barkod bölgesini aynı kayıtta taşıyan kayıtlar atılır.</li>
         <li>
           Aynı dizinin en çok {num(meta.max_identical_copies)} kopyası tutulur (yakın tekrar sınırı); tür ve marker başına en
           çok {num(meta.max_sequences_per_species_marker)} dizi tutulur, Türkiye örnekleri öncelikli, sonra farklı ve uzun diziler.
@@ -162,8 +197,8 @@ export default function MethodPage() {
       {summaryMarkers.length > 0 && (
         <>
           <h3 className="mb-2 mt-6 text-lg font-semibold">Kayıt sayıları: ham / atılan / tutulan</h3>
-          <div className="overflow-x-auto rounded-xl border border-stone-200 bg-white">
-            <table className="w-full text-sm">
+          <div tabIndex={0} className="overflow-x-auto rounded-xl border border-stone-200 bg-white">
+            <table className="w-full text-[0.95rem]">
               <thead className="bg-stone-50 text-left text-stone-600">
                 <tr>
                   <th className="p-3">Adım</th>
@@ -185,10 +220,11 @@ export default function MethodPage() {
         </>
       )}
 
+</Section>
+
       {tn && (
-        <>
-          <SectionTitle>Türkçe adlar</SectionTitle>
-          <ul className="list-disc space-y-2 pl-6 text-stone-700">
+        <Section id="turkce-adlar" title="Türkçe adlar">
+          <ul className="list-disc space-y-2 pl-6 text-stone-800">
             <li>
               Türkçe adlar <strong>elle yazılmamıştır</strong>; yalnızca açık kaynaklardan alınmıştır:{" "}
               {tn.sources.join(", ")}. Her ad, geldiği kaynağa bağlantıyla birlikte tür sayfasında gösterilir. Latince adla aynı olan
@@ -206,7 +242,7 @@ export default function MethodPage() {
             </li>
             <li>
               <strong>Adlar bir uzman tarafından doğrulanmamıştır</strong> (kaynaklar arası tutarsızlık, Latince harfsiz yazımlar ve
-              hatalı eşleşmeler olabilir). Biyolog doğrulaması için <code>exports/</code> klasöründeki şablon kullanılır.
+              hatalı eşleşmeler olabilir). Biyolog doğrulaması için <code className="rounded bg-stone-100 px-1">exports/</code> klasöründeki şablon kullanılır.
             </li>
             <li>
               <strong>Ortak adlar belirsiz olabilir:</strong> aynı Türkçe ad (ör. &quot;kekik&quot;) birden çok türe verilebilir;
@@ -218,17 +254,17 @@ export default function MethodPage() {
               lisansı belirtmediği için bu kaynak <em>kullanılmamıştır</em>.
             </li>
           </ul>
-        </>
+        </Section>
       )}
 
-      <SectionTitle>4. Hizalama, mesafe ve ağaç</SectionTitle>
-      <ul className="list-disc space-y-2 pl-6 text-stone-700">
+      <Section id="hizalama" title="4. Hizalama, mesafe ve ağaç">
+      <ul className="list-disc space-y-2 pl-6 text-stone-800">
         <li>
           Hizalama yöntemi: <strong>{meta.aligner_label}</strong>
           {meta.aligner === "mafft" ? " (MAFFT --auto, ters yönlü diziler otomatik düzeltilir)." : " — MAFFT bulunamadığı için Biopython tabanlı yedek yöntem; tüm sonuçlar ön sonuçtur."}
         </li>
         <li>
-          Her <em>aile</em> ve marker için ayrı hizalama yapılır; bir ailenin bir markerde {num(meta.max_group_sequences)}
+          Her <em>aile</em> ve barkod bölgesi için ayrı hizalama yapılır; bir ailenin bir barkod bölgesinde {num(meta.max_group_sequences)}
           diziden fazlası varsa aile <em>cins cins</em> analiz edilir. Bir grupta {num(meta.min_group_sequences)}&apos;ten az
           dizi ya da tek tür varsa grup atlanır ve kaydedilir ({num(stats.groups_skipped)} grup atlandı,{" "}
           {num(stats.groups_analysed)} grup analiz edildi).
@@ -239,22 +275,26 @@ export default function MethodPage() {
         </li>
       </ul>
 
-      <SectionTitle>5. Ayırt etme başarısı nasıl ölçülür?</SectionTitle>
-      <p className="text-stone-700">
+</Section>
+
+      <Section id="olcum" title="5. Ayırt etme başarısı nasıl ölçülür?">
+      <p className="text-stone-800">
         <strong>&quot;En yakın eşleşme&quot; (best close match)</strong>: en az 2 dizisi olan türlerin her dizisi için, kendisi
         dışındaki tüm dizilerle p-mesafesine bakılır. <strong>Başarılı:</strong> en yakın komşu aynı tür;{" "}
         <strong>belirsiz:</strong> eşitlik; <strong>başarısız:</strong> en yakın komşu başka tür.
       </p>
-      <p className="mt-3 text-stone-700">
-        <strong>Marker kombinasyonları</strong> tür düzeyinde değerlendirilir: türün kendi içindeki en küçük mesafesi,
+      <p className="mt-3 text-stone-800">
+        <strong>Barkod bölgesi kombinasyonları</strong> tür düzeyinde değerlendirilir: türün kendi içindeki en küçük mesafesi,
         başka bir türe olan en küçük mesafeden küçükse başarılıdır; kombinasyon mesafesi, iki türün birlikte verisi olan
-        markerların mesafe ortalamasıdır. Mesafesi 0 olan tür çiftleri ve her türün en yakın {num(meta.n_nearest)} akrabası
+        barkod bölgelerinin mesafe ortalamasıdır. Mesafesi 0 olan tür çiftleri ve her türün en yakın {num(meta.n_nearest)} akrabası
         ayrıca verilir.
       </p>
 
-      <SectionTitle>6. Bilinen riskler ve sınırlılıklar</SectionTitle>
+</Section>
+
+      <Section id="sinirlar" title="6. Bilinen riskler ve sınırlılıklar" open>
       <Card>
-        <ul className="list-disc space-y-3 pl-5 text-stone-700">
+        <ul className="list-disc space-y-3 pl-5 text-stone-800">
           <li>
             <strong>Hatalı tanımlanmış kayıtlar.</strong> INSDC kayıtlarının tür adı yükleyen kişiye güvenilerek kabul
             edilir; doğrulanmaz. Yanlış adlandırılmış diziler başarıyı düşürebilir ya da olduğundan iyi gösterebilir.
@@ -285,11 +325,18 @@ export default function MethodPage() {
         </ul>
       </Card>
 
-      <SectionTitle>7. Verinin üretimi</SectionTitle>
-      <p className="text-stone-700">
+</Section>
+
+      <Section id="uretim" title="7. Verinin üretimi">
+      <p className="text-stone-800">
         Veri <strong>{generated}</strong> tarihinde, boru hattı sürümü {meta.pipeline_version} ile üretilmiştir. Komutlar{" "}
-        <code>README.md</code>, CSV özetleri <code>results/</code> klasöründedir.
+        <code className="rounded bg-stone-100 px-1">README.md</code>, CSV özetleri <code className="rounded bg-stone-100 px-1">results/</code> klasöründedir.
       </p>
+      </Section>
+
+      <Purpose>
+        Yöntemi açık göstermek: bir sonucun nasıl çıktığını, nelere dayandığını ve nerede yanılabileceğini herkesin görebilmesi. Eksik ya da hatalı bir şey görürseniz <Link className="font-medium text-on-dark underline" href="/kaynaklar">Kaynaklar</Link> sayfasındaki iletişim yoluyla bildirin.
+      </Purpose>
     </div>
   );
 }

@@ -1,17 +1,30 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Header from "@/components/Header";
+import { Logo } from "@/components/Icons";
 import { getMeta } from "@/lib/data.server";
+import { PROJECT_FUNDING, PROJECT_TITLE } from "@/lib/site";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "Türkiye Bitki DNA Barkod Atlası",
-    template: "%s · Türkiye Bitki DNA Barkod Atlası",
+    default: PROJECT_TITLE,
+    template: `%s · ${PROJECT_TITLE}`,
   },
   description:
-    "Kısa DNA barkod bölgeleri (rbcL, matK, ITS) Türkiye'de yetişen bitki türlerini birbirinden ayırmaya yeter mi? Herkese açık verilerle hazırlanmış bir araştırma atlası.",
+    "Kısa DNA barkod bölgeleri (rbcL, matK, ITS) Türkiye'de yetişen bitki türlerini birbirinden ayırmaya yeter mi? Herkese açık verilerle hazırlanmış, herkesin anlayabileceği bir araştırma atlası.",
 };
+
+const FOOT = [
+  { href: "/", label: "Ana Sayfa" },
+  { href: "/turler", label: "Türler" },
+  { href: "/agaclar", label: "Ağaçlar" },
+  { href: "/veri-bosluklari", label: "Veri boşlukları" },
+  { href: "/dizi-ara", label: "Dizi ara" },
+  { href: "/sozluk", label: "Sözlük" },
+  { href: "/yontem", label: "Yöntem ve sınırlar" },
+  { href: "/kaynaklar", label: "Kaynaklar ve lisanslar" },
+];
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const meta = getMeta();
@@ -22,30 +35,44 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   });
   return (
     <html lang="tr">
+      <head>
+        <link rel="preload" href="/fonts/sans-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/serif-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+      </head>
       <body className="flex min-h-screen flex-col">
+        <a href="#icerik" className="skip-link">Ana içeriğe geç</a>
         <Header />
-        <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6">{children}</main>
-        <footer className="border-t border-stone-200 bg-white">
-          <div className="mx-auto max-w-6xl px-4 py-6 text-sm text-stone-500 sm:px-6">
-            <p>
-              TÜBİTAK kapsamında bir üniversite öğrenci araştırma projesi. Veri kaynakları:{" "}
-              <a className="underline hover:text-emerald-700" href="https://powo.science.kew.org" target="_blank" rel="noreferrer">
-                WCVP (Kew)
-              </a>{" "}
-              ve{" "}
-              <a
-                className="underline hover:text-emerald-700"
-                href="https://www.ebi.ac.uk/ena/browser/home"
-                target="_blank"
-                rel="noreferrer"
-              >
-                ENA (INSDC)
-              </a>
-              . Veriler son güncelleme: {date}.
-            </p>
-            <p className="mt-1">
-              Araştırma amaçlıdır; tahmin niteliğindedir, uzman doğrulaması yoktur. Atıf, lisans ve iletişim: <Link className="underline hover:text-emerald-700" href="/kaynaklar">Kaynaklar ve lisanslar</Link>.
-            </p>
+        <main id="icerik" className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 sm:py-10">{children}</main>
+        <footer className="mt-10 bg-forest text-on-dark">
+          <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-[1.4fr_1fr]">
+            <div>
+              <div className="mb-3 flex items-center gap-3">
+                <Logo size={34} />
+                <span className="font-serif text-lg font-bold">{PROJECT_TITLE}</span>
+              </div>
+              <p className="max-w-xl text-sm leading-relaxed text-snow/85">
+                Bu site, kısa DNA barkodlarının Türkiye&apos;deki bitki türlerini birbirinden ayırmaya yetip yetmediğini herkes için anlaşılır biçimde
+                gösteren bir üniversite öğrenci araştırma projesidir. {PROJECT_FUNDING}
+              </p>
+              <p className="mt-3 max-w-xl rounded-lg bg-snow/10 p-3 text-sm leading-relaxed text-snow/90">
+                <strong>Sorumluluk reddi:</strong> Araştırma amaçlıdır; sonuçlar tahmin niteliğindedir, uzman doğrulaması yoktur ve bilimsel ya da
+                ticari karar için kullanılmamalıdır.
+              </p>
+            </div>
+            <div>
+              <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-snow/70">Sayfalar</p>
+              <ul className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
+                {FOOT.map((l) => (
+                  <li key={l.href}><Link className="inline-block py-1 text-snow underline-offset-4 hover:underline" href={l.href}>{l.label}</Link></li>
+                ))}
+              </ul>
+              <p className="mt-4 text-sm text-snow/80">
+                Veri kaynakları:{" "}
+                <a className="text-snow underline" href="https://powo.science.kew.org" target="_blank" rel="noreferrer">WCVP (Kew)</a> ve{" "}
+                <a className="text-snow underline" href="https://www.ebi.ac.uk/ena/browser/home" target="_blank" rel="noreferrer">ENA (INSDC)</a>.
+                Lisanslar ve atıf: <Link className="text-snow underline" href="/kaynaklar">Kaynaklar ve lisanslar</Link>. Veriler son güncelleme: {date}.
+              </p>
+            </div>
           </div>
         </footer>
       </body>

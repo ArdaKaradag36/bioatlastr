@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Card, PageTitle, SectionTitle } from "@/components/ui";
+import Term from "@/components/Term";
+import { Card, PageIntro, PageTitle, Purpose, SectionTitle } from "@/components/ui";
 import { getMeta, getTaxonNames } from "@/lib/data.server";
 import { num } from "@/lib/format";
 import { CONTACT_EMAIL, PROJECT_TITLE, REPO_URL } from "@/lib/site";
@@ -24,16 +25,20 @@ export default function SourcesPage() {
       <PageTitle title="Kaynaklar ve lisanslar">
         Sitedeki her verinin nereden geldiği, lisansı ve güvenilirlik düzeyi.
       </PageTitle>
+      <PageIntro
+        what={<p>Bu sitedeki tür listesinin, DNA dizilerinin ve Türkçe adların hangi kaynaklardan geldiğini, bu kaynakların lisanslarını ve nasıl anılması gerektiğini.</p>}
+        how={<p>Her kaynağın yanında lisansı yazılıdır. Kısaltmalar (<Term id="wcvp">WCVP</Term>, <Term id="ena">ENA</Term>, <Term id="insdc">GenBank/INSDC</Term>) için Sözlük&apos;e bakabilirsiniz. Kaldırma ya da düzeltme isteği için sayfanın altındaki iletişim adresini kullanın.</p>}
+      />
 
       <SectionTitle>Tür listesi ve diziler</SectionTitle>
-      <ul className="list-disc space-y-2 pl-6 text-stone-700">
+      <ul className="list-disc space-y-2 pl-6 text-stone-800">
         <li>
           <strong>WCVP — World Checklist of Vascular Plants (Royal Botanic Gardens, Kew)</strong>: tür listesi, eş adlar, yayılış.
-          Dosya tarihi {wcvp?.wcvp_file_date ?? "?"}. Lisans: CC BY 3.0 (Kew’in dağıttığı README_WCVP dosyasında belirtilmiştir). <a className="text-emerald-800 underline" href="https://powo.science.kew.org/" target="_blank" rel="noreferrer">powo.science.kew.org</a>
+          Dosya tarihi {wcvp?.wcvp_file_date ?? "?"}. Lisans: CC BY 3.0 (Kew’in dağıttığı README_WCVP dosyasında belirtilmiştir). <a className="text-link underline" href="https://powo.science.kew.org/" target="_blank" rel="noreferrer">powo.science.kew.org</a>
         </li>
         <li>
           <strong>ENA — European Nucleotide Archive (EMBL-EBI, INSDC)</strong>: DNA dizileri; kayıtlar INSDC politikası gereği kullanım kısıtı olmadan sunulur; özgün gönderime erişim numarasıyla atıf yapılır.
-          Alım tarihi {ena?.retrieved ?? "?"}. <a className="text-emerald-800 underline" href="https://www.ebi.ac.uk/ena" target="_blank" rel="noreferrer">ebi.ac.uk/ena</a>
+          Alım tarihi {ena?.retrieved ?? "?"}. <a className="text-link underline" href="https://www.ebi.ac.uk/ena" target="_blank" rel="noreferrer">ebi.ac.uk/ena</a>
         </li>
       </ul>
 
@@ -52,7 +57,7 @@ export default function SourcesPage() {
           <tbody>
             {tn?.sources_info.map((s) => (
               <tr key={s.label} className="border-b border-stone-100 align-top">
-                <td className="p-2"><a className="text-emerald-800 underline" href={s.url} target="_blank" rel="noreferrer">{s.label}</a></td>
+                <td className="p-2"><a className="text-link underline" href={s.url} target="_blank" rel="noreferrer">{s.label}</a></td>
                 <td className="p-2" title={TIER[s.tier]}>{s.tier}</td>
                 <td className="p-2">{s.license_class === "open" ? "açık" : "ticari olmayan"}</td>
                 <td className="p-2 text-stone-600">{s.license}</td>
@@ -62,7 +67,7 @@ export default function SourcesPage() {
           </tbody>
         </table>
       </Card>
-      <ul className="mt-4 list-disc space-y-2 pl-6 text-stone-700">
+      <ul className="mt-4 list-disc space-y-2 pl-6 text-stone-800">
         <li>
           <strong>Dışlananlar (C düzeyi):</strong> deniz türü kayıtları (WoRMS, WRiMS), DAISIE ve bir demiryolu projesinin çevresel etki
           değerlendirmesi veri seti sitede kullanılmaz ({num(tn?.excluded_rows ?? 0)} ad kaydı); lisansları ve uygunlukları belirsizdir.
@@ -75,7 +80,7 @@ export default function SourcesPage() {
       </ul>
 
       <SectionTitle>Atıf ve lisans</SectionTitle>
-      <div className="max-w-3xl space-y-3 text-stone-700">
+      <div className="max-w-3xl space-y-3 text-stone-800">
         <p>
           <strong>Bu sitenin kodu</strong> MIT lisanslıdır. <strong>Türetilmiş veri tabloları</strong> (kapsam, ayırt edilebilirlik sonuçları, dışa aktarımlar)
           kaynak veri sağlayıcılarına atıf yapılması koşuluyla CC BY 4.0 altında; <strong>Türkçe ad tablosu</strong> ve Türkçe ad içeren dışa aktarımlar CC BY-SA 4.0 altındadır.
@@ -109,12 +114,15 @@ export default function SourcesPage() {
         </p>
         <p>
           <strong>Kaldırma ve iletişim:</strong> Bu sitede haklarınızı ihlal ettiğini düşündüğünüz bir içerik varsa ya da bir düzeltme istiyorsanız
-          {" "}<a className="text-emerald-800 underline" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>{" "}adresine yazın; içerik incelenir ve gerekirse gecikmeden kaldırılır.
+          {" "}<a className="text-link underline" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>{" "}adresine yazın; içerik incelenir ve gerekirse gecikmeden kaldırılır.
         </p>
         <p>
           <strong>Gizlilik:</strong> Site çerez, analiz aracı ya da izleyici kullanmaz. Örnek toplayıcı adları, gönderen adları ve iletişim bilgileri yayımlanmaz.
         </p>
       </div>
+      <Purpose>
+        Verinin kaynağını ve lisansını açıkça belirtmek; bu çalışmanın kimlerin emeğine dayandığını göstermek ve kullanan herkesin doğru atıf yapabilmesini sağlamak.
+      </Purpose>
     </div>
   );
 }

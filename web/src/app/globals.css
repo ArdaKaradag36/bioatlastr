@@ -1,32 +1,167 @@
 @import "tailwindcss";
 
-@theme inline {
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-}
+/* ------------------------------------------------------------------ */
+/* Fonts: self-hosted subsets of Source Sans 3 / Source Serif 4 (SIL OFL 1.1),
+   renamed "Atlas Sans" / "Atlas Serif". No external requests.            */
+/* ------------------------------------------------------------------ */
+@font-face { font-family: "Atlas Sans"; font-style: normal; font-weight: 200 900; font-display: swap;
+  src: url("/fonts/sans-latin.woff2") format("woff2");
+  unicode-range: U+0020-007E, U+00A0-00FF, U+2013, U+2014, U+2018, U+2019, U+201C, U+201D, U+2022, U+2026, U+2212; }
+@font-face { font-family: "Atlas Sans"; font-style: normal; font-weight: 200 900; font-display: swap;
+  src: url("/fonts/sans-tr.woff2") format("woff2");
+  unicode-range: U+011E, U+011F, U+0130, U+0131, U+015E, U+015F; }
+@font-face { font-family: "Atlas Sans"; font-style: italic; font-weight: 200 900; font-display: swap;
+  src: url("/fonts/sans-italic-latin.woff2") format("woff2");
+  unicode-range: U+0020-007E, U+00A0-00FF, U+2013, U+2014, U+2018, U+2019, U+201C, U+201D, U+2022, U+2026, U+2212; }
+@font-face { font-family: "Atlas Sans"; font-style: italic; font-weight: 200 900; font-display: swap;
+  src: url("/fonts/sans-italic-tr.woff2") format("woff2");
+  unicode-range: U+011E, U+011F, U+0130, U+0131, U+015E, U+015F; }
+@font-face { font-family: "Atlas Serif"; font-style: normal; font-weight: 200 900; font-display: swap;
+  src: url("/fonts/serif-latin.woff2") format("woff2");
+  unicode-range: U+0020-007E, U+00A0-00FF, U+2013, U+2014, U+2018, U+2019, U+201C, U+201D, U+2022, U+2026, U+2212; }
+@font-face { font-family: "Atlas Serif"; font-style: normal; font-weight: 200 900; font-display: swap;
+  src: url("/fonts/serif-tr.woff2") format("woff2");
+  unicode-range: U+011E, U+011F, U+0130, U+0131, U+015E, U+015F; }
 
+/* ------------------------------------------------------------------ */
+/* Colour tokens: forest / leaf greens, sage background, a little blue.  */
+/* Light = default, dark = prefers-color-scheme: dark                    */
+/* ------------------------------------------------------------------ */
 :root {
   color-scheme: light;
+  --bg: #eef3ea;          /* soft sage page background */
+  --surface: #fbfcf8;     /* off-white cards */
+  --forest: #0f3d24;      /* deep forest green (hero, footer) */
+  --forest-2: #1b5a35;
+  --leaf: #3d9a55;        /* fresh leaf green (decorative) */
+  --primary: #1f6b3a;     /* buttons */
+  --primary-hover: #17552d;
+  --link: #17653a;        /* links and green text */
+  --accent: #1d5f9f;      /* blue accent: info, tree lines, secondary chart colour */
+  --accent-soft: #e4eff9;
+  --accent-line: #a9c8e6;
+  --focus: #1d5f9f;
+  --st-50: #f3f7f0; --st-100: #e7eee2; --st-200: #d3dfcc; --st-300: #b4c5ad; --st-400: #8da088;
+  --st-500: #4f624d; --st-600: #3f503d; --st-700: #2f3d2e; --st-800: #1f2b1f; --st-900: #101c10;
+  --em-50: #e7f4e9; --em-100: #d2ebd7; --em-200: #b1dcb9; --em-400: #4aa866; --em-600: #2c8a50;
+  --am-50: #fff6dc; --am-100: #fbe9ad; --am-300: #e5c25a; --am-800: #6b4300; --am-900: #523300;
+  --rd-50: #fdebea; --rd-100: #f8d2cf; --rd-700: #9d2820; --rd-800: #85201a;
+  --tree-line: #6d8fb3;   /* blue-grey branches */
+  --tree-hi: #c8261c;     /* selected species */
+  --tree-hi-bg: #fbe0dd;
+  --cov-zero: #c9d3c4; --cov-one: #e8b73a; --cov-two: #2f8f55;
+  --genus-l: 30%;
+  --shadow: 0 1px 2px rgb(16 28 16 / 0.06), 0 4px 14px rgb(16 28 16 / 0.06);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg: #0d1611; --surface: #15211a; --forest: #0a2415; --forest-2: #12361f; --leaf: #5cbb76;
+    --primary: #25784a; --primary-hover: #2d8c58; --link: #8fdba8;
+    --accent: #8dbdf0; --accent-soft: #14253a; --accent-line: #2c4a6e; --focus: #8dbdf0;
+    --st-50: #111c16; --st-100: #1b2a21; --st-200: #2a3b31; --st-300: #3d5246; --st-400: #6c8774;
+    --st-500: #9fb4a5; --st-600: #b4c6b9; --st-700: #c8d7cc; --st-800: #dbe6de; --st-900: #edf3ee;
+    --em-50: #15301f; --em-100: #1d3f2a; --em-200: #2a5a3b; --em-400: #4aa866; --em-600: #4cb272;
+    --am-50: #2b2410; --am-100: #3a3012; --am-300: #7a6218; --am-800: #f3d27c; --am-900: #f8e2a6;
+    --rd-50: #331614; --rd-100: #4a1f1b; --rd-700: #ffaaa1; --rd-800: #ffb9b1;
+    --tree-line: #6e92b9; --tree-hi: #ff8a7f; --tree-hi-bg: #4a1f1b;
+    --cov-zero: #3d5246; --cov-one: #d9a528; --cov-two: #4cb272;
+    --genus-l: 72%;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 4px 14px rgb(0 0 0 / 0.3);
+  }
 }
 
-html {
-  scroll-behavior: smooth;
+@theme inline {
+  --font-sans: "Atlas Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "Atlas Serif", Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+
+  --color-white: var(--surface);
+  --color-surface: var(--surface);
+  --color-page: var(--bg);
+  --color-forest: var(--forest);
+  --color-forest-2: var(--forest-2);
+  --color-leaf: var(--leaf);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-link: var(--link);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-line: var(--accent-line);
+
+  --color-stone-50: var(--st-50); --color-stone-100: var(--st-100); --color-stone-200: var(--st-200);
+  --color-stone-300: var(--st-300); --color-stone-400: var(--st-400); --color-stone-500: var(--st-500);
+  --color-stone-600: var(--st-600); --color-stone-700: var(--st-700); --color-stone-800: var(--st-800);
+  --color-stone-900: var(--st-900);
+
+  --color-emerald-50: var(--em-50); --color-emerald-100: var(--em-100); --color-emerald-200: var(--em-200);
+  --color-emerald-400: var(--em-400); --color-emerald-600: var(--em-600);
+
+  --color-amber-50: var(--am-50); --color-amber-100: var(--am-100); --color-amber-300: var(--am-300);
+  --color-amber-800: var(--am-800); --color-amber-900: var(--am-900);
+
+  --color-red-50: var(--rd-50); --color-red-100: var(--rd-100); --color-red-700: var(--rd-700); --color-red-800: var(--rd-800);
+
+  --shadow-card: var(--shadow);
+}
+
+/* white text that must stay white in dark mode (on green buttons / hero) */
+@theme inline { --color-snow: #ffffff; }
+@utility text-on-dark { color: #fff; }
+
+@layer base {
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
 
 body {
-  background: #fafaf9; /* stone-50 */
-  color: #1c1917; /* stone-900 */
+  background: var(--bg);
+  color: var(--st-800);
   font-family: var(--font-sans);
+  font-size: 1.0625rem; /* 17px: easier to read */
+  line-height: 1.6;
 }
+h1, h2, h3 { font-family: var(--font-serif); color: var(--st-900); letter-spacing: -0.01em; }
+h1 { line-height: 1.15; }
+h2, h3 { line-height: 1.25; }
+em, .latin { font-style: italic; }
+:where(a) { text-underline-offset: 3px; }
+
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+
+}
+
+.skip-link { position: absolute; left: 0.5rem; top: -4rem; z-index: 100; background: var(--primary); color: #fff; padding: 0.6rem 1rem; border-radius: 0.5rem; }
+.skip-link:focus { top: 0.5rem; }
+
+/* Soft entrance animation (only when motion is allowed) */
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: no-preference) {
+  .rise { animation: rise 0.5s ease-out both; }
+  .rise-2 { animation: rise 0.5s 0.08s ease-out both; }
+  .rise-3 { animation: rise 0.5s 0.16s ease-out both; }
+  .lift { transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease; }
+  .lift:hover { transform: translateY(-2px); }
+}
+
+/* Dotted-underlined glossary terms */
+.term { text-decoration: underline dotted; text-decoration-thickness: 2px; text-underline-offset: 4px; text-decoration-color: var(--accent); cursor: help; background: none; border: 0; padding: 0; font: inherit; color: inherit; }
+.term:hover { background: var(--accent-soft); }
 
 /* Tree viewer: keep lines thin while zooming */
-.tree-line {
-  vector-effect: non-scaling-stroke;
+.tree-line { vector-effect: non-scaling-stroke; }
+
+/* Nucleotide colours in the sequence viewer (AA contrast on both themes) */
+.nt-A { color: #15803d; }
+.nt-C { color: #1d5fa8; }
+.nt-G { color: #a24a00; }
+.nt-T { color: #b4122f; }
+.nt-N { color: var(--st-500); }
+@media (prefers-color-scheme: dark) {
+  .nt-A { color: #6ee7a0; } .nt-C { color: #8dbdf0; } .nt-G { color: #f3b46a; } .nt-T { color: #ff9aa9; }
 }
 
-/* Nucleotide colours in the sequence viewer */
-.nt-A { color: #15803d; }
-.nt-C { color: #1d4ed8; }
-.nt-G { color: #b45309; }
-.nt-T { color: #be123c; }
-.nt-N { color: #78716c; }
+details > summary { cursor: pointer; }
+details > summary::-webkit-details-marker { display: none; }

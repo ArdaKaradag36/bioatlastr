@@ -33,7 +33,7 @@ function ColoredSequence({ sequence }: { sequence: string }) {
     <pre className="max-h-96 overflow-auto rounded-lg bg-stone-50 p-3 font-mono text-xs leading-5">
       {lines.map((l) => (
         <div key={l.start}>
-          <span className="inline-block w-12 select-none pr-2 text-right text-stone-400">{l.start + 1}</span>
+          <span className="inline-block w-12 select-none pr-2 text-right text-stone-500">{l.start + 1}</span>
           {(l.text.match(new RegExp(`.{1,${GROUP}}`, "g")) ?? []).map((g, gi) => (
             <span key={gi} className="mr-2">
               {g.split("").map((c, ci) => (
@@ -61,7 +61,7 @@ export default function SequenceViewer({
   const [open, setOpen] = useState<string | null>(null);
 
   if (records.length === 0) {
-    return <p className="text-stone-500">Bu marker için filtreyi geçen dizi bulunamadı.</p>;
+    return <p className="text-stone-500">Bu barkod bölgesi için filtreyi geçen dizi bulunamadı.</p>;
   }
   const base = species.replace(/\s+/g, "_");
 
@@ -71,7 +71,7 @@ export default function SequenceViewer({
         <p className="text-sm text-stone-600">{records.length} dizi</p>
         <button
           type="button"
-          className="rounded-lg border border-emerald-600 px-3 py-1.5 text-sm font-medium text-emerald-800 hover:bg-emerald-50"
+          className="rounded-lg border border-emerald-600 px-3 py-1.5 text-sm font-medium text-link hover:bg-emerald-50"
           onClick={() => download(`${base}_${marker}.fasta`, toFasta(species, marker, records))}
         >
           Tümünü FASTA olarak indir
@@ -85,7 +85,7 @@ export default function SequenceViewer({
                 href={ncbiUrl(r.accession)}
                 target="_blank"
                 rel="noreferrer"
-                className="font-mono text-sm font-semibold text-emerald-800 underline"
+                className="font-mono text-sm font-semibold text-link underline"
               >
                 {r.accession}
               </a>

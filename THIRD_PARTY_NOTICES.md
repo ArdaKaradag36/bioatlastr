@@ -20,4 +20,14 @@ matplotlib (PSF-style), pytest (MIT); transitive `certifi` is MPL-2.0 (unmodifie
 External tool: MAFFT (BSD-style licence, not distributed here; install separately).
 
 ## Fonts, icons, images
-The site loads no web fonts and ships no images, icons or photographs other than a plain generated `favicon.ico` (a green circle drawn for this project). All text is original.
+The site self-hosts two font families (no external requests, no Google Fonts CDN), both under the **SIL Open Font License 1.1**:
+
+- **Source Sans 3** (© 2010–2020 Adobe, with Reserved Font Name "Source") — body text.
+- **Source Serif 4** (© 2014–2021 Adobe, with Reserved Font Name "Source") — headings.
+
+The variable fonts were subset (Basic Latin, Latin-1 and the Turkish letters ğ Ğ ş Ş ı İ) with fonttools and renamed "Atlas Sans" / "Atlas Serif" to respect the
+Reserved Font Name clause. Copyright notices are kept in the font files; the licence texts are in `web/public/fonts/OFL-SourceSans3.txt` and
+`web/public/fonts/OFL-SourceSerif4.txt`. Fonts are not sold on their own.
+
+The logo, icons, DNA/tree illustrations and the leaf motif are simple inline SVG/CSS shapes drawn for this project (no stock images, no photographs). The only
+other image is a plain generated `favicon.ico`. All text is original.

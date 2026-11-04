@@ -23,7 +23,7 @@ export const DISCRIMINATION: Record<
 > = {
   success: {
     label: "Ayırt edilebiliyor",
-    classes: "bg-emerald-100 text-emerald-800",
+    classes: "bg-emerald-100 text-link",
     hint: "En yakın komşu dizi aynı türe ait.",
   },
   ambiguous: {

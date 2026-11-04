@@ -99,8 +99,8 @@ export default function SpeciesSearch({ placeholder, size = "lg", family, onSele
 
   const inputClass =
     size === "lg"
-      ? "w-full rounded-2xl border border-stone-300 bg-white px-5 py-4 text-lg shadow-sm"
-      : "w-full rounded-xl border border-stone-300 bg-white px-3 py-2 text-sm";
+      ? "w-full rounded-2xl border border-stone-300 bg-white px-5 py-4 text-lg shadow-card"
+      : "w-full rounded-xl border border-stone-300 bg-white px-3 py-2.5 text-base";
 
   return (
     <div ref={box} className="relative w-full">
@@ -110,6 +110,9 @@ export default function SpeciesSearch({ placeholder, size = "lg", family, onSele
         aria-expanded={open && suggestions.length > 0}
         aria-controls={listId}
         aria-autocomplete="list"
+        aria-label="Tür ara: Latince veya Türkçe ad yazın"
+        aria-activedescendant={open && suggestions[active] ? `${listId}-opt-${active}` : undefined}
+        enterKeyHint="search"
         autoFocus={autoFocus}
         autoComplete="off"
         value={query}
@@ -133,7 +136,7 @@ export default function SpeciesSearch({ placeholder, size = "lg", family, onSele
           role="listbox"
           className="absolute left-0 right-0 z-50 mt-1 max-h-96 overflow-auto rounded-xl border border-stone-200 bg-white py-1 shadow-lg"
         >
-          {error && <li className="px-3 py-2 text-sm text-red-600">Tür listesi yüklenemedi.</li>}
+          {error && <li className="px-3 py-2 text-sm text-red-700">Tür listesi yüklenemedi.</li>}
           {!error && !index && <li className="px-3 py-2 text-sm text-stone-500">Yükleniyor…</li>}
           {index && suggestions.length === 0 && (
             <li className="px-3 py-2 text-sm text-stone-500">Eşleşen tür bulunamadı.</li>
@@ -141,6 +144,7 @@ export default function SpeciesSearch({ placeholder, size = "lg", family, onSele
           {suggestions.map((s, i) => (
             <li
               key={s.slug}
+              id={`${listId}-opt-${i}`}
               role="option"
               aria-selected={i === active}
               onMouseEnter={() => setActive(i)}
@@ -148,10 +152,10 @@ export default function SpeciesSearch({ placeholder, size = "lg", family, onSele
                 e.preventDefault();
                 choose(s);
               }}
-              className={`cursor-pointer px-3 py-2 ${i === active ? "bg-emerald-50" : ""}`}
+              className={`cursor-pointer px-3 py-2.5 ${i === active ? "bg-emerald-50" : ""}`}
             >
-              <div className="text-sm font-medium italic text-stone-900">{s.name}</div>
-              <div className="text-xs text-stone-500">
+              <div className="font-medium italic text-stone-900">{s.name}</div>
+              <div className="text-sm text-stone-600">
                 {[s.tr, s.en].filter(Boolean).join(" · ") || "Ortak ad yok"} · {s.family}
               </div>
             </li>

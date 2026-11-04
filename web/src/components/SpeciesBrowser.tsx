@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import SpeciesSearch from "./SpeciesSearch";
+import Term from "./Term";
 import { loadSpeciesIndex } from "@/lib/data.client";
 import { num } from "@/lib/format";
 import { normalize } from "@/lib/text";
@@ -44,19 +45,20 @@ export default function SpeciesBrowser({ families, markers }: { families: string
   const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const rows = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
-  const select = "rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm";
+  const select = "min-h-11 rounded-lg border border-stone-300 bg-white px-3 py-2 text-base";
 
   return (
     <div>
       <SpeciesSearch placeholder="Tür ara: Latince veya Türkçe ad (ör. Quercus, meşe)" />
 
-      <h2 className="mb-3 mt-10 text-xl font-semibold">Tüm türler</h2>
+      <h2 className="mb-3 mt-10 text-2xl font-semibold">Tüm türler</h2>
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <input
           type="search"
           value={filterText}
           onChange={(e) => setFilterText(e.target.value)}
           placeholder="Listede filtrele…"
+          aria-label="Listede filtrele"
           className={`${select} w-56`}
         />
         <select className={select} value={family} onChange={(e) => setFamily(e.target.value)} aria-label="Aile">
@@ -65,28 +67,29 @@ export default function SpeciesBrowser({ families, markers }: { families: string
             <option key={f}>{f}</option>
           ))}
         </select>
-        <select className={select} value={marker} onChange={(e) => setMarker(e.target.value)} aria-label="Marker">
-          <option value="">Herhangi bir marker</option>
+        <select className={select} value={marker} onChange={(e) => setMarker(e.target.value)} aria-label="Barkod bölgesi">
+          <option value="">Herhangi bir barkod bölgesi</option>
           {markers.map((m) => (
             <option key={m}>{m}</option>
           ))}
         </select>
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" checked={onlyWith} onChange={(e) => setOnlyWith(e.target.checked)} />
+        <label className="flex min-h-11 items-center gap-2">
+          <input type="checkbox" className="h-5 w-5" checked={onlyWith} onChange={(e) => setOnlyWith(e.target.checked)} />
           Yalnızca dizisi olanlar
         </label>
-        <span className="ml-auto text-sm text-stone-500">{index ? `${num(filtered.length)} tür` : "Yükleniyor…"}</span>
+        <span className="ml-auto text-sm text-stone-600" aria-live="polite">{index ? `${num(filtered.length)} tür` : "Yükleniyor…"}</span>
       </div>
 
-      <div className="overflow-x-auto rounded-xl border border-stone-200 bg-white">
-        <table className="w-full text-sm">
+      <div tabIndex={0} className="overflow-x-auto rounded-xl border border-stone-200 bg-white">
+        <table className="w-full text-[0.95rem]">
+          <caption className="sr-only">Türler, aileleri ve barkod bölgesi başına dizi sayıları</caption>
           <thead className="bg-stone-50 text-left text-stone-600">
             <tr>
-              <th className="p-3">Tür</th>
-              <th className="hidden p-3 sm:table-cell">Türkçe / İngilizce ad</th>
-              <th className="hidden p-3 md:table-cell">Aile</th>
+              <th scope="col" className="p-3">Tür <span className="font-normal">(<Term id="latince-ad">Latince ad</Term>)</span></th>
+              <th scope="col" className="hidden p-3 sm:table-cell"><Term id="halk-adi">Halk adı</Term></th>
+              <th scope="col" className="hidden p-3 md:table-cell"><Term id="familya">Aile</Term></th>
               {markers.map((m) => (
-                <th key={m} className="p-3 text-center">{m}</th>
+                <th scope="col" key={m} className="p-3 text-center">{m} <span className="sr-only">dizi sayısı</span></th>
               ))}
             </tr>
           </thead>
@@ -94,30 +97,30 @@ export default function SpeciesBrowser({ families, markers }: { families: string
             {rows.map((s) => (
               <tr key={s.slug} className="border-t border-stone-100 hover:bg-stone-50">
                 <td className="p-3">
-                  <Link href={`/turler/${s.slug}`} className="italic text-emerald-800 hover:underline">{s.name}</Link>
+                  <Link href={`/turler/${s.slug}`} className="italic text-link hover:underline">{s.name}</Link>
                 </td>
                 <td className="hidden p-3 text-stone-600 sm:table-cell">{[s.tr, s.en].filter(Boolean).join(" · ") || "—"}</td>
                 <td className="hidden p-3 md:table-cell">{s.family}</td>
                 {markers.map((m) => (
                   <td key={m} className="p-3 text-center">
-                    <span className={s.counts[m] > 0 ? "font-semibold text-emerald-800" : "text-stone-300"}>{s.counts[m]}</span>
+                    <span className={s.counts[m] > 0 ? "font-semibold text-link" : "text-stone-500"}>{s.counts[m]}</span>
                   </td>
                 ))}
               </tr>
             ))}
             {index && rows.length === 0 && (
-              <tr><td className="p-4 text-stone-500" colSpan={3 + markers.length}>Sonuç yok.</td></tr>
+              <tr><td className="p-4 text-stone-600" colSpan={3 + markers.length}>Sonuç yok.</td></tr>
             )}
           </tbody>
         </table>
       </div>
 
-      <div className="mt-4 flex items-center justify-between text-sm">
-        <button className="rounded-lg border border-stone-300 px-3 py-1.5 disabled:opacity-40" disabled={page === 0} onClick={() => setPage(page - 1)}>
+      <div className="mt-4 flex items-center justify-between">
+        <button className="min-h-11 rounded-lg border border-stone-300 bg-white px-4 py-2 disabled:opacity-40" disabled={page === 0} onClick={() => setPage(page - 1)}>
           ← Önceki
         </button>
         <span className="text-stone-600">Sayfa {page + 1} / {pages}</span>
-        <button className="rounded-lg border border-stone-300 px-3 py-1.5 disabled:opacity-40" disabled={page >= pages - 1} onClick={() => setPage(page + 1)}>
+        <button className="min-h-11 rounded-lg border border-stone-300 bg-white px-4 py-2 disabled:opacity-40" disabled={page >= pages - 1} onClick={() => setPage(page + 1)}>
           Sonraki →
         </button>
       </div>

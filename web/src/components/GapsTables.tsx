@@ -8,17 +8,17 @@ import { num, pct } from "@/lib/format";
 import { normalize } from "@/lib/text";
 import type { GenusRow, SpeciesIndexEntry } from "@/lib/types";
 
-const select = "rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm";
+const select = "min-h-11 rounded-lg border border-stone-300 bg-white px-3 py-2 text-base";
 const PAGE = 25;
 
 function Pager({ page, pages, setPage }: { page: number; pages: number; setPage: (n: number) => void }) {
   return (
-    <div className="mt-3 flex items-center justify-between text-sm">
-      <button className="rounded-lg border border-stone-300 px-3 py-1.5 disabled:opacity-40" disabled={page === 0} onClick={() => setPage(page - 1)}>
+    <div className="mt-3 flex items-center justify-between">
+      <button className="min-h-11 rounded-lg border border-stone-300 bg-white px-4 py-2 disabled:opacity-40" disabled={page === 0} onClick={() => setPage(page - 1)}>
         ← Önceki
       </button>
       <span className="text-stone-600">Sayfa {page + 1} / {pages}</span>
-      <button className="rounded-lg border border-stone-300 px-3 py-1.5 disabled:opacity-40" disabled={page >= pages - 1} onClick={() => setPage(page + 1)}>
+      <button className="min-h-11 rounded-lg border border-stone-300 bg-white px-4 py-2 disabled:opacity-40" disabled={page >= pages - 1} onClick={() => setPage(page + 1)}>
         Sonraki →
       </button>
     </div>
@@ -56,7 +56,7 @@ export function GeneraTable({ genera, families, markers }: { genera: GenusRow[];
           <option value="">Tüm aileler</option>
           {families.map((f) => <option key={f}>{f}</option>)}
         </select>
-        <label className="flex items-center gap-2 text-sm">
+        <label className="flex min-h-11 items-center gap-2">
           En az tür sayısı
           <input type="number" min={1} value={minSpecies} onChange={(e) => setMinSpecies(Math.max(1, Number(e.target.value) || 1))} className={`${select} w-20`} />
         </label>
@@ -64,10 +64,10 @@ export function GeneraTable({ genera, families, markers }: { genera: GenusRow[];
           <option value="share">Sırala: dizisi olan tür oranı (en düşük)</option>
           <option value="missing">Sırala: dizisi olmayan tür sayısı (en çok)</option>
         </select>
-        <span className="ml-auto text-sm text-stone-500">{num(rows.length)} cins</span>
+        <span className="ml-auto text-sm text-stone-600">{num(rows.length)} cins</span>
       </div>
-      <div className="overflow-x-auto rounded-xl border border-stone-200 bg-white">
-        <table className="w-full text-sm">
+      <div tabIndex={0} className="overflow-x-auto rounded-xl border border-stone-200 bg-white">
+        <table className="w-full text-[0.95rem]">
           <thead className="bg-stone-50 text-left text-stone-600">
             <tr>
               <th className="p-3">Cins</th>
@@ -144,31 +144,31 @@ export function MissingSpeciesTable({ families, markers, initialEndemic = false 
           <option value="">Tüm aileler</option>
           {families.map((f) => <option key={f}>{f}</option>)}
         </select>
-        <select className={select} value={marker} onChange={(e) => setMarker(e.target.value)} aria-label="Eksik marker">
-          <option value="">Hiçbir markerde dizisi yok</option>
+        <select className={select} value={marker} onChange={(e) => setMarker(e.target.value)} aria-label="Eksik barkod bölgesi">
+          <option value="">Hiçbir barkod bölgesinde dizisi yok</option>
           {markers.map((m) => <option key={m} value={m}>{m} dizisi yok</option>)}
         </select>
-        <label className="flex items-center gap-2 text-sm">
+        <label className="flex min-h-11 items-center gap-2">
           <input type="checkbox" checked={endemicOnly} onChange={(e) => { setEndemicOnly(e.target.checked); setPage(0); }} />
           Yalnızca endemikler
         </label>
-        <span className="ml-auto text-sm text-stone-500">{index ? `${num(rows.length)} tür` : "Yükleniyor…"}</span>
+        <span className="ml-auto text-sm text-stone-600">{index ? `${num(rows.length)} tür` : "Yükleniyor…"}</span>
       </div>
-      <div className="overflow-x-auto rounded-xl border border-stone-200 bg-white">
-        <table className="w-full text-sm">
+      <div tabIndex={0} className="overflow-x-auto rounded-xl border border-stone-200 bg-white">
+        <table className="w-full text-[0.95rem]">
           <thead className="bg-stone-50 text-left text-stone-600">
             <tr><th className="p-3">Tür</th><th className="hidden p-3 sm:table-cell">Türkçe ad</th><th className="p-3">Aile</th><th className="p-3">Endemik</th></tr>
           </thead>
           <tbody>
             {rows.slice(page * PAGE, (page + 1) * PAGE).map((s) => (
               <tr key={s.slug} className="border-t border-stone-100">
-                <td className="p-3"><Link href={`/turler/${s.slug}`} className="italic text-emerald-800 hover:underline">{s.name}</Link></td>
+                <td className="p-3"><Link href={`/turler/${s.slug}`} className="italic text-link hover:underline">{s.name}</Link></td>
                 <td className="hidden p-3 text-stone-600 sm:table-cell">{s.tr || "—"}</td>
                 <td className="p-3">{s.family}</td>
                 <td className="p-3">{s.endemic === 1 ? "evet" : ""}</td>
               </tr>
             ))}
-            {index && rows.length === 0 && <tr><td colSpan={4} className="p-4 text-stone-500">Bu filtreyle eksik tür yok.</td></tr>}
+            {index && rows.length === 0 && <tr><td colSpan={4} className="p-4 text-stone-600">Bu filtreyle eksik tür yok.</td></tr>}
           </tbody>
         </table>
       </div>

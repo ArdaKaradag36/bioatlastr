@@ -101,9 +101,14 @@ npm run dev          # http://localhost:3000
 npm run build && npm run start
 ```
 
-Pages (Turkish UI): home (headline numbers) · `/turler` search with autocomplete (Latin + Turkish names) · `/turler/<species>`
+Design: a nature/science look (forest greens, small blue accent), light and dark mode (follows the system), self-hosted OFL fonts (`web/public/fonts`, see
+`THIRD_PARTY_NOTICES.md`), inline-SVG illustrations only. Understandability is the priority: every page starts with a "Bu sayfa ne gösterir?" box, terms carry
+an inline explanation (`web/src/components/Term.tsx`, data in `web/src/lib/glossary.ts`, shown at `/sozluk`), and sentences next to percentages are generated
+from the data files (`web/src/lib/plain.ts`), never hard-coded. QA: `scripts/site_qa.py` (Playwright + axe-core: screenshots in `docs/screenshots/`, console errors, overflow, accessibility).
+
+Pages (Turkish UI): home (headline numbers, "how it works", guided tour) · `/sozluk` glossary · `/turler` search with autocomplete (Latin + Turkish names) · `/turler/<species>`
 (markers, ENA/GenBank links, sequence viewer + FASTA, 5 nearest relatives, tree with the species highlighted; species without sequences show relatives that have data) ·
-`/agaclar` tree explorer (zoom/pan) · `/veri-bosluklari` data gaps · `/dizi-ara` browser-side sequence search (indicative) · `/yontem` methods and limitations.
+`/agaclar` tree explorer (zoom/pan) · `/veri-bosluklari` data gaps · `/dizi-ara` browser-side sequence search (indicative) · `/yontem` methods and limitations (plain summary first, details collapsible) · `/kaynaklar` sources and licences.
 After new pipeline data, run phase 3 again and `npm run build`. Species details are sharded by genus (`web/public/data/species/<genus>.json`)
 so the deployment has a few thousand files; species pages are rendered on first request.
 
@@ -169,4 +174,4 @@ Names are not expert-verified; ambiguous names are flagged ("birden fazla türe 
 The site has no analytics, cookies or trackers; the sequence search runs in the browser only. Voucher/collector strings, locality text and submitter details
 are removed from published sequence records (`scripts/sanitize_public.py`). Before publishing fill in the placeholders (search for `PLACEHOLDER_`):
 `PLACEHOLDER_CONTACT_EMAIL` (`web/src/lib/site.ts`, `DATA_LICENSE.md`), `PLACEHOLDER_GITHUB_REPO_URL` (`web/src/lib/site.ts`, `CITATION.cff`),
-`PLACEHOLDER_AUTHOR_NAME` (`LICENSE`), `PLACEHOLDER_SURNAME` / `PLACEHOLDER_GIVEN_NAME` (`CITATION.cff`).
+`PLACEHOLDER_AUTHOR_NAME` (`LICENSE`), `PLACEHOLDER_TUBITAK_2209A_PROJE_BILGISI` (`web/src/lib/site.ts`, footer; leave as is or replace with the project line if the project is funded), `PLACEHOLDER_SURNAME` / `PLACEHOLDER_GIVEN_NAME` (`CITATION.cff`).

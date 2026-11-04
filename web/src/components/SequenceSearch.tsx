@@ -14,6 +14,7 @@ import {
   type SearchHit,
 } from "@/lib/seqsearch";
 import { slugify } from "@/lib/text";
+import Term from "./Term";
 
 export default function SequenceSearch({ markers }: { markers: string[] }) {
   const [marker, setMarker] = useState(markers[0]);
@@ -61,19 +62,14 @@ export default function SequenceSearch({ markers }: { markers: string[] }) {
 
   return (
     <div>
-      <div
-        role="note"
-        className="mb-6 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900"
-      >
-        <strong>Uyarı:</strong> Sonuçlar yalnızca <em>gösterge niteliğindedir</em>, kesin tür tayini değildir.
-        Referans veri ENA/INSDC kayıtlarından gelir ve hatalı tanımlanmış kayıtlar ya da eksik türler içerebilir. Yüksek
-        benzerlik bile aynı cinsten yakın bir türle karışıklığı dışlamaz. Kesin tanı için uzman doğrulaması ve
-        morfolojik inceleme gerekir.
+      <div role="note" className="mb-6 rounded-xl border border-amber-300 bg-amber-50 p-4 text-amber-900">
+        <strong>Uyarı:</strong> Sonuçlar yalnızca <em>gösterge niteliğindedir</em>, kesin tür tayini değildir. Referans veri ENA/INSDC kayıtlarından gelir
+        ve hatalı tanımlanmış kayıtlar ya da eksik türler içerebilir. Kesin tanı için uzman doğrulaması ve morfolojik (görünüşe dayalı) inceleme gerekir.
       </div>
 
-      <div className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
-        <label className="mb-1 block text-sm font-medium text-stone-700" htmlFor="seq">
-          DNA dizisi (düz metin veya FASTA)
+      <div className="rounded-2xl border border-stone-200 bg-white p-5 shadow-card">
+        <label className="mb-1 block font-medium text-stone-800" htmlFor="seq">
+          DNA dizisi (düz harfler ya da FASTA biçimi)
         </label>
         <textarea
           id="seq"
@@ -82,12 +78,12 @@ export default function SequenceSearch({ markers }: { markers: string[] }) {
           onChange={(e) => setText(e.target.value)}
           spellCheck={false}
           placeholder={">örnek\nATGAGTCGTAGGGAGGGACTTATGTCACCACAAACAGAGACTAAAGCAAGTG…"}
-          className="w-full rounded-xl border border-stone-300 p-3 font-mono text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-200"
+          className="w-full rounded-xl border border-stone-300 p-3 font-mono text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent-line"
         />
         <div className="mt-3 flex flex-wrap items-center gap-3">
-          <label className="text-sm">
-            Marker:{" "}
-            <select value={marker} onChange={(e) => setMarker(e.target.value)} className="ml-1 rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm">
+          <label>
+            Barkod bölgesi:{" "}
+            <select value={marker} onChange={(e) => setMarker(e.target.value)} className="ml-1 min-h-11 rounded-lg border border-stone-300 bg-white px-3 py-2 text-base">
               {markers.map((m) => <option key={m}>{m}</option>)}
             </select>
           </label>
@@ -95,35 +91,35 @@ export default function SequenceSearch({ markers }: { markers: string[] }) {
             type="button"
             onClick={run}
             disabled={busy || text.trim() === ""}
-            className="rounded-xl bg-emerald-700 px-5 py-2.5 font-medium text-white hover:bg-emerald-800 disabled:opacity-50"
+            className="min-h-12 rounded-xl bg-primary px-6 py-2.5 font-semibold text-on-dark hover:bg-primary-hover disabled:opacity-50"
           >
             {busy ? "Aranıyor…" : "Karşılaştır"}
           </button>
-          <span className="text-sm text-stone-500">Dizi tarayıcınızda işlenir, sunucuya gönderilmez.</span>
+          <span className="text-sm text-stone-700">Dizi tarayıcınızda işlenir; sunucuya gönderilmez, saklanmaz.</span>
         </div>
         {error && <p role="alert" className="mt-3 text-sm text-red-700">{error}</p>}
       </div>
 
       {hits && info && (
         <div className="mt-8">
-          <h2 className="text-2xl font-semibold">En iyi {TOP_N_MATCHES} eşleşme ({info.marker})</h2>
-          <p className="mb-3 mt-1 text-sm text-stone-500">
-            {num(info.references)} referans diziyle karşılaştırıldı; sorgu uzunluğu {num(info.queryLength)} baz.
+          <h2 className="text-2xl font-semibold">En çok benzeyen {TOP_N_MATCHES} kayıt ({info.marker})</h2>
+          <p className="mb-3 mt-1 text-stone-700">
+            {num(info.references)} referans diziyle karşılaştırıldı; sizin diziniz {num(info.queryLength)} harf (baz) uzunluğunda.
           </p>
           {hits.length === 0 ? (
-            <p className="text-stone-600">Benzer bir referans dizi bulunamadı.</p>
+            <p className="text-stone-700">Benzer bir referans dizi bulunamadı. Bu, dizinizin türünün atlasta olmadığı anlamına da gelebilir.</p>
           ) : (
             <>
-              <div className="overflow-x-auto rounded-xl border border-stone-200 bg-white">
-                <table className="w-full text-sm">
+              <div tabIndex={0} className="overflow-x-auto rounded-xl border border-stone-200 bg-white">
+                <table className="w-full text-[0.95rem]">
                   <thead className="bg-stone-50 text-left text-stone-600">
                     <tr>
                       <th className="p-3">#</th>
                       <th className="p-3">Tür</th>
-                      <th className="p-3">Erişim no</th>
-                      <th className="p-3 text-right">Benzerlik</th>
-                      <th className="hidden p-3 text-right sm:table-cell">Örtüşme (baz)</th>
-                      <th className="hidden p-3 text-right sm:table-cell">Sorgu kapsaması</th>
+                      <th className="p-3"><Term id="erisim-numarasi">Erişim no</Term></th>
+                      <th className="p-3 text-right"><Term id="benzerlik">Benzerlik</Term></th>
+                      <th className="hidden p-3 text-right sm:table-cell">Örtüşen uzunluk (baz)</th>
+                      <th className="hidden p-3 text-right sm:table-cell">Dizinizin ne kadarı örtüştü</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -131,11 +127,11 @@ export default function SequenceSearch({ markers }: { markers: string[] }) {
                       <tr key={h.accession} className="border-t border-stone-100">
                         <td className="p-3 text-stone-500">{i + 1}</td>
                         <td className="p-3">
-                          <Link href={`/turler/${slugify(h.species)}`} className="italic text-emerald-800 hover:underline">{h.species}</Link>
-                          {h.reverseComplement && <span className="ml-2 text-xs text-stone-500">(ters tamamlayıcı)</span>}
+                          <Link href={`/turler/${slugify(h.species)}`} className="italic text-link hover:underline">{h.species}</Link>
+                          {h.reverseComplement && <span className="ml-2 text-xs text-stone-500">(<Term id="ters-tamamlayici">ters tamamlayıcı</Term>)</span>}
                         </td>
                         <td className="p-3">
-                          <a href={ncbiUrl(h.accession)} target="_blank" rel="noreferrer" className="font-mono text-emerald-800 underline">{h.accession}</a>
+                          <a href={ncbiUrl(h.accession)} target="_blank" rel="noreferrer" className="font-mono text-link underline">{h.accession}</a>
                         </td>
                         <td className="p-3 text-right font-semibold">{pct(h.identity)}</td>
                         <td className="hidden p-3 text-right sm:table-cell">{num(h.alignedLength)}</td>
@@ -146,12 +142,12 @@ export default function SequenceSearch({ markers }: { markers: string[] }) {
                 </table>
               </div>
               {top && hits.filter((h) => h.identity === top.identity && h.species !== top.species).length > 0 && (
-                <p className="mt-3 rounded-lg bg-amber-50 p-3 text-sm text-amber-900">
-                  En iyi benzerliği birden fazla tür paylaşıyor; bu barkod bölgesi bu türleri ayırt etmeye yetmiyor olabilir.
+                <p className="mt-3 rounded-lg bg-amber-50 p-3 text-amber-900">
+                  En yüksek benzerliği birden fazla tür paylaşıyor; bu barkod bölgesi bu türleri birbirinden ayırmaya yetmiyor olabilir.
                 </p>
               )}
-              <p className="mt-3 text-sm text-stone-500">
-                Benzerlik = eşleşen baz sayısı / hizalanan sütun sayısı (örtüşen bölgede). Sonuçlar gösterge niteliğindedir.
+              <p className="mt-3 text-stone-700">
+                <strong>Nasıl okunur?</strong> Benzerlik = aynı çıkan harf sayısı / karşılaştırılan harf sayısı (yalnızca örtüşen bölgede). %100 bile olsa tür kesin değildir; bir kaydın adı yükleyen kişinin bildirimine dayanır. Sonuçlar gösterge niteliğindedir.
               </p>
             </>
           )}

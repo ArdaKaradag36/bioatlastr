@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import SpeciesSearch from "./SpeciesSearch";
+import Term from "./Term";
+import TreeHelp from "./TreeHelp";
 import TreeViewer from "./TreeViewer";
 import { loadSpeciesIndex, loadTree } from "@/lib/data.client";
 import { DISCRIMINATION_NOTE } from "./treeNotes";
@@ -64,13 +66,13 @@ export default function TreeExplorer({ families, markers }: Props) {
     router.replace(`/agaclar?${q.toString()}`, { scroll: false });
   };
 
-  const select = "rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm";
+  const select = "min-h-11 rounded-lg border border-stone-300 bg-white px-3 py-2 text-base";
 
   return (
     <div>
       <div className="mb-4 flex flex-wrap items-end gap-4">
-        <label className="text-sm">
-          <span className="mb-1 block font-medium text-stone-600">Aile</span>
+        <label>
+          <span className="mb-1 block font-medium text-stone-800">Aile seçin</span>
           <select
             className={select}
             value={family.family}
@@ -83,8 +85,8 @@ export default function TreeExplorer({ families, markers }: Props) {
             ))}
           </select>
         </label>
-        <div className="text-sm">
-          <span className="mb-1 block font-medium text-stone-600">Marker</span>
+        <div>
+          <span className="mb-1 block font-medium text-stone-800"><Term id="barkod-bolgesi">Barkod bölgesi</Term></span>
           <div className="flex gap-1">
             {markers.map((m) => {
               const has = available.includes(m);
@@ -94,12 +96,13 @@ export default function TreeExplorer({ families, markers }: Props) {
                   type="button"
                   disabled={!has}
                   onClick={() => setParams({ marker: m })}
-                  className={`rounded-lg border px-3 py-2 font-medium ${
+                  className={`min-h-11 min-w-14 rounded-lg border px-3 py-2 font-medium ${
                     m === marker
-                      ? "border-emerald-600 bg-emerald-600 text-white"
+                      ? "border-primary bg-primary text-on-dark"
                       : "border-stone-300 bg-white text-stone-700 hover:border-emerald-400"
                   } disabled:cursor-not-allowed disabled:opacity-40`}
                   title={has ? "" : "Bu aile için ağaç kurmaya yetecek dizi yok"}
+                  aria-pressed={m === marker}
                 >
                   {m}
                 </button>
@@ -108,8 +111,8 @@ export default function TreeExplorer({ families, markers }: Props) {
           </div>
         </div>
         {groups.length > 1 && (
-          <label className="text-sm">
-            <span className="mb-1 block font-medium text-stone-600">Cins grubu ({groups.length})</span>
+          <label>
+            <span className="mb-1 block font-medium text-stone-800">Cins grubu ({groups.length}) <span className="font-normal text-stone-600">— büyük aileler cins cins çizildi</span></span>
             <select
               className={select}
               value={group?.group ?? ""}
@@ -123,8 +126,8 @@ export default function TreeExplorer({ families, markers }: Props) {
             </select>
           </label>
         )}
-        <div className="min-w-64 flex-1 text-sm">
-          <span className="mb-1 block font-medium text-stone-600">Türü vurgula</span>
+        <div className="min-w-64 flex-1">
+          <span className="mb-1 block font-medium text-stone-800">Seçili türü vurgula <span className="font-normal text-stone-600">— adını yazın ya da ağaçta bir yaprağa tıklayın</span></span>
           <SpeciesSearch
             size="sm"
             family={family.family}
@@ -133,14 +136,14 @@ export default function TreeExplorer({ families, markers }: Props) {
           />
         </div>
         {selected && (
-          <div className="text-sm">
-            <span className="mb-1 block font-medium text-stone-600">Seçili tür</span>
-            <span className="inline-flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2">
+          <div>
+            <span className="mb-1 block font-medium text-stone-800">Vurgulanan tür</span>
+            <span className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-red-100 px-3 py-2">
               <Link href={`/turler/${selected.slug}`} className="font-medium italic text-red-700 hover:underline">
                 {selected.name}
               </Link>
-              <button type="button" className="text-stone-500 hover:text-stone-900" aria-label="Seçimi kaldır" onClick={() => setParams({ tur: null })}>
-                ✕
+              <button type="button" className="min-h-9 rounded-md px-2 text-stone-800 hover:bg-white/60" aria-label="Vurguyu kaldır" onClick={() => setParams({ tur: null })}>
+                Vurguyu kaldır ✕
               </button>
             </span>
           </div>
@@ -149,17 +152,18 @@ export default function TreeExplorer({ families, markers }: Props) {
 
       {!marker && (
         <p className="rounded-xl bg-amber-50 p-4 text-amber-900">
-          {family.family} için hiçbir markerde ağaç kurmaya yetecek (en az 3) dizi yok.
+          {family.family} ailesi için hiçbir barkod bölgesinde ağaç kurmaya yetecek kadar dizi yok. Bu bir <Term id="veri-boslugu">veri boşluğudur</Term>.
         </p>
       )}
-      {error && <p className="text-red-700">Ağaç yüklenemedi.</p>}
-      {marker && !tree && !error && <p className="text-stone-500">Ağaç yükleniyor…</p>}
+      {error && <p className="text-red-700">Ağaç yüklenemedi. Sayfayı yenileyip tekrar deneyin.</p>}
+      {marker && !tree && !error && <p className="text-stone-600" role="status">Ağaç yükleniyor…</p>}
       {tree && (
         <>
-          <p className="mb-2 text-sm text-stone-600">
-            {tree.family} · {tree.marker}: {tree.n_leaves} dizi, {tree.n_species} tür · komşu birleştirme (NJ),
-            p-mesafesi · hizalama: <strong>{tree.aligner}</strong>{tree.aligner !== "MAFFT" && " — ön sonuç"}
+          <p className="mb-3 text-stone-800">
+            <strong>{tree.family}</strong> · {tree.marker}: {tree.n_leaves} dizi, {tree.n_species} tür. Ağaç, <Term id="p-mesafesi">p-mesafesi</Term> ve <Term id="nj">komşu birleştirme (NJ)</Term> yöntemiyle
+            kuruldu; <Term id="hizalama">hizalama</Term>: <strong>{tree.aligner}</strong>{tree.aligner !== "MAFFT" && " — ön sonuç"}.
           </p>
+          <TreeHelp />
           <TreeViewer
             tree={tree}
             highlight={selected?.name ?? null}
@@ -169,7 +173,7 @@ export default function TreeExplorer({ families, markers }: Props) {
               if (hit) setParams({ tur: hit.slug });
             }}
           />
-          <p className="mt-3 text-sm text-stone-500">{DISCRIMINATION_NOTE}</p>
+          <p className="mt-3 text-stone-700">{DISCRIMINATION_NOTE}</p>
         </>
       )}
     </div>
