@@ -49,6 +49,7 @@ export default function SpeciesView({ slug, markers }: { slug: string; markers: 
   }
   const nAny = markers.reduce((n, m) => n + (data.markers[m]?.n_sequences ?? 0), 0);
   const nTurkey = markers.reduce((n, m) => n + (data.markers[m]?.sequences.filter((x) => x.is_turkey === 1).length ?? 0), 0);
+  const nSuspect = markers.reduce((n, m) => n + (data.markers[m]?.sequences.filter((x) => x.suspect).length ?? 0), 0);
 
   const md = data.markers[marker];
   const namesTr = data.names_tr ?? [];
@@ -100,6 +101,9 @@ export default function SpeciesView({ slug, markers }: { slug: string; markers: 
               <strong>{list(withData)}</strong> barkod bölgesi için toplam {num(nAny)} <Term id="dizi">DNA dizisi</Term> kayıtlıdır;{" "}
               {nTurkey > 0 ? <>bunların {num(nTurkey)} tanesi <Term id="turkiye-ornegi">Türkiye&apos;den toplanan örneklere</Term> aittir.</> : <>hiçbiri Türkiye&apos;den toplanan bir örneğe ait olarak işaretlenmemiştir.</>}
               {without.length > 0 && <> {list(without)} için dizi yoktur.</>}
+              {nSuspect > 0 && (
+                <> Bu kayıtlardan {num(nSuspect)} tanesi şüpheli işaretlidir (aynı dizi başka bir ailede de var); ayırt etme analizine alınmadı.</>
+              )}
             </li>
           ) : (
             <li>

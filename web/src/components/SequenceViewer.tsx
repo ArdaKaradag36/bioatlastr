@@ -12,7 +12,7 @@ export function toFasta(species: string, marker: string, records: SequenceRecord
   return records
     .map((r) => {
       const lines = r.sequence.match(/.{1,70}/g) ?? [];
-      return `>${r.accession} ${species} [${marker}]${r.is_turkey === 1 ? " Turkey" : ""}\n${lines.join("\n")}\n`;
+      return `>${r.accession} ${species} [${marker}]${r.is_turkey === 1 ? " Turkiye" : ""}${r.suspect ? " supheli" : ""}\n${lines.join("\n")}\n`;
     })
     .join("");
 }
@@ -69,13 +69,22 @@ export default function SequenceViewer({
     <div>
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <p className="text-sm text-stone-600">{records.length} dizi</p>
-        <button
-          type="button"
-          className="rounded-lg border border-emerald-600 px-3 py-1.5 text-sm font-medium text-link hover:bg-emerald-50"
-          onClick={() => download(`${base}_${marker}.fasta`, toFasta(species, marker, records))}
-        >
-          Tümünü FASTA olarak indir
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            className="rounded-lg border border-emerald-600 px-3 py-1.5 text-sm font-medium text-link hover:bg-emerald-50"
+            onClick={() => download(`${base}_${marker}.fasta`, toFasta(species, marker, records))}
+          >
+            Tümünü FASTA olarak indir
+          </button>
+          <button
+            type="button"
+            className="rounded-lg border border-emerald-600 px-3 py-1.5 text-sm font-medium text-link hover:bg-emerald-50"
+            onClick={() => download(`${base}_${marker}.json`, JSON.stringify(records, null, 2))}
+          >
+            JSON
+          </button>
+        </div>
       </div>
       <ul className="divide-y divide-stone-200 rounded-xl border border-stone-200">
         {records.map((r) => (
@@ -99,6 +108,9 @@ export default function SequenceViewer({
               )}
               {r.matched_via === "synonym" && (
                 <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-900" title="Kayıtta eş ad (synonym) kullanılmış">eş ad</span>
+              )}
+              {r.suspect && (
+                <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-800" title="Aynı dizi başka bir ailedeki bir kayıtta da var; ayırt etme analizine alınmadı">şüpheli (çapraz-aile özdeş dizi)</span>
               )}
               <span className="text-sm text-stone-600">{r.length} bp</span>
               {r.country && <span className="text-sm text-stone-500">{r.country}</span>}
