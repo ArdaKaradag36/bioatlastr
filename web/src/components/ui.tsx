@@ -17,7 +17,18 @@ export function PageTitle({ title, eyebrow, children }: { title: string; eyebrow
 /** "Bu sayfa ne gösterir?" (+ optional "Nasıl okunur?") box that opens every page. */
 export function PageIntro({ what, how }: { what: ReactNode; how?: ReactNode }) {
   return (
-    <section aria-label="Sayfa özeti" className={`rise-2 mb-10 grid gap-4 ${how ? "lg:grid-cols-2" : ""}`}>
+    <>
+    <details className="rise-2 mb-6 rounded-2xl border border-accent-line bg-accent-soft md:hidden">
+      <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 font-sans text-base font-semibold text-accent">
+        Bu sayfa ne gösterir?
+        <span aria-hidden>+</span>
+      </summary>
+      <div className="space-y-3 px-4 pb-4 text-stone-800">
+        {what}
+        {how}
+      </div>
+    </details>
+    <section aria-label="Sayfa özeti" className={`rise-2 mb-10 hidden gap-4 md:grid ${how ? "lg:grid-cols-2" : ""}`}>
       <div className="rounded-2xl border border-accent-line bg-accent-soft p-5">
         <h2 className="mb-1 flex items-center gap-2 font-sans text-base font-semibold text-accent">
           <InfoIcon width={20} height={20} /> Bu sayfa ne gösterir?
@@ -33,6 +44,7 @@ export function PageIntro({ what, how }: { what: ReactNode; how?: ReactNode }) {
         </div>
       )}
     </section>
+    </>
   );
 }
 function CompassSmall() {

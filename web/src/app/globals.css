@@ -123,6 +123,11 @@ body {
   font-size: 1.0625rem; /* 17px: easier to read */
   line-height: 1.6;
 }
+@media (max-width: 767px) {
+  html, body { overflow-x: clip; max-width: 100%; }
+  body { font-size: 1rem; }
+  img, svg, table, pre { max-width: 100%; }
+}
 h1, h2, h3 { font-family: var(--font-serif); color: var(--st-900); letter-spacing: -0.01em; }
 h1 { line-height: 1.15; }
 h2, h3 { line-height: 1.25; }

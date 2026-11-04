@@ -1,4 +1,5 @@
 import Link from "next/link";
+import HomeMobile from "@/components/HomeMobile";
 import { BookIcon, DnaIcon, GapIcon, HeroArt, LeafIcon, ListIcon, SearchIcon, ShieldIcon, TargetIcon, TreeIcon } from "@/components/Icons";
 import SpeciesSearch from "@/components/SpeciesSearch";
 import Term from "@/components/Term";
@@ -48,6 +49,10 @@ export default function HomePage() {
   return (
     <div>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(datasetLd) }} />
+      <div className="md:hidden">
+        <HomeMobile stats={stats} meta={meta} families={families} />
+      </div>
+      <div className="hidden md:block">
       {/* ---------------- Hero */}
       <section className="rise relative overflow-hidden rounded-3xl bg-gradient-to-br from-forest to-forest-2 px-6 py-10 text-on-dark sm:px-12 sm:py-14">
         <div className="grid items-center gap-8 md:grid-cols-[1.25fr_1fr]">
@@ -333,6 +338,7 @@ export default function HomePage() {
       <p className="mt-6 text-sm text-stone-600">
         Tür listesi WCVP (Kew), diziler ENA/INSDC kayıtlarına dayanır; hatalı tanımlanmış kayıtlar içerebilir. Sonuçlar araştırma amaçlıdır, tahmin niteliğindedir ve uzman doğrulaması yoktur.
       </p>
+      </div>
     </div>
   );
 }

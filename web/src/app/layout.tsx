@@ -65,7 +65,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="flex min-h-screen flex-col">
         <a href="#icerik" className="skip-link">Ana içeriğe geç</a>
         <Header />
-        <main id="icerik" className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 sm:py-10">{children}</main>
+        <main id="icerik" className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 max-md:overflow-x-clip sm:px-6 sm:py-10">{children}</main>
         <footer className="mt-10 bg-forest text-on-dark">
           <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-[1.4fr_1fr]">
             <div>

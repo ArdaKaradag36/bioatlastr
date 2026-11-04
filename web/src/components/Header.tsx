@@ -17,6 +17,21 @@ const LINKS = [
   { href: "/kaynaklar", label: "Kaynaklar" },
 ];
 
+const MOBILE_MAIN = [
+  { href: "/", label: "Ana sayfa" },
+  { href: "/turler", label: "Türler" },
+  { href: "/veri-bosluklari", label: "Veri boşlukları" },
+  { href: "/dizi-ara", label: "Dizi ara" },
+];
+
+const MOBILE_MORE = [
+  { href: "/yontem", label: "Yöntem" },
+  { href: "/sozluk", label: "Sözlük" },
+  { href: "/kaynaklar", label: "Kaynaklar" },
+  { href: "/en", label: "English" },
+  { href: "/agaclar", label: "Ağaçlar" },
+];
+
 export default function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -50,7 +65,7 @@ export default function Header() {
           ))}
         </nav>
 
-        <div className="ml-auto w-full max-w-xs">
+        <div className="ml-auto min-w-0 w-full max-w-xs">
           <SpeciesSearch placeholder="Tür ara: meşe, Quercus…" size="sm" />
         </div>
 
@@ -69,24 +84,65 @@ export default function Header() {
       </div>
 
       {open && (
-        <nav id="mobile-nav" className="border-t border-stone-200 bg-white px-4 py-2 xl:hidden" aria-label="Mobil menü">
-          <ul className="grid grid-cols-2 gap-1 sm:grid-cols-3">
-            {LINKS.map((l) => (
-              <li key={l.href}>
-                <Link
-                  href={l.href}
-                  onClick={() => setOpen(false)}
-                  aria-current={isActive(l.href) ? "page" : undefined}
-                  className={`flex min-h-12 items-center rounded-xl px-3 font-medium ${
-                    isActive(l.href) ? "bg-emerald-100 text-link" : "text-stone-800 hover:bg-stone-100"
-                  }`}
-                >
-                  {l.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        <>
+          <nav id="mobile-nav" className="border-t border-stone-200 bg-white px-4 py-2 md:hidden" aria-label="Mobil menü">
+            <ul className="grid grid-cols-1 gap-1">
+              {MOBILE_MAIN.map((l) => (
+                <li key={l.href}>
+                  <Link
+                    href={l.href}
+                    onClick={() => setOpen(false)}
+                    aria-current={isActive(l.href) ? "page" : undefined}
+                    className={`flex min-h-11 items-center rounded-xl px-3 font-medium ${
+                      isActive(l.href) ? "bg-emerald-100 text-link" : "text-stone-800 hover:bg-stone-100"
+                    }`}
+                  >
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <details className="mt-2">
+              <summary className="flex min-h-11 cursor-pointer list-none items-center rounded-xl px-3 font-medium text-stone-800">
+                Daha fazla
+              </summary>
+              <ul className="mt-1 grid grid-cols-1 gap-1 pb-2">
+                {MOBILE_MORE.map((l) => (
+                  <li key={l.href}>
+                    <Link
+                      href={l.href}
+                      onClick={() => setOpen(false)}
+                      aria-current={isActive(l.href) ? "page" : undefined}
+                      className={`flex min-h-11 items-center rounded-xl px-3 font-medium ${
+                        isActive(l.href) ? "bg-emerald-100 text-link" : "text-stone-800 hover:bg-stone-100"
+                      }`}
+                    >
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          </nav>
+          <nav className="hidden border-t border-stone-200 bg-white px-4 py-2 md:block xl:hidden" aria-label="Tablet menü">
+            <ul className="grid grid-cols-2 gap-1 sm:grid-cols-3">
+              {LINKS.map((l) => (
+                <li key={l.href}>
+                  <Link
+                    href={l.href}
+                    onClick={() => setOpen(false)}
+                    aria-current={isActive(l.href) ? "page" : undefined}
+                    className={`flex min-h-12 items-center rounded-xl px-3 font-medium ${
+                      isActive(l.href) ? "bg-emerald-100 text-link" : "text-stone-800 hover:bg-stone-100"
+                    }`}
+                  >
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </>
       )}
     </header>
   );

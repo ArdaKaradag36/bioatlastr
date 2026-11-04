@@ -2,8 +2,11 @@
 
 // Inline glossary help: dotted underline + popover (hover, keyboard, touch) with a short explanation and a link to /sozluk#id.
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { GLOSSARY_BY_ID } from "@/lib/glossary";
+
+const seenByPage = new Map<string, Set<string>>();
 
 export default function Term({ id, children }: { id: string; children?: ReactNode }) {
   const entry = GLOSSARY_BY_ID[id];
@@ -41,7 +44,30 @@ export default function Term({ id, children }: { id: string; children?: ReactNod
     };
   }, [open, close]);
 
-  if (!entry) return <>{children}</>;
+  const pathname = usePathname();
+  const [repeatOnMobile, setRepeatOnMobile] = useState(false);
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      const mobile = window.matchMedia("(max-width: 767px)").matches;
+      if (!mobile) {
+        setRepeatOnMobile(false);
+        return;
+      }
+      let set = seenByPage.get(pathname);
+      if (!set) {
+        set = new Set();
+        seenByPage.set(pathname, set);
+      }
+      if (set.has(id)) setRepeatOnMobile(true);
+      else set.add(id);
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [id, pathname]);
+
+  if (!entry) return <>{children ?? null}</>;
+  if (repeatOnMobile) {
+    return <span>{children ?? entry.term}</span>;
+  }
   return (
     <span
       ref={wrap}
@@ -56,7 +82,7 @@ export default function Term({ id, children }: { id: string; children?: ReactNod
         className="term"
         aria-expanded={open}
         aria-controls={`${uid}-pop`}
-        aria-label={`${entry.term}: açıklamayı göster`}
+        aria-label={`${typeof children === "string" ? children : (Array.isArray(children) ? children.filter((c) => typeof c === "string").join("") : "") || entry.term} — ${entry.term}: açıklamayı göster`}
         onClick={() => { if (open && pinned.current) close(); else { pinned.current = true; show(); } }}
       >
         {children ?? entry.term}
