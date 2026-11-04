@@ -11,7 +11,15 @@ import { loadSpecies, loadTaxonNames, loadTree } from "@/lib/data.client";
 import { DISCRIMINATION, distancePct, num, powoUrl } from "@/lib/format";
 import type { SpeciesDetail, TaxonNames, TreeFile } from "@/lib/types";
 
-export default function SpeciesView({ slug, markers }: { slug: string; markers: string[] }) {
+export default function SpeciesView({
+  slug,
+  markers,
+  hideHeader = false,
+}: {
+  slug: string;
+  markers: string[];
+  hideHeader?: boolean;
+}) {
   const [data, setData] = useState<SpeciesDetail | null | undefined>(undefined);
   const [error, setError] = useState(false);
   const [chosenMarker, setMarker] = useState<string | null>(null); // set when the user clicks a tab
@@ -39,9 +47,11 @@ export default function SpeciesView({ slug, markers }: { slug: string; markers: 
   const treeError = failedTree !== null && failedTree === treeFile;
 
   if (error) return <p className="text-red-700">Tür verisi yüklenemedi. Sayfayı yenileyip tekrar deneyin.</p>;
-  if (data === undefined) return <p className="text-stone-600" role="status">Tür bilgileri yükleniyor…</p>;
+  if (data === undefined) {
+    return hideHeader ? null : <p className="text-stone-600" role="status">Tür bilgileri yükleniyor…</p>;
+  }
   if (data === null) {
-    return (
+    return hideHeader ? null : (
       <p className="text-stone-700">
         Bu adda bir tür bulunamadı. <Link className="underline" href="/turler">Tür listesine dön</Link>.
       </p>
@@ -66,16 +76,23 @@ export default function SpeciesView({ slug, markers }: { slug: string; markers: 
 
   return (
     <div>
-      <p className="text-sm text-stone-600">
-        <Link className="underline" href="/turler">Türler</Link> / {data.family} / {data.genus}
-      </p>
-      <h1 className="mt-1 text-3xl font-bold italic text-stone-900 sm:text-4xl">
-        {data.name} <span className="font-sans text-xl font-normal not-italic text-stone-600">{data.authorship}</span>
-      </h1>
+      {!hideHeader && (
+        <>
+          <p className="text-sm text-stone-600">
+            <Link className="underline" href="/turler">Türler</Link> / {data.family} / {data.genus}
+          </p>
+          <h1 className="mt-1 text-3xl font-bold italic text-stone-900 sm:text-4xl">
+            {data.name} <span className="font-sans text-xl font-normal not-italic text-stone-600">{data.authorship}</span>
+          </h1>
+        </>
+      )}
+      {hideHeader && data.authorship && (
+        <p className="mt-1 text-xl font-normal text-stone-600">{data.authorship}</p>
+      )}
       <p className="mt-1 text-sm text-stone-600">(<Term id="latince-ad">Latince bilimsel ad</Term>; yanındaki kısaltma adı yayımlayan bilim insanını gösterir)</p>
       {data.endemic === 1 && (
         <p className="mt-2">
-          <span className="rounded-full bg-red-100 px-3 py-1 text-sm font-medium text-red-800">Türkiye endemiği</span>
+          <span className="rounded-full bg-red-100 px-3 py-1 text-sm font-medium text-red-800" title="WCVP yayılışı; IUCN veya Türkiye Kırmızı Listesi değil">Türkiye endemiği (WCVP)</span>
         </p>
       )}
       {commonNames.length > 0 && <p className="mt-1 text-lg text-stone-600">{commonNames.join(" · ")}</p>}

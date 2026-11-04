@@ -1,28 +1,62 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import SpeciesView from "@/components/SpeciesView";
-// Bundled at build time (not read from disk at request time): public/ files are not available to serverless functions.
-import meta from "../../../../public/data/meta.json";
+import { getMeta, getSpeciesBySlug } from "@/lib/data.server";
+import { PROJECT_TITLE, siteUrl } from "@/lib/site";
 
-// Species pages are rendered on first request (and cached): the atlas has thousands of species, and the
-// species data itself is loaded in the browser from /data/species/<genus>.json. Unknown slugs show a message.
 export const dynamicParams = true;
 
 export function generateStaticParams() {
+  // On-demand: do not prerender ~10 000 species HTML files (Vercel file/build limits).
   return [];
 }
 
-/** "quercus-robur" -> "Quercus robur" (no data access needed). */
-function titleFromSlug(slug: string): string {
-  const text = slug.replace(/-/g, " ");
-  return text.charAt(0).toUpperCase() + text.slice(1);
+function summaryFor(slug: string) {
+  const sp = getSpeciesBySlug().get(slug);
+  if (!sp) return null;
+  const nSeq = Object.values(sp.counts).reduce((n, c) => n + c, 0);
+  const bits = [`${sp.name} (${sp.family} / ${sp.genus})`];
+  if (sp.tr) bits.push(sp.tr);
+  bits.push(
+    nSeq > 0
+      ? `Bu tür için ${nSeq} DNA barkod kaydı var.`
+      : "ENA/INSDC’de barkod kaydı bulunamadı. BOLD taranmadı; gelecek çalışma olarak planlandı.",
+  );
+  if (sp.endemic === 1) bits.push("WCVP’ye göre Türkiye endemiği (Kırmızı Liste değil).");
+  return { sp, nSeq, text: bits.join(" ") };
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  return { title: titleFromSlug(slug) };
+  const info = summaryFor(slug);
+  if (!info) return { title: "Tür bulunamadı", robots: { index: false, follow: false } };
+  const url = `${siteUrl()}/turler/${slug}`;
+  return {
+    title: info.sp.name,
+    description: info.text,
+    alternates: { canonical: url, languages: { "tr-TR": url, en: `${siteUrl()}/en` } },
+    openGraph: { title: `${info.sp.name} · ${PROJECT_TITLE}`, description: info.text, url, type: "article", locale: "tr_TR" },
+    twitter: { card: "summary", title: info.sp.name, description: info.text },
+  };
 }
 
 export default async function SpeciesPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const markers = Object.keys(meta.markers);
-  return <SpeciesView slug={slug} markers={markers} />;
+  const info = summaryFor(slug);
+  if (!info) notFound();
+  const markers = Object.keys(getMeta().markers);
+  const { sp, text } = info;
+  return (
+    <div>
+      <header>
+        <p className="text-sm text-stone-600">
+          <Link className="underline" href="/turler">Türler</Link> / {sp.family} / {sp.genus}
+        </p>
+        <h1 className="mt-1 text-3xl font-bold italic text-stone-900 sm:text-4xl">{sp.name}</h1>
+        <p className="mt-2 max-w-3xl text-stone-800">{text}</p>
+      </header>
+      <SpeciesView slug={slug} markers={markers} hideHeader />
+    </div>
+  );
 }
