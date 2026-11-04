@@ -18,4 +18,4 @@ Excluded on purpose (not in the repository): iNaturalist and IUCN Red List names
 Personal data: voucher / collector strings, locality text and submitter details from sequence records are removed (`scripts/sanitize_public.py`).
 
 Suggested citation: see `CITATION.cff` and the "Atıf ve lisans" section on the site page `/kaynaklar`. Upstream licence evidence: `docs/licence_audit.md`.
-Contact / takedown: PLACEHOLDER_CONTACT_EMAIL
+Contact / takedown: karadagardaa@gmail.com (software), busemenekse@ogr.eskisehir.edu.tr (biological content)

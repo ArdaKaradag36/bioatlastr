@@ -21,7 +21,7 @@ WCVP (Kew) ─► species.csv ─► ENA (INSDC mirror) ─► FASTA + tables �
 | `data/` | `species.csv`, `species_meta.json`, `synonyms.csv`, `sequence_table.csv`, `sequences/*.fasta`, filter logs; `raw/`, `cache/`, `alignments/` are git-ignored |
 | `results/` | CSV summaries, Newick trees, `figures/*.png` |
 | `web/` | Next.js (App Router, TypeScript, Tailwind) site; reads `web/public/data/*.json` |
-| `docs/rapor_taslagi.md` | Turkish TÜBİTAK-style report draft (generated; placeholders for the biologist) |
+| `docs/rapor_taslagi.md` | Internal Turkish report draft (generated; placeholders for the biologist; not a public page) |
 
 ## 0. Requirements and install
 
@@ -169,9 +169,19 @@ so a biologist can check them locally (never publish them). Per-source evidence:
 `THIRD_PARTY_NOTICES.md`, `CITATION.cff`, `data/names/LICENSES.md`, site page `/kaynaklar`. Review sample for the biologist: `exports/turkish_names_check_sample.csv`.
 Names are not expert-verified; ambiguous names are flagged ("birden fazla türe verilen halk adı").
 
-## 8. Privacy and placeholders
+## 8. Privacy
 
 The site has no analytics, cookies or trackers; the sequence search runs in the browser only. Voucher/collector strings, locality text and submitter details
-are removed from published sequence records (`scripts/sanitize_public.py`). Before publishing fill in the placeholders (search for `PLACEHOLDER_`):
-`PLACEHOLDER_CONTACT_EMAIL` (`web/src/lib/site.ts`, `DATA_LICENSE.md`), `PLACEHOLDER_GITHUB_REPO_URL` (`web/src/lib/site.ts`, `CITATION.cff`),
-`PLACEHOLDER_AUTHOR_NAME` (`LICENSE`), `PLACEHOLDER_TUBITAK_2209A_PROJE_BILGISI` (`web/src/lib/site.ts`, footer; leave as is or replace with the project line if the project is funded), `PLACEHOLDER_SURNAME` / `PLACEHOLDER_GIVEN_NAME` (`CITATION.cff`).
+are removed from published sequence records (`scripts/sanitize_public.py`). Contact and repository URLs live in `web/src/lib/site.ts` (`CONTACT_EMAIL`, `CONTACT_EMAIL_BIOLOGY`, `REPO_URL`). `PROJECT_FUNDING` is empty on purpose and the footer renders nothing for it.
+
+## 9. Citation, Zenodo, maintenance
+
+Cite the project with `CITATION.cff` (authors: Karadağ, Arda and Menekşe, Buse; version aligned with the pipeline). The same text is on `/kaynaklar`. Also cite WCVP and the original sequence accessions.
+
+**Zenodo (DOI, done by the maintainer, not in CI):** create a Zenodo deposit, upload this repository (or link the GitHub repo), and use `.zenodo.json` for creators/title/version. After the first DOI exists, add it to `CITATION.cff` as `doi:`.
+
+**Maintenance**
+
+- **Arda Karadağ** — technical updates: rerun the pipeline, publish `web/public/data`, site/CI, Zenodo version.
+- **Buse Menekşe** — biological content and checks (method wording, names, records that look wrong).
+- **Yearly calendar:** refresh WCVP (new `wcvp.zip`) and ENA sequences about once a year, then rerun analysis and republish. Do not invent Turkish names; rebuild them from the open sources.
