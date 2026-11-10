@@ -84,6 +84,26 @@ def mcnemar_exact_p(b: int, c: int) -> float:
     return min(1.0, 2.0 * p_one)
 
 
+def holm_adjust(p_values: list[float]) -> list[float]:
+    """Holm–Bonferroni step-down adjusted p-values (FWER control).
+
+    Prefer Holm over Benjamini–Hochberg here: recommendations are actionable
+    claims (pick marker X), so family-wise error rate control is appropriate.
+    """
+    m = len(p_values)
+    if m == 0:
+        return []
+    order = sorted(range(m), key=lambda i: p_values[i])
+    adjusted = [1.0] * m
+    running = 0.0
+    for rank, idx in enumerate(order):
+        # p_(k) * (m - k + 1) with 0-based rank k
+        val = min(1.0, float(p_values[idx]) * (m - rank))
+        running = max(running, val)
+        adjusted[idx] = running
+    return adjusted
+
+
 def intervals_overlap(a_lo: float, a_hi: float, b_lo: float, b_hi: float) -> bool:
     return not (a_hi < b_lo or b_hi < a_lo)
 
@@ -160,6 +180,8 @@ def paired_compare(
         "n_both_success": 0,
         "n_both_fail": 0,
         "mcnemar_p": None,
+        "mcnemar_p_holm": None,
+        "multiple_comparison": "holm",
         "ci_overlap": None,
         "recommendation": "yetersiz veri",
         "clear_difference": False,
@@ -200,32 +222,42 @@ def paired_compare(
         "mcnemar_p": p,
         "ci_overlap": overlap,
     })
+    # Provisional (raw p); apply_holm_to_pairs overwrites after batch Holm.
+    out["mcnemar_p_holm"] = None
     if n < min_shared:
         out["recommendation"] = "yetersiz veri"
-        return out
-    clear = (not overlap) or (p < alpha and a_better != b_better)
-    out["clear_difference"] = bool(clear)
-    if not clear:
-        out["recommendation"] = "fark belirsiz"
-    elif sb > sa:
-        out["recommendation"] = marker_b
-    elif sa > sb:
-        out["recommendation"] = marker_a
-    else:
-        out["recommendation"] = "fark belirsiz"
         out["clear_difference"] = False
+    else:
+        clear = p < alpha and sa != sb
+        out["clear_difference"] = bool(clear)
+        if not clear:
+            out["recommendation"] = "fark belirsiz"
+        elif sb > sa:
+            out["recommendation"] = marker_b
+        elif sa > sb:
+            out["recommendation"] = marker_a
+        else:
+            out["recommendation"] = "fark belirsiz"
+            out["clear_difference"] = False
     return out
+
+
+def share_label(n_shared: int, n_family: int) -> str:
+    """Turkish 'compared / family total' fragment, e.g. '34 / 1.297 tür'."""
+    return f"{tr_num(n_shared)} / {tr_num(n_family)} tür"
 
 
 def pair_sentence(scope_label: str, row: dict[str, Any], *, genus: str = "") -> str:
     a, b = row["marker_a"], row["marker_b"]
     n = int(row["n_shared"])
+    n_fam = int(row.get("n_family_species") or 0)
     rec = row["recommendation"]
     where = f"Bu cinste ({scope_label})" if genus else "Bu familyada"
+    share = share_label(n, n_fam) if n_fam else tr_num(n) + " tür"
     if n == 0:
-        return f"{where} {a} ile {b} ortak değerlendirilen tür yok."
+        return f"{where} {a} ile {b} ortak değerlendirilen tür yok (ailede {tr_num(n_fam)} tür)."
     base = (
-        f"{where} {tr_num(n)} türde {a} ile {b} aynı tür kümesinde karşılaştırıldı"
+        f"{where} {share} üzerinden {a} ile {b} aynı tür kümesinde karşılaştırıldı"
         f" ({a}: {tr_pct(row['rate_a'])}, {b}: {tr_pct(row['rate_b'])}"
         f"; Wilson %95 {tr_pct(row['wilson_a_low'])}–{tr_pct(row['wilson_a_high'])} ve "
         f"{tr_pct(row['wilson_b_low'])}–{tr_pct(row['wilson_b_high'])})."
@@ -233,13 +265,64 @@ def pair_sentence(scope_label: str, row: dict[str, Any], *, genus: str = "") -> 
     if rec == "yetersiz veri":
         return base + f" Ortak tür sayısı {tr_num(n)} olduğu için öneri yok (eşik altı)."
     if rec == "fark belirsiz":
-        return base + " Fark istatistiksel olarak belirgin değil (aralıklar örtüşüyor / eşleştirilmiş sınama)."
+        return (
+            base
+            + " Fark, çoklu karşılaştırma düzeltmesi (Holm) sonrası istatistiksel olarak belirgin değil."
+        )
     winner, loser = (b, a) if rec == b else (a, b)
     wr, lr = (row["rate_b"], row["rate_a"]) if winner == b else (row["rate_a"], row["rate_b"])
     return (
         base
-        + f" {winner}, {loser}'den daha çok türü ayırdı ({tr_pct(wr)} ve {tr_pct(lr)})."
+        + f" {winner}, {loser}'den daha çok türü ayırdı ({tr_pct(wr)} ve {tr_pct(lr)}; Holm sonrası anlamlı)."
     )
+
+
+def decide_recommendation(row: dict[str, Any], *, min_shared: int, alpha: float) -> None:
+    """Set recommendation / clear_difference from n_shared and Holm-adjusted p (in place)."""
+    n = int(row["n_shared"])
+    sa, sb = int(row["success_a"]), int(row["success_b"])
+    p_adj = row.get("mcnemar_p_holm")
+    if n < min_shared:
+        row["recommendation"] = "yetersiz veri"
+        row["clear_difference"] = False
+        return
+    clear = (
+        p_adj is not None
+        and float(p_adj) < alpha
+        and sa != sb
+    )
+    row["clear_difference"] = bool(clear)
+    if not clear:
+        row["recommendation"] = "fark belirsiz"
+    elif sb > sa:
+        row["recommendation"] = row["marker_b"]
+    elif sa > sb:
+        row["recommendation"] = row["marker_a"]
+    else:
+        row["recommendation"] = "fark belirsiz"
+        row["clear_difference"] = False
+
+
+def apply_holm_to_pairs(pair_rows: list[dict[str, Any]], *, min_shared: int, alpha: float) -> None:
+    """Holm-adjust McNemar p across all adequate family/genus pair tests; re-decide recs."""
+    tested_idx = [
+        i for i, r in enumerate(pair_rows)
+        if int(r["n_shared"]) >= min_shared and r.get("mcnemar_p") is not None
+    ]
+    raw = [float(pair_rows[i]["mcnemar_p"]) for i in tested_idx]
+    adjusted = holm_adjust(raw)
+    for i, r in enumerate(pair_rows):
+        r["mcnemar_p_holm"] = None
+        r["multiple_comparison"] = "holm"
+    for i, adj in zip(tested_idx, adjusted):
+        pair_rows[i]["mcnemar_p_holm"] = adj
+    for r in pair_rows:
+        decide_recommendation(r, min_shared=min_shared, alpha=alpha)
+        r["sentence"] = pair_sentence(
+            r["family"] if r["scope_level"] == "family" else f"{r['family']}/{r['genus']}",
+            r,
+            genus=r.get("genus") or "",
+        )
 
 
 def build_status_maps(table: pd.DataFrame) -> tuple[dict[str, dict[str, dict[str, int]]], dict[tuple[str, str], dict[str, dict[str, int]]]]:
@@ -262,18 +345,19 @@ def compare_scope(
     scope_name: str,
     family: str,
     genus: str,
+    n_family_species: int,
     cfg: dict[str, Any],
 ) -> list[dict[str, Any]]:
     rows = []
     present = [m for m in MARKERS if any(m in sp for sp in statuses.values())]
     for ma, mb in combinations(present, 2):
-
         cmp = paired_compare(
             statuses, ma, mb,
             min_shared=cfg["min_shared_species"],
             z=cfg["wilson_z"],
             alpha=cfg["mcnemar_alpha"],
         )
+        cmp["n_family_species"] = int(n_family_species)
         label = family if scope_level == "family" else f"{family}/{genus}"
         sentence = pair_sentence(label, cmp, genus=genus)
         rows.append({
@@ -288,74 +372,130 @@ def compare_scope(
     return rows
 
 
-def summarize_family_fixed(pair_rows: list[dict[str, Any]], family: str) -> dict[str, Any]:
+def summarize_family_fixed(
+    pair_rows: list[dict[str, Any]],
+    family: str,
+    *,
+    n_family_species: int,
+) -> dict[str, Any]:
+    """Family recommendation via pair-voting (çift oylaması) on family-level rows only.
+
+    Each clear marker-pair (rbcL–matK, rbcL–ITS, matK–ITS) casts one vote for its
+    winner. Genus rows are not merged in — family maps already key by species once,
+    so a species cannot vote twice. Tied vote tallies → fark belirsiz.
+    """
     fam_pairs = [r for r in pair_rows if r["scope_level"] == "family" and r["family"] == family]
     adequate = [r for r in fam_pairs if r["recommendation"] != "yetersiz veri"]
     clear = [r for r in fam_pairs if r["clear_difference"]]
+    n_fam = int(n_family_species)
+
+    def _base(**extra: Any) -> dict[str, Any]:
+        return {
+            "family": family,
+            "n_family_species": n_fam,
+            "n_pairs": len(fam_pairs),
+            "n_pairs_adequate": len(adequate),
+            "n_pairs_clear": len(clear),
+            **extra,
+        }
+
     if not fam_pairs:
-        return {
-            "family": family, "recommendation": "yetersiz veri", "n_species_behind": 0,
-            "sentence": f"{family} için karşılaştırılacak marker çifti yok.",
-            "n_pairs": 0, "n_pairs_adequate": 0, "n_pairs_clear": 0,
-        }
+        return _base(
+            recommendation="yetersiz veri",
+            n_species_behind=0,
+            sentence=f"{family} için karşılaştırılacak marker çifti yok (ailede {tr_num(n_fam)} tür).",
+            n_pairs=0, n_pairs_adequate=0, n_pairs_clear=0,
+        )
     if not adequate:
-        n_behind = max(r["n_shared"] for r in fam_pairs)
-        return {
-            "family": family, "recommendation": "yetersiz veri", "n_species_behind": n_behind,
-            "sentence": (
+        n_behind = max(int(r["n_shared"]) for r in fam_pairs)
+        return _base(
+            recommendation="yetersiz veri",
+            n_species_behind=n_behind,
+            sentence=(
                 f"{family}da karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında "
-                f"(en fazla {tr_num(n_behind)} tür)."
+                f"(en fazla {share_label(n_behind, n_fam)})."
             ),
-            "n_pairs": len(fam_pairs), "n_pairs_adequate": 0, "n_pairs_clear": 0,
-        }
+        )
     if not clear:
-        n_behind = max(r["n_shared"] for r in adequate)
-        return {
-            "family": family, "recommendation": "fark belirsiz", "n_species_behind": n_behind,
-            "sentence": (
-                f"{family}da en az bir çiftte {tr_num(n_behind)} ortak tür var ama başarı farkı belirgin değil."
+        n_behind = max(int(r["n_shared"]) for r in adequate)
+        return _base(
+            recommendation="fark belirsiz",
+            n_species_behind=n_behind,
+            sentence=(
+                f"{family}da en az bir çiftte {share_label(n_behind, n_fam)} ortak kümesi var ama "
+                f"Holm düzeltmesi sonrası başarı farkı belirgin değil."
             ),
-            "n_pairs": len(fam_pairs), "n_pairs_adequate": len(adequate), "n_pairs_clear": 0,
-        }
+        )
     from collections import Counter
     votes = Counter(r["recommendation"] for r in clear)
     top = votes.most_common()
     if len(top) > 1 and top[0][1] == top[1][1]:
-        n_behind = max(r["n_shared"] for r in clear)
-        return {
-            "family": family, "recommendation": "fark belirsiz", "n_species_behind": n_behind,
-            "sentence": f"{family}da farklı marker çiftleri çelişkili öneriler verdi; fark belirsiz.",
-            "n_pairs": len(fam_pairs), "n_pairs_adequate": len(adequate), "n_pairs_clear": len(clear),
-        }
+        n_behind = max(int(r["n_shared"]) for r in clear)
+        return _base(
+            recommendation="fark belirsiz",
+            n_species_behind=n_behind,
+            sentence=(
+                f"{family}da farklı marker çiftleri çelişkili öneriler verdi "
+                f"({share_label(n_behind, n_fam)}); fark belirsiz."
+            ),
+        )
     winner = top[0][0]
     supporting = [r for r in clear if r["recommendation"] == winner]
     best = max(supporting, key=lambda r: abs(r["rate_diff_b_minus_a"] or 0))
-    return {
-        "family": family, "recommendation": winner, "n_species_behind": int(best["n_shared"]),
-        "sentence": best["sentence"],
-        "n_pairs": len(fam_pairs), "n_pairs_adequate": len(adequate), "n_pairs_clear": len(clear),
-    }
+    return _base(
+        recommendation=winner,
+        n_species_behind=int(best["n_shared"]),
+        sentence=best["sentence"],
+    )
+
+
+def load_family_species_counts() -> dict[str, int]:
+    """Flora species counts per family (denominator for n / total).
+
+    Prefer ``web/public/data/families.json`` (published atlas totals). Fall back to
+    aggregating ``group_summary`` species counts only if that file is missing.
+    """
+    fam_path = WEB_DATA / "families.json"
+    if fam_path.exists():
+        with open(fam_path, encoding="utf-8") as fh:
+            rows = json.load(fh)
+        return {str(r["family"]): int(r["species"]) for r in rows}
+    gs = pd.read_csv(GROUP_SUMMARY)
+    # Upper bound from analysed groups (under-counts flora for unanalysed families).
+    return gs.groupby("family")["species"].max().astype(int).to_dict()
 
 
 def run_marker_guide(cfg: dict[str, Any] | None = None) -> dict[str, Any]:
     gcfg = resolve_guide_cfg(cfg)
     table = load_species_status_table()
     fam_maps, gen_maps = build_status_maps(table)
+    family_totals = load_family_species_counts()
 
     pair_rows: list[dict[str, Any]] = []
     for family, statuses in sorted(fam_maps.items()):
+        n_fam = int(family_totals.get(family, 0))
         pair_rows.extend(compare_scope(
             statuses, scope_level="family", scope_name=family,
-            family=family, genus="", cfg=gcfg,
+            family=family, genus="", n_family_species=n_fam, cfg=gcfg,
         ))
     for (family, genus), statuses in sorted(gen_maps.items()):
+        n_fam = int(family_totals.get(family, 0))
         pair_rows.extend(compare_scope(
             statuses, scope_level="genus", scope_name=f"{family}/{genus}",
-            family=family, genus=genus, cfg=gcfg,
+            family=family, genus=genus, n_family_species=n_fam, cfg=gcfg,
         ))
 
+    apply_holm_to_pairs(
+        pair_rows,
+        min_shared=gcfg["min_shared_species"],
+        alpha=gcfg["mcnemar_alpha"],
+    )
+
     pairs_df = pd.DataFrame(pair_rows)
-    summaries = [summarize_family_fixed(pair_rows, f) for f in sorted(fam_maps)]
+    summaries = [
+        summarize_family_fixed(pair_rows, f, n_family_species=int(family_totals.get(f, 0)))
+        for f in sorted(fam_maps)
+    ]
     summary_df = pd.DataFrame(summaries)
 
     RESULTS.mkdir(parents=True, exist_ok=True)
@@ -366,6 +506,7 @@ def run_marker_guide(cfg: dict[str, Any] | None = None) -> dict[str, Any]:
     n_rec = int((summary_df["recommendation"].isin(MARKERS)).sum())
     n_yetersiz = int((summary_df["recommendation"] == "yetersiz veri").sum())
     n_belirsiz = int((summary_df["recommendation"] == "fark belirsiz").sum())
+    n_holm_tests = int(pairs_df["mcnemar_p_holm"].notna().sum()) if len(pairs_df) else 0
 
     def _jsonable(obj: Any) -> Any:
         if isinstance(obj, dict):
@@ -386,6 +527,10 @@ def run_marker_guide(cfg: dict[str, Any] | None = None) -> dict[str, Any]:
         "criterion": "strict species-level (all evaluated sequences must succeed)",
         "pairing": "same species evaluated in both markers",
         "min_shared_species": gcfg["min_shared_species"],
+        "multiple_comparison": (
+            "Holm–Bonferroni across all family/genus pair tests with n ≥ min_shared_species "
+            "(FWER control; preferred over BH/FDR because recommendations are actionable claims)"
+        ),
         "combinations": (
             "skipped: this branch has mean_min_distance combinations only; "
             "strict_combined_distance is not merged"
@@ -400,6 +545,7 @@ def run_marker_guide(cfg: dict[str, Any] | None = None) -> dict[str, Any]:
             "yetersiz_veri": n_yetersiz,
             "fark_belirsiz": n_belirsiz,
             "pair_rows": int(len(pairs_df)),
+            "holm_tests": n_holm_tests,
             "genus_scopes": int(pairs_df.loc[pairs_df.scope_level == "genus", "scope_name"].nunique()) if len(pairs_df) else 0,
         },
         "families": _jsonable(summary_df.to_dict(orient="records")),
@@ -413,6 +559,7 @@ def run_marker_guide(cfg: dict[str, Any] | None = None) -> dict[str, Any]:
         "n_recommended": n_rec,
         "n_yetersiz": n_yetersiz,
         "n_belirsiz": n_belirsiz,
+        "n_holm_tests": n_holm_tests,
         "examples": summary_df.head(3).to_dict(orient="records"),
         "summary": summary_df,
         "pairs": pairs_df,

@@ -15,6 +15,7 @@ type Payload = {
   min_shared_species: number;
   combinations: string;
   caveat: string;
+  multiple_comparison?: string;
   counts: {
     families: number;
     recommended: number;
@@ -48,14 +49,16 @@ export default function MarkerGuidePage() {
         how={
           <p>
             Önce öneri sütununa bakın. “Yetersiz veri” ortak tür &lt; {num(data.min_shared_species)} demektir.
-            “Fark belirsiz” ortak küme yeterli ama Wilson %95 aralıkları örtüşüyor (veya eşleştirilmiş sınama net değil).
-            Yeşil rozet, belirgin üstün çıkan bölgeyi gösterir. Altındaki cümle sayıları Türkçe biçimde yazar.
+            “Fark belirsiz” ortak küme yeterli ama Holm düzeltmesi sonrası anlamlı üstünlük yok.
+            Yeşil rozet, düzeltme sonrası belirgin üstün çıkan bölgeyi gösterir. Sayılar “ortak / ailedeki toplam tür” biçimindedir.
           </p>
         }
       />
 
       <Callout tone="warn">
         <strong>Uyarı:</strong> {data.caveat} Birleşik marker tanımı bu sürümde atlandı: {data.combinations}.
+        {" "}
+        {num(c.yetersiz_veri)} / {num(c.families)} ailede ortak tür eşiği altında kaldığı için öneri yok.
       </Callout>
 
       <div className="mt-6 grid gap-4 sm:grid-cols-3">
@@ -81,7 +84,11 @@ export default function MarkerGuidePage() {
         <ul className="max-w-3xl list-disc space-y-1 pl-5 text-stone-800">
           <li>Ölçüt: {data.criterion}.</li>
           <li>Eşleştirme: {data.pairing}.</li>
-          <li>Başarı oranına Wilson %95 güven aralığı; fark için aralık örtüşmesi veya McNemar (eşleştirilmiş) sınaması.</li>
+          <li>Başarı oranına Wilson %95 güven aralığı; fark için eşleştirilmiş McNemar sınaması.</li>
+          <li>
+            Çoklu karşılaştırma: {data.multiple_comparison ?? "Holm–Bonferroni (aile/cins çift testleri)"}.
+            Öneri yalnızca düzeltme sonrası anlamlıysa verilir.
+          </li>
           <li>Büyük ailelerde analiz cinslere bölünmüşse cins düzeyinde de aynı mantık uygulanır (CSV’de).</li>
         </ul>
       </section>

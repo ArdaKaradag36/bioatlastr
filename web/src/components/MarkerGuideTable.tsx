@@ -7,6 +7,7 @@ export type FamilyGuideRow = {
   family: string;
   recommendation: string;
   n_species_behind: number;
+  n_family_species: number;
   sentence: string;
   n_pairs: number;
   n_pairs_adequate: number;
@@ -64,7 +65,7 @@ export default function MarkerGuideTable({ rows }: { rows: FamilyGuideRow[] }) {
             <tr>
               <th className="p-3">Aile</th>
               <th className="p-3">Öneri</th>
-              <th className="p-3">Ortak tür (n)</th>
+              <th className="p-3">Ortak / aile türü</th>
               <th className="p-3">Açıklama</th>
             </tr>
           </thead>
@@ -77,7 +78,9 @@ export default function MarkerGuideTable({ rows }: { rows: FamilyGuideRow[] }) {
                     {r.recommendation}
                   </span>
                 </td>
-                <td className="p-3 tabular-nums text-stone-700">{num(r.n_species_behind)}</td>
+                <td className="p-3 tabular-nums text-stone-700">
+                  {num(r.n_species_behind)} / {num(r.n_family_species)}
+                </td>
                 <td className="max-w-xl p-3 text-stone-700">{r.sentence}</td>
               </tr>
             ))}
