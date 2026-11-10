@@ -367,6 +367,20 @@ def run_marker_guide(cfg: dict[str, Any] | None = None) -> dict[str, Any]:
     n_yetersiz = int((summary_df["recommendation"] == "yetersiz veri").sum())
     n_belirsiz = int((summary_df["recommendation"] == "fark belirsiz").sum())
 
+    def _jsonable(obj: Any) -> Any:
+        if isinstance(obj, dict):
+            return {k: _jsonable(v) for k, v in obj.items()}
+        if isinstance(obj, list):
+            return [_jsonable(v) for v in obj]
+        if isinstance(obj, float) and (math.isnan(obj) or math.isinf(obj)):
+            return None
+        if hasattr(obj, "item"):
+            try:
+                return _jsonable(obj.item())
+            except Exception:
+                return obj
+        return obj
+
     payload = {
         "generated_from": "pipeline/barcode_atlas/marker_guide.py",
         "criterion": "strict species-level (all evaluated sequences must succeed)",
@@ -386,13 +400,13 @@ def run_marker_guide(cfg: dict[str, Any] | None = None) -> dict[str, Any]:
             "yetersiz_veri": n_yetersiz,
             "fark_belirsiz": n_belirsiz,
             "pair_rows": int(len(pairs_df)),
-            "genus_scopes": int((pairs_df["scope_level"] == "genus").sum() > 0 and pairs_df.loc[pairs_df.scope_level == "genus", "scope_name"].nunique()),
+            "genus_scopes": int(pairs_df.loc[pairs_df.scope_level == "genus", "scope_name"].nunique()) if len(pairs_df) else 0,
         },
-        "families": summary_df.to_dict(orient="records"),
-        "pairs": pairs_df.to_dict(orient="records"),
+        "families": _jsonable(summary_df.to_dict(orient="records")),
+        "pairs": _jsonable(pairs_df.to_dict(orient="records")),
     }
     with open(WEB_DATA / "marker_guide.json", "w", encoding="utf-8") as fh:
-        json.dump(payload, fh, ensure_ascii=False, indent=2)
+        json.dump(payload, fh, ensure_ascii=False, indent=2, allow_nan=False)
 
     return {
         "n_families": int(len(summary_df)),
