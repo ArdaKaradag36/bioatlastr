@@ -43,6 +43,8 @@ const FOOT = [
   { href: "/turler", label: "Türler" },
   { href: "/agaclar", label: "Ağaçlar" },
   { href: "/veri-bosluklari", label: "Veri boşlukları" },
+  { href: "/oncelik", label: "Öncelik listesi" },
+  { href: "/rehber", label: "Marker rehberi" },
   { href: "/dizi-ara", label: "Dizi ara" },
   { href: "/sozluk", label: "Sözlük" },
   { href: "/yontem", label: "Yöntem ve sınırlar" },

@@ -1,0 +1,107 @@
+family,n_family_species,n_pairs,n_pairs_adequate,n_pairs_clear,recommendation,n_species_behind,sentence
+Acanthaceae,4,1,0,0,yetersiz veri,1,Acanthaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 1 / 4 tür).
+Alismataceae,6,3,0,0,yetersiz veri,5,Alismataceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 5 / 6 tür).
+Amaranthaceae,112,3,2,0,fark belirsiz,28,Amaranthaceaeda en az bir çiftte 28 / 112 tür ortak kümesi var ama Holm düzeltmesi sonrası başarı farkı belirgin değil.
+Amaryllidaceae,271,3,0,0,yetersiz veri,12,Amaryllidaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 12 / 271 tür).
+Anacardiaceae,7,1,0,0,yetersiz veri,1,Anacardiaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 1 / 7 tür).
+Apiaceae,508,3,1,1,matK,43,"Bu familyada 43 / 508 tür üzerinden rbcL ile matK aynı tür kümesinde karşılaştırıldı (rbcL: %32,6, matK: %67,4; Wilson %95 %20,5–%47,5 ve %52,5–%79,5). matK, rbcL'den daha çok türü ayırdı (%67,4 ve %32,6; Holm sonrası anlamlı)."
+Apocynaceae,21,3,0,0,yetersiz veri,8,Apocynaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 8 / 21 tür).
+Araceae,38,1,0,0,yetersiz veri,13,Araceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 13 / 38 tür).
+Araliaceae,4,3,0,0,yetersiz veri,2,Araliaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 2 / 4 tür).
+Aristolochiaceae,27,1,0,0,yetersiz veri,2,Aristolochiaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 2 / 27 tür).
+Asparagaceae,224,3,1,0,fark belirsiz,29,Asparagaceaeda en az bir çiftte 29 / 224 tür ortak kümesi var ama Holm düzeltmesi sonrası başarı farkı belirgin değil.
+Asphodelaceae,20,3,0,0,yetersiz veri,1,Asphodelaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 1 / 20 tür).
+Aspleniaceae,31,1,0,0,yetersiz veri,3,Aspleniaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 3 / 31 tür).
+Asteraceae,1296,3,3,2,ITS,34,"Bu familyada 34 / 1.296 tür üzerinden rbcL ile ITS aynı tür kümesinde karşılaştırıldı (rbcL: %17,6, ITS: %79,4; Wilson %95 %8,3–%33,5 ve %63,2–%89,7). ITS, rbcL'den daha çok türü ayırdı (%79,4 ve %17,6; Holm sonrası anlamlı)."
+Berberidaceae,8,1,0,0,yetersiz veri,1,Berberidaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 1 / 8 tür).
+Betulaceae,11,3,0,0,yetersiz veri,9,Betulaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 9 / 11 tür).
+Boraginaceae,346,3,1,0,fark belirsiz,37,Boraginaceaeda en az bir çiftte 37 / 346 tür ortak kümesi var ama Holm düzeltmesi sonrası başarı farkı belirgin değil.
+Brassicaceae,618,3,1,0,fark belirsiz,32,Brassicaceaeda en az bir çiftte 32 / 618 tür ortak kümesi var ama Holm düzeltmesi sonrası başarı farkı belirgin değil.
+Buxaceae,2,1,0,0,yetersiz veri,1,Buxaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 1 / 2 tür).
+Campanulaceae,162,1,0,0,yetersiz veri,11,Campanulaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 11 / 162 tür).
+Cannabaceae,5,1,0,0,yetersiz veri,1,Cannabaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 1 / 5 tür).
+Caprifoliaceae,168,3,0,0,yetersiz veri,10,Caprifoliaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 10 / 168 tür).
+Caryophyllaceae,593,3,1,0,fark belirsiz,38,Caryophyllaceaeda en az bir çiftte 38 / 593 tür ortak kümesi var ama Holm düzeltmesi sonrası başarı farkı belirgin değil.
+Celastraceae,6,1,0,0,yetersiz veri,4,Celastraceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 4 / 6 tür).
+Cistaceae,31,1,0,0,yetersiz veri,5,Cistaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 5 / 31 tür).
+Colchicaceae,49,1,1,0,fark belirsiz,30,Colchicaceaeda en az bir çiftte 30 / 49 tür ortak kümesi var ama Holm düzeltmesi sonrası başarı farkı belirgin değil.
+Convolvulaceae,56,3,1,0,fark belirsiz,15,Convolvulaceaeda en az bir çiftte 15 / 56 tür ortak kümesi var ama Holm düzeltmesi sonrası başarı farkı belirgin değil.
+Cornaceae,2,1,0,0,yetersiz veri,2,Cornaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 2 / 2 tür).
+Crassulaceae,89,3,0,0,yetersiz veri,6,Crassulaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 6 / 89 tür).
+Cucurbitaceae,7,3,0,0,yetersiz veri,3,Cucurbitaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 3 / 7 tür).
+Cupressaceae,10,3,0,0,yetersiz veri,6,Cupressaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 6 / 10 tür).
+Cyperaceae,143,3,1,1,matK,65,"Bu familyada 65 / 143 tür üzerinden rbcL ile matK aynı tür kümesinde karşılaştırıldı (rbcL: %13,8, matK: %44,6; Wilson %95 %7,5–%24,3 ve %33,2–%56,7). matK, rbcL'den daha çok türü ayırdı (%44,6 ve %13,8; Holm sonrası anlamlı)."
+Droseraceae,2,3,0,0,yetersiz veri,2,Droseraceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 2 / 2 tür).
+Elaeagnaceae,2,1,0,0,yetersiz veri,2,Elaeagnaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 2 / 2 tür).
+Elatinaceae,2,1,0,0,yetersiz veri,2,Elatinaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 2 / 2 tür).
+Ephedraceae,5,3,0,0,yetersiz veri,3,Ephedraceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 3 / 5 tür).
+Equisetaceae,8,1,0,0,yetersiz veri,6,Equisetaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 6 / 8 tür).
+Ericaceae,27,3,0,0,yetersiz veri,14,Ericaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 14 / 27 tür).
+Euphorbiaceae,97,3,1,0,fark belirsiz,17,Euphorbiaceaeda en az bir çiftte 17 / 97 tür ortak kümesi var ama Holm düzeltmesi sonrası başarı farkı belirgin değil.
+Fabaceae,1027,3,3,0,fark belirsiz,95,Fabaceaeda en az bir çiftte 95 / 1.027 tür ortak kümesi var ama Holm düzeltmesi sonrası başarı farkı belirgin değil.
+Fagaceae,20,3,3,0,fark belirsiz,16,Fagaceaeda en az bir çiftte 16 / 20 tür ortak kümesi var ama Holm düzeltmesi sonrası başarı farkı belirgin değil.
+Frankeniaceae,3,1,0,0,yetersiz veri,1,Frankeniaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 1 / 3 tür).
+Gentianaceae,30,1,0,0,yetersiz veri,10,Gentianaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 10 / 30 tür).
+Geraniaceae,68,3,0,0,yetersiz veri,13,Geraniaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 13 / 68 tür).
+Grossulariaceae,6,1,0,0,yetersiz veri,2,Grossulariaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 2 / 6 tür).
+Haloragaceae,2,1,0,0,yetersiz veri,2,Haloragaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 2 / 2 tür).
+Hydrocharitaceae,7,3,0,0,yetersiz veri,5,Hydrocharitaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 5 / 7 tür).
+Hypericaceae,102,3,0,0,yetersiz veri,6,Hypericaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 6 / 102 tür).
+Iridaceae,200,3,0,0,yetersiz veri,9,Iridaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 9 / 200 tür).
+Isoetaceae,7,0,0,0,yetersiz veri,0,Isoetaceae için karşılaştırılacak marker çifti yok (ailede 7 tür).
+Juglandaceae,2,1,0,0,yetersiz veri,1,Juglandaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 1 / 2 tür).
+Juncaceae,38,1,0,0,yetersiz veri,14,Juncaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 14 / 38 tür).
+Juncaginaceae,3,1,0,0,yetersiz veri,2,Juncaginaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 2 / 3 tür).
+Lamiaceae,610,3,1,0,fark belirsiz,54,Lamiaceaeda en az bir çiftte 54 / 610 tür ortak kümesi var ama Holm düzeltmesi sonrası başarı farkı belirgin değil.
+Lentibulariaceae,5,3,0,0,yetersiz veri,2,Lentibulariaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 2 / 5 tür).
+Liliaceae,117,3,1,0,fark belirsiz,20,Liliaceaeda en az bir çiftte 20 / 117 tür ortak kümesi var ama Holm düzeltmesi sonrası başarı farkı belirgin değil.
+Linaceae,46,1,0,0,yetersiz veri,9,Linaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 9 / 46 tür).
+Linderniaceae,2,0,0,0,yetersiz veri,0,Linderniaceae için karşılaştırılacak marker çifti yok (ailede 2 tür).
+Lycopodiaceae,6,1,0,0,yetersiz veri,3,Lycopodiaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 3 / 6 tür).
+Lythraceae,14,3,0,0,yetersiz veri,6,Lythraceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 6 / 14 tür).
+Malvaceae,54,1,0,0,yetersiz veri,13,Malvaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 13 / 54 tür).
+Marsileaceae,3,0,0,0,yetersiz veri,0,Marsileaceae için karşılaştırılacak marker çifti yok (ailede 3 tür).
+Melanthiaceae,3,1,0,0,yetersiz veri,2,Melanthiaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 2 / 3 tür).
+Molluginaceae,2,1,0,0,yetersiz veri,1,Molluginaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 1 / 2 tür).
+Nymphaeaceae,2,3,0,0,yetersiz veri,2,Nymphaeaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 2 / 2 tür).
+Oleaceae,10,3,0,0,yetersiz veri,7,Oleaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 7 / 10 tür).
+Onagraceae,24,3,0,0,yetersiz veri,13,Onagraceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 13 / 24 tür).
+Ophioglossaceae,4,1,0,0,yetersiz veri,1,Ophioglossaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 1 / 4 tür).
+Orchidaceae,94,3,1,0,fark belirsiz,22,Orchidaceaeda en az bir çiftte 22 / 94 tür ortak kümesi var ama Holm düzeltmesi sonrası başarı farkı belirgin değil.
+Orobanchaceae,104,3,0,0,yetersiz veri,10,Orobanchaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 10 / 104 tür).
+Paeoniaceae,5,3,0,0,yetersiz veri,2,Paeoniaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 2 / 5 tür).
+Papaveraceae,76,1,0,0,yetersiz veri,13,Papaveraceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 13 / 76 tür).
+Phyllanthaceae,3,1,0,0,yetersiz veri,2,Phyllanthaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 2 / 3 tür).
+Pinaceae,9,1,0,0,yetersiz veri,6,Pinaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 6 / 9 tür).
+Plantaginaceae,163,3,1,0,fark belirsiz,33,Plantaginaceaeda en az bir çiftte 33 / 163 tür ortak kümesi var ama Holm düzeltmesi sonrası başarı farkı belirgin değil.
+Plumbaginaceae,93,3,0,0,yetersiz veri,1,Plumbaginaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 1 / 93 tür).
+Poaceae,513,3,3,2,ITS,32,"Bu familyada 32 / 513 tür üzerinden rbcL ile ITS aynı tür kümesinde karşılaştırıldı (rbcL: %9,4, ITS: %53,1; Wilson %95 %3,2–%24,2 ve %36,4–%69,1). ITS, rbcL'den daha çok türü ayırdı (%53,1 ve %9,4; Holm sonrası anlamlı)."
+Polygalaceae,20,1,0,0,yetersiz veri,2,Polygalaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 2 / 20 tür).
+Polygonaceae,82,3,1,0,fark belirsiz,30,Polygonaceaeda en az bir çiftte 30 / 82 tür ortak kümesi var ama Holm düzeltmesi sonrası başarı farkı belirgin değil.
+Polypodiaceae,22,1,0,0,yetersiz veri,5,Polypodiaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 5 / 22 tür).
+Potamogetonaceae,20,3,1,0,fark belirsiz,18,Potamogetonaceaeda en az bir çiftte 18 / 20 tür ortak kümesi var ama Holm düzeltmesi sonrası başarı farkı belirgin değil.
+Primulaceae,50,3,0,0,yetersiz veri,12,Primulaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 12 / 50 tür).
+Pteridaceae,13,3,0,0,yetersiz veri,3,Pteridaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 3 / 13 tür).
+Ranunculaceae,210,3,1,0,fark belirsiz,30,Ranunculaceaeda en az bir çiftte 30 / 210 tür ortak kümesi var ama Holm düzeltmesi sonrası başarı farkı belirgin değil.
+Resedaceae,17,1,0,0,yetersiz veri,2,Resedaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 2 / 17 tür).
+Rhamnaceae,26,1,0,0,yetersiz veri,2,Rhamnaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 2 / 26 tür).
+Rosaceae,266,3,1,0,fark belirsiz,49,Rosaceaeda en az bir çiftte 49 / 266 tür ortak kümesi var ama Holm düzeltmesi sonrası başarı farkı belirgin değil.
+Rubiaceae,187,3,0,0,yetersiz veri,14,Rubiaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 14 / 187 tür).
+Ruppiaceae,2,3,0,0,yetersiz veri,2,Ruppiaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 2 / 2 tür).
+Rutaceae,20,3,0,0,yetersiz veri,2,Rutaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 2 / 20 tür).
+Salicaceae,27,3,0,0,yetersiz veri,9,Salicaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 9 / 27 tür).
+Santalaceae,22,3,0,0,yetersiz veri,2,Santalaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 2 / 22 tür).
+Sapindaceae,12,3,0,0,yetersiz veri,7,Sapindaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 7 / 12 tür).
+Saxifragaceae,22,3,0,0,yetersiz veri,5,Saxifragaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 5 / 22 tür).
+Scrophulariaceae,315,3,0,0,yetersiz veri,5,Scrophulariaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 5 / 315 tür).
+Selaginellaceae,2,0,0,0,yetersiz veri,0,Selaginellaceae için karşılaştırılacak marker çifti yok (ailede 2 tür).
+Smilacaceae,2,0,0,0,yetersiz veri,0,Smilacaceae için karşılaştırılacak marker çifti yok (ailede 2 tür).
+Solanaceae,20,3,0,0,yetersiz veri,11,Solanaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 11 / 20 tür).
+Tamaricaceae,10,1,0,0,yetersiz veri,3,Tamaricaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 3 / 10 tür).
+Thymelaeaceae,18,3,0,0,yetersiz veri,2,Thymelaeaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 2 / 18 tür).
+Typhaceae,10,1,0,0,yetersiz veri,7,Typhaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 7 / 10 tür).
+Ulmaceae,5,3,0,0,yetersiz veri,3,Ulmaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 3 / 5 tür).
+Urticaceae,10,1,0,0,yetersiz veri,3,Urticaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 3 / 10 tür).
+Viburnaceae,7,3,0,0,yetersiz veri,6,Viburnaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 6 / 7 tür).
+Violaceae,32,1,0,0,yetersiz veri,4,Violaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 4 / 32 tür).
+Zygophyllaceae,4,1,0,0,yetersiz veri,2,Zygophyllaceaeda karşılaştırılan çiftlerin hepsinde ortak tür sayısı öneri eşiğinin altında (en fazla 2 / 4 tür).
