@@ -9,7 +9,7 @@
   "access_right": "open",
   "license": "mit",
   "keywords": ["DNA barcoding", "rbcL", "matK", "ITS", "Turkey", "flora", "plants"],
-  "version": "0.2.0",
+  "version": "0.3.0",
   "language": "tur",
   "related_identifiers": [
     {

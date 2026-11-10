@@ -7,7 +7,11 @@ import Term from "@/components/Term";
 import { Callout, Card, PageIntro, PageTitle, Purpose } from "@/components/ui";
 import { num } from "@/lib/format";
 
-export const metadata: Metadata = { title: "Marker rehberi" };
+export const metadata: Metadata = {
+  title: "Marker rehberi",
+  description:
+    "Aile bazında rbcL, matK ve ITS karşılaştırması: aynı tür alt kümesinde eşleştirilmiş başarı oranları ve Holm düzeltmeli öneriler.",
+};
 
 type Payload = {
   criterion: string;

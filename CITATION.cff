@@ -9,8 +9,8 @@ authors:
     given-names: "Buse"
 repository-code: "https://github.com/ArdaKaradag36/bioatlastr"
 license: MIT
-date-released: "2026-11-04"
-version: "0.2.0"
+date-released: "2026-11-10"
+version: "0.3.0"
 keywords: [DNA barcoding, rbcL, matK, ITS, Turkey, flora, plants]
 abstract: "A research atlas that asks whether short DNA barcode regions (rbcL, matK, ITS) can separate the vascular plant species of Turkey. Species names come from WCVP (Kew); sequences come from ENA/INSDC. Success is measured with a threshold-free nearest-neighbour test: every evaluated sequence of a species must match its own species. BOLD was not searched. Results are estimates without expert verification and must not be used for scientific, regulatory or commercial decisions."
 references:

@@ -8,7 +8,11 @@ import Term from "@/components/Term";
 import { Callout, Card, PageIntro, PageTitle, Purpose } from "@/components/ui";
 import { num, pct } from "@/lib/format";
 
-export const metadata: Metadata = { title: "Öncelik listesi" };
+export const metadata: Metadata = {
+  title: "Öncelik listesi",
+  description:
+    "ENA/INSDC’de henüz kullanılabilir barkodu olmayan türler için açık veriyle hesaplanmış dizileme öncelik listeleri (skorlar, cins/aile tavanları).",
+};
 
 type SensPair = {
   set_a: string;

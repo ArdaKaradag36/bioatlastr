@@ -30,7 +30,7 @@ Teknik yeniden üretim adımları burada yoktur; ayrıntılı teknik rapor isten
 
 ## Atıf
 
-Karadağ, A. & Menekşe, B. (2026). Türkiye Bitki DNA Barkod Atlası (Turkey Plant DNA Barcode Atlas) (version 0.2.0). https://github.com/ArdaKaradag36/bioatlastr
+Karadağ, A. & Menekşe, B. (2026). Türkiye Bitki DNA Barkod Atlası (Turkey Plant DNA Barcode Atlas) (version 0.3.0). https://github.com/ArdaKaradag36/bioatlastr
 
 Ayrıca WCVP (Kew) ve kullandığınız dizilerin erişim numaralarına atıf yapın. Ayrıntı: `CITATION.cff`, `DATA_LICENSE.md`.
 

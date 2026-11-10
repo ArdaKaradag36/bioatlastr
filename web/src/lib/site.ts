@@ -18,7 +18,7 @@ export const PROJECT_KIND_TR = "Araştırma projesi";
 export const PROJECT_KIND_EN = "Research project";
 export const PROJECT_FUNDING = "";
 export const PROJECT_YEAR = 2026;
-export const PROJECT_VERSION = "0.2.0";
+export const PROJECT_VERSION = "0.3.0";
 
 export const STATIC_PATHS = [
   "/",
