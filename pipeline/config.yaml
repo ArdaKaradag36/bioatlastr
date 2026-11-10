@@ -113,4 +113,10 @@ priority:
       family_gap: 0.15
   top_n: 100
 
+# Paired marker guide (same species set only; no raw cross-marker rate comparison).
+marker_guide:
+  min_shared_species: 15
+  mcnemar_alpha: 0.05
+
+
 

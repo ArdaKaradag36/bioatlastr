@@ -12,6 +12,7 @@ const LINKS = [
   { href: "/agaclar", label: "Ağaçlar" },
   { href: "/veri-bosluklari", label: "Veri Boşlukları" },
   { href: "/oncelik", label: "Öncelik" },
+  { href: "/rehber", label: "Rehber" },
   { href: "/dizi-ara", label: "Dizi Ara" },
   { href: "/sozluk", label: "Sözlük" },
   { href: "/yontem", label: "Yöntem" },
@@ -23,6 +24,7 @@ const MOBILE_MAIN = [
   { href: "/turler", label: "Türler" },
   { href: "/veri-bosluklari", label: "Veri boşlukları" },
   { href: "/oncelik", label: "Öncelik" },
+  { href: "/rehber", label: "Rehber" },
 ];
 
 const MOBILE_MORE = [

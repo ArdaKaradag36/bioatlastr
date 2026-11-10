@@ -321,7 +321,7 @@ export default function HomePage() {
       <div className="grid gap-4 md:grid-cols-3">
         {[
           { title: "Öğrenciler ve öğretmenler", text: "DNA barkodunun ne olduğunu örneklerle öğrenin; sözlük ve \"Nasıl okunur?\" kutuları derse eklenebilecek açıklamalar sunar.", href: "/sozluk", cta: "Sözlüğe git" },
-          { title: "Biyologlar", text: "Aile ve cins bazında ayırt etme sonuçlarına, dizilerin erişim numaralarına ve yönteme ait ayrıntılara ulaşın.", href: "/yontem", cta: "Yöntemi incele" },
+          { title: "Biyologlar", text: "Aile bazında hangi barkod bölgesinin daha ayırt edici göründüğüne (eşleştirilmiş karşılaştırma) ve yönteme bakın.", href: "/rehber", cta: "Marker rehberine git" },
           { title: "Meraklı yurttaşlar", text: "Bir bitkinin adını yazın; ne kadar DNA verisi olduğunu, kimlerle akraba göründüğünü ve neden bazı türlerin eksik olduğunu görün.", href: "/turler", cta: "Bir tür ara" },
         ].map((c) => (
           <Card key={c.title} className="flex flex-col">
