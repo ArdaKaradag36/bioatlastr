@@ -104,13 +104,13 @@ export default function HomeMobile({
         </p>
       </Fold>
 
-      <Fold title="Bölgeleri birlikte kullanırsak?" lead="Bu tablo daha gevşek, farklı bir tanımdır.">
+      <Fold title="Bölgeleri birlikte kullanırsak?" lead="Birleşik mesafe (strict_combined_distance); n = tüm bölgelerde dizisi olan türler.">
         <ul className="space-y-3">
           {comboRows.map((c) => (
             <li key={c.combination} className="rounded-xl border border-stone-200 p-3">
               <div className="font-semibold">{c.combination.replaceAll("+", " + ")}</div>
               <p className="text-sm text-stone-700">
-                {num(c.species_evaluated)} tür · başarı {pct(c.success_rate)} · ayırt edilen {num(c.success)}
+                n = {num(c.species_evaluated)} · başarı {pct(c.success_rate)} · ayırt edilen {num(c.success)}
               </p>
             </li>
           ))}

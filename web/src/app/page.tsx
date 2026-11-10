@@ -237,9 +237,10 @@ export default function HomePage() {
             {" "}
           </>
         )}
-        Aşağıdaki tablo <strong>farklı, daha gevşek bir tanımdır</strong>: bir tür, kendi dizileri arasındaki en küçük fark başka bir türe
-        olan en küçük farktan küçükse &quot;ayırt edildi&quot; sayılır (bölge mesafelerinin ortalaması). Dizilerin tümünün geçmesi gerekmez.
-        Yalnızca ilgili bölgelerin hepsinde değerlendirilebilen türler tabloya girer.
+        Aşağıdaki tablo <strong>birleşik mesafe</strong> tanımıdır (<code className="rounded bg-stone-100 px-1">strict_combined_distance</code>):
+        yalnızca kombinasyondaki bütün bölgelerde dizisi olan türler alınır (sütundaki n). Türler arası mesafe, paylaşılan
+        bölgelerdeki p-mesafelerinin ortalamasıdır; başarı kuralı tek bölgedeki katı tür düzeyi en-yakın-komşu ile aynıdır.
+        Bu, her bölgede ayrı başarıların kesişimi değildir.
       </p>
       <div tabIndex={0} className="overflow-x-auto rounded-2xl border border-stone-200 bg-white shadow-card">
         <table className="w-full text-[0.95rem]">

@@ -207,37 +207,60 @@ def zero_distance_pairs(sp_dist: np.ndarray, names: list[str], counts: np.ndarra
     return pairs
 
 
-def combined_species_distance(mats: dict, combo: list[str]):
+def combined_species_distance(
+    mats: dict,
+    combo: list[str],
+    *,
+    min_markers: int | None = None,
+    require_all_markers: bool = True,
+):
     """Species x species distance for one marker or a marker combination.
 
     mats: {marker: (species names, species distance matrix from species_distance_matrix())}
-    Every marker contributes where BOTH species have data; the result is the mean over those
-    markers. The diagonal is the smallest distance between two sequences of the same species.
-    Returns (names, matrix) with NaN where nothing can be compared.
+
+    By default only species present in *every* marker of ``combo`` are kept (combined power
+    for that shared set — not the intersection of per-marker success flags). Pairwise distance
+    is the mean of the per-marker p-distances over markers where both species have a finite
+    value; a cell is left as NaN unless at least ``min_markers`` markers contribute
+    (default: all markers in the combination). Diagonal = mean of each marker's smallest
+    conspecific distance. Returns (names, matrix).
     """
-    names = sorted(set().union(*(set(mats[m][0]) for m in combo)))
+    if not combo:
+        return [], np.zeros((0, 0))
+    sets = [set(mats[m][0]) for m in combo]
+    names = sorted(set.intersection(*sets) if require_all_markers else set().union(*sets))
+    need = len(combo) if min_markers is None else int(min_markers)
+    need = max(1, need)
     idx = {n: i for i, n in enumerate(names)}
     k = len(names)
     total = np.zeros((k, k))
     count = np.zeros((k, k))
     for m in combo:
         mnames, sd = mats[m]
-        ix = np.array([idx[n] for n in mnames])
-        d = np.asarray(sd, dtype=np.float64)
+        keep = [n for n in mnames if n in idx]
+        if not keep:
+            continue
+        ix = np.array([idx[n] for n in keep])
+        local = {n: i for i, n in enumerate(mnames)}
+        rows = [local[n] for n in keep]
+        d = np.asarray(sd, dtype=np.float64)[np.ix_(rows, rows)]
         ok = np.isfinite(d)
         total[np.ix_(ix, ix)] += np.where(ok, d, 0.0)
         count[np.ix_(ix, ix)] += ok
     comb = np.full((k, k), np.nan)
-    np.divide(total, count, out=comb, where=count > 0)
+    if need <= len(combo):
+        np.divide(total, count, out=comb, where=count >= need)
     return names, comb
 
 
 def species_level_status(names: list[str], comb: np.ndarray) -> dict[str, str]:
-    """Nearest-neighbour test per species (species level, works for marker combinations).
+    """Strict species-level nearest-neighbour test (same criterion as single-marker BCM species).
 
-    A species is evaluated when its own smallest conspecific distance (diagonal) is known and at
-    least one other species can be compared. success: conspecific < nearest other species;
-    ambiguous: equal (tie, e.g. both 0); fail: nearest other species is closer.
+    A species is evaluated when its conspecific distance (diagonal) is known and at least one
+    other species can be compared. success: conspecific < nearest other species; ambiguous:
+    equal (tie); fail: nearest other species is closer. This is the species aggregation used
+    for combination rows (``strict_combined_distance``); it is not the intersection of
+    per-marker success flags.
     """
     out: dict[str, str] = {}
     for i, name in enumerate(names):

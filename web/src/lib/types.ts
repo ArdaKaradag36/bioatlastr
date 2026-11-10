@@ -31,8 +31,13 @@ export interface SequenceMeta {
   source: string;
   retrieved: string;
   genera_queried: number;
+  /** All WCVP genus strings (accepted + synonym-only) with no ENA taxon id. */
   genera_unresolved: string[];
+  genera_unresolved_total?: number;
+  /** Accepted WCVP genera among genera_unresolved. */
   accepted_genera_without_ena_taxon?: string[];
+  /** Synonym-only genus names among genera_unresolved (not accepted genera of the flora). */
+  synonym_only_genera_without_ena_taxon?: string[];
   records_kept: number;
 }
 
@@ -263,7 +268,7 @@ export interface CombinationRow {
   ambiguous: number;
   fail: number;
   success_rate: number | null;
-  definition?: string; // "mean_min_distance" = looser than official BCM
+  definition?: string; // "strict_combined_distance" = mean of shared-marker p-distances + strict species NN
 }
 
 export interface GapsFile {

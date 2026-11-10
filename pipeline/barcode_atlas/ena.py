@@ -299,8 +299,10 @@ def run_phase2_ena(cfg: dict[str, Any]) -> None:
             w.writerow([g, int(g in accepted_genera), resolved[g][0] or "", resolved[g][1], resolved[g][2]])
     by_method = Counter(r[2] for r in resolved.values())
     missing_acc = sorted(g for g in unresolved if g in accepted_genera)
+    missing_syn = sorted(g for g in unresolved if g not in accepted_genera)
     print(f"[phase 2/ENA] genera: {len(genera)} ({len(accepted_genera)} accepted + {len(genera) - len(accepted_genera)} synonym-only); "
-          f"resolution {dict(by_method)}; no ENA taxon: {len(unresolved)} (accepted genera among them: {len(missing_acc)})"
+          f"resolution {dict(by_method)}; no ENA taxon: {len(unresolved)} "
+          f"(accepted: {len(missing_acc)}, synonym-only: {len(missing_syn)})"
           f" ({time.time() - t0:.0f}s)", flush=True)
 
     # WCVP genus names that ENA files under another genus (any-name resolution): ENA genus -> WCVP genera
@@ -457,8 +459,12 @@ def run_phase2_ena(cfg: dict[str, Any]) -> None:
             w.writerow([name, sum(c.values()), ";".join(sorted(c))])
     with open(RETRIEVAL_JSON, "w", encoding="utf-8") as fh:
         json.dump({"source": "ENA (INSDC mirror)", "retrieved": date.today().isoformat(),
-                   "genera_queried": len(jobs), "genera_unresolved": unresolved,
+                   "genera_queried": len(jobs),
+                   # All WCVP genus strings (accepted + synonym-only) with no ENA taxon id.
+                   "genera_unresolved": unresolved,
+                   "genera_unresolved_total": len(unresolved),
                    "accepted_genera_without_ena_taxon": missing_acc,
+                   "synonym_only_genera_without_ena_taxon": missing_syn,
                    "search_failures": len(failures), "fasta_failures": fetch_errors,
                    "records_kept": len(table), "network_calls": client.network_calls,
                    "cache_hits": client.cache_hits}, fh, ensure_ascii=False, indent=1)

@@ -1,0 +1,67 @@
+# Turkey Plant DNA Barcode Atlas - pipeline configuration (FULL run).
+# Default sources need no account, no key and no email: WCVP (Kew) + ENA (INSDC mirror).
+# Smaller runs: config.pilot.yaml (4 families), config.test.yaml (2 families, 30 species).
+
+species_source: wcvp_turkey   # wcvp_turkey | csv (use data/species.csv as is) | gbif (optional, needs `gbif`/families)
+sequence_source: ena          # ena | ncbi (optional, needs the `ncbi` block with an email)
+
+# Families to keep (WCVP family names). Empty = all families of the Turkish flora.
+families_whitelist: []
+# Maximum number of species (alphabetical by family, species). Empty / null = all.
+max_species: null
+
+wcvp:
+  url: http://sftp.kew.org/pub/data-repositories/WCVP/wcvp.zip
+  area_code: TUR            # WGSRPD level-3 code of Turkey (verified in phase 1)
+
+ena:
+  max_requests_per_second: 10   # ENA allows 50; we stay far below
+  fasta_batch: 100
+  page_size: 20000              # a genus search with more records is split in first_public year windows
+  max_candidates_per_species_marker: 30
+  workers: 4                    # parallel requests (total rate still capped by max_requests_per_second)
+  max_identical_copies: 2       # near-duplicate limit: at most 2 copies of one exact sequence
+
+# Keep at most this many sequences per species and marker (Turkish records first).
+max_per_species_marker: 10
+
+allow_name_mismatch: false
+
+markers:
+  rbcL:
+    ena_terms: ["rbcL", "ribulose"]   # server-side wildcards (few terms = fast); precise regexes below
+    ena_include_regex: '(?i)rbcL|ribulose[- ]1,5-bisphosphate carboxylase|ribulose bisphosphate carboxylase'
+    ena_exclude_regex: '(\w+[-/]rbcL|rbcL[-/]\w+)[^;,]*(intergenic|spacer)|genome|plastome|pseudogene|genomic scaffold|small subunit'
+    min_length: 400
+    max_length: 1600
+    max_n_fraction: 0.02
+  matK:
+    ena_terms: ["matK"]
+    ena_include_regex: '(?i)matK|maturase'
+    ena_exclude_regex: '(\w+[-/]matK|matK[-/]\w+)[^;,]*(intergenic|spacer)|genome|plastome|pseudogene|genomic scaffold'
+    min_length: 500
+    max_length: 2000
+    max_n_fraction: 0.02
+  ITS:
+    ena_terms: ["internal transcribed spacer", "ITS1", "ITS2", "5.8S", "18S-26S", "nrDNA", "ITS"]
+    # the record must name an ITS spacer itself: 5.8S-only / nrDNA-only / ETS / IGS records are dropped
+    ena_include_regex: '(?i:internal transcribed spacer)|\bITS[- ]?[12]?\b'
+    ena_exclude_regex: '(?i:genome|plastome|pseudogene|genomic scaffold|mitochondri|chloroplast|external transcribed|\bETS\b|intergenic)'
+    min_length: 350
+    max_length: 1400
+    max_n_fraction: 0.02
+
+analysis:
+  min_overlap: 200
+  n_nearest: 5
+  mafft_path: null          # null = PATH, env MAFFT_BINARY, or ~/tools/mamba/envs/mafft/bin/mafft
+  mafft_threads: -1
+  workers: 4                # groups analysed in parallel
+  min_group_sequences: 3    # groups (family / genus per marker) with fewer sequences are skipped and logged
+  max_group_sequences: 400  # a family with more sequences is analysed genus by genus; a genus group above this is subsampled
+  mafft_timeout_s: 600      # MAFFT is killed after this; the group is logged as 'skipped: too large/timeout' and the run goes on
+
+names:
+  # Turkish common names: false = use only names whose licence allows free reuse (Wikidata, Vikipedi, Catalogue of Life, GRIN, Cichorieae);
+  # leaves out iNaturalist (CC BY-NC) and IUCN (non-commercial). Rebuild: scripts/names_rebuild.sh
+  include_non_commercial: false

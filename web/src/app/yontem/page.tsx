@@ -134,10 +134,12 @@ export default function MethodPage() {
           <strong>Diziler — ENA</strong> (European Nucleotide Archive; GenBank/DDBJ ile eşlenen INSDC aynası).{" "}
           {sq ? (
             <>
-              Veri alma tarihi: <strong>{sq.retrieved}</strong>. {num(sq.genera_queried)} cins sorgulandı
-              (cins → ENA takson numarası; <code className="rounded bg-stone-100 px-1">tax_tree</code> sorgusu), {num(sq.genera_unresolved.length)} cins ENA
-              taksonomisinde bulunamadı (çoğu eş ad olan cins adlarıdır; kabul edilmiş cinslerden{" "}
-              {num(sq.accepted_genera_without_ena_taxon?.length ?? 0)} tanesi bulunamadı).
+              Veri alma tarihi: <strong>{sq.retrieved}</strong>. {num(sq.genera_queried)} ENA takson numarası sorgulandı
+              (cins → ENA takson numarası; <code className="rounded bg-stone-100 px-1">tax_tree</code>).
+              {" "}WCVP cins adlarından {num(sq.genera_unresolved_total ?? sq.genera_unresolved.length)} tanesi ENA&apos;da
+              çözülemedi: bunların {num(sq.accepted_genera_without_ena_taxon?.length ?? 0)} tanesi <em>kabul edilmiş</em> cins,
+              {num(sq.synonym_only_genera_without_ena_taxon?.length ?? Math.max(0, sq.genera_unresolved.length - (sq.accepted_genera_without_ena_taxon?.length ?? 0)))} tanesi
+              yalnızca <em>eş ad (sinonim) cins</em> adıdır (flora kabul listesindeki cins sayısı değildir).
             </>
           ) : (
             "Veri alma tarihi bulunamadı."
@@ -298,9 +300,12 @@ export default function MethodPage() {
         uzak da olsa en yakın komşu seçilir, bu yüzden &quot;eşleşme yok&quot; sınıfı kullanılmaz.
       </p>
       <p className="mt-3 text-stone-800">
-        <strong>Birden fazla barkod bölgesini birlikte kullanmak</strong> ayrı ve <em>daha gevşek</em> bir tanımdır (aşağıdaki
-        kombinasyon tablosu): türün kendi içindeki en küçük mesafe, başka bir türe olan en küçük mesafeden küçükse başarılı
-        sayılır; mesafe, iki türün birlikte verisi olan bölgelerinin ortalamasıdır. Dizilerin tümünün geçmesi gerekmez.
+        <strong>Birden fazla barkod bölgesini birlikte kullanmak</strong> (<code className="rounded bg-stone-100 px-1">strict_combined_distance</code>):
+        yalnızca kombinasyondaki <em>bütün</em> bölgelerde dizisi olan türler değerlendirilir (n = bu ortak küme).
+        İki tür arasındaki mesafe, her iki türün de verisi olan bölgelerdeki türler-arası p-mesafelerinin ortalamasıdır
+        (en az tüm bölgeler katkı vermelidir). Sonra tek bölgedekiyle aynı katı tür düzeyi kuralı uygulanır:
+        türün kendi iç mesafesi, en yakın başka türe olan mesafeden küçükse başarılıdır.
+        Bu, bölgelerde ayrı ayrı &quot;başarılı&quot; olmanın kesişimi değildir; mesafeler birleştirilir.
         Mesafesi 0 olan tür çiftleri ve her türün en yakın {num(meta.n_nearest)} akrabası ayrıca verilir.
       </p>
 

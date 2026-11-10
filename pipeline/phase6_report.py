@@ -133,7 +133,7 @@ bölgesi ve genom kayıtlarının atılması, aynı dizinin en çok {meta["max_i
 
 **Analiz.** Her aile ve marker için hizalama ({meta["aligner_label"]}); {meta["max_group_sequences"]} diziden büyük aileler cins cins analiz edilmiştir.
 Mesafe: p-mesafesi (en az {meta["min_overlap"]} ortak baz). Ağaç: NJ. Başarı ölçütü: en yakın komşu (kendisi hariç) aynı türden ise başarılı;
-marker kombinasyonları tür düzeyinde, ortak markerların ortalama mesafesiyle değerlendirilmiştir.
+marker kombinasyonları ``strict_combined_distance`` ile değerlendirilmiştir (ortak marker p-mesafelerinin ortalaması; yalnızca kombinasyondaki tüm markerlarda dizisi olan türler; kesişim değil).
 
 {TODO.format("Yöntemin biyolojik gerekçesi ve alternatifler (ör. ML/Bayes ağaçları, BLAST tabanlı kimliklendirme)")}
 

@@ -361,8 +361,18 @@ def analyse(cfg: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+COMBINATION_DEFINITION = "strict_combined_distance"
+
+
 def combination_table(species_level: dict, species_df: pd.DataFrame, markers: list[str]) -> pd.DataFrame:
-    """Species-level nearest-neighbour success for each marker and each marker combination."""
+    """Species-level success for each marker and each marker combination.
+
+    Distance = mean of per-marker species p-distances over markers both species share
+    (requires all markers of the combination). Status uses the same strict species-level
+    nearest-neighbour rule as single markers (``species_level_status``). Only species with
+    sequences in every marker of the combination are evaluated; ``species_evaluated`` is that n.
+    This is combined power, not the intersection of per-marker success flags.
+    """
     family_of = dict(zip(species_df["species"], species_df["family"]))
     keys = sorted({k for k, _ in species_level})
     combos = [list(c) for n in range(1, len(markers) + 1) for c in itertools.combinations(markers, n)]
@@ -371,9 +381,11 @@ def combination_table(species_level: dict, species_df: pd.DataFrame, markers: li
         status: dict[str, str] = {}
         for key in keys:
             if not all((key, m) in species_level for m in combo):
-                continue  # strict: every marker of the combination must have been analysed for this group
+                continue  # every marker of the combination must have been analysed for this group
             mats = {m: species_level[(key, m)] for m in combo}
-            names, comb = combined_species_distance(mats, combo)
+            names, comb = combined_species_distance(
+                mats, combo, min_markers=len(combo), require_all_markers=True,
+            )
             status.update(species_level_status(names, comb))
         scopes = [("ALL", status)] + [
             (fam, {s: v for s, v in status.items() if family_of.get(s) == fam})
@@ -388,7 +400,7 @@ def combination_table(species_level: dict, species_df: pd.DataFrame, markers: li
                          "species_evaluated": n, "success": c.get("success", 0),
                          "ambiguous": c.get("ambiguous", 0), "fail": c.get("fail", 0),
                          "success_rate": (c.get("success", 0) / n) if n else None,
-                         "definition": "mean_min_distance"})
+                         "definition": COMBINATION_DEFINITION})
     return pd.DataFrame(rows, columns=["scope", "combination", "n_markers", "species_evaluated", "success",
                                        "ambiguous", "fail", "success_rate", "definition"])
 
