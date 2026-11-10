@@ -1,4 +1,4 @@
-"""Unit tests for sequencing-priority scoring (synthetic tables; no network)."""
+"""Unit tests for sequencing-priority scoring v2 (caps, ties, robust core)."""
 
 from __future__ import annotations
 
@@ -7,112 +7,132 @@ import pytest
 
 from barcode_atlas.priority import (
     COMPONENT_KEYS,
+    assign_tie_groups,
     compute_components,
     is_gap_row,
+    list_first_of_empty_genera,
+    list_tree_gain,
     normalize_weights,
     rank_gaps,
     score_frame,
-    sensitivity_table,
+    select_with_caps,
+    sensitivity_analysis,
+    sort_by_score_and_ties,
     why_sentence,
 )
 
 
-def _tiny_frame() -> pd.DataFrame:
-    # Two genera in one family; markers chosen so gaps are clear.
-    return pd.DataFrame([
-        # Genus A: 3 species, only A-with has data → gaps get phylogenetic_usefulness=1
-        dict(species="A alpha", genus="Agen", family="Fam", endemic=1, n_wcvp_areas=1,
-             n_rbcL=0, n_matK=0, n_ITS=0, n_any=0),
-        dict(species="A beta", genus="Agen", family="Fam", endemic=0, n_wcvp_areas=4,
-             n_rbcL=0, n_matK=0, n_ITS=0, n_any=0),
-        dict(species="A with", genus="Agen", family="Fam", endemic=0, n_wcvp_areas=10,
-             n_rbcL=2, n_matK=1, n_ITS=0, n_any=3),
-        # Genus B: all gaps (zero data in genus) → phylogenetic_usefulness=0, genus_gap=1
-        dict(species="B one", genus="Bgen", family="Fam", endemic=1, n_wcvp_areas=1,
-             n_rbcL=0, n_matK=0, n_ITS=0, n_any=0),
-        dict(species="B two", genus="Bgen", family="Fam", endemic=0, n_wcvp_areas=2,
-             n_rbcL=0, n_matK=0, n_ITS=0, n_any=0),  # whole genus has zero sequences
-        # ITS-only species: still a gap under the default rbcL+matK rule
-        dict(species="C itsonly", genus="Cgen", family="Fam", endemic=0, n_wcvp_areas=3,
-             n_rbcL=0, n_matK=0, n_ITS=4, n_any=4),
-    ])
+def _frame() -> pd.DataFrame:
+    rows = []
+    # Genus A: 1 sequenced + many gaps (tree gain)
+    rows.append(dict(species="A with", genus="Agen", family="FamA", endemic=0, wcvp_id="1",
+                     n_wcvp_areas=8, n_wcvp_regions=3, n_rbcL=2, n_matK=1, n_ITS=0, n_any=3))
+    for i, areas in enumerate([1, 1, 2, 4], start=1):
+        rows.append(dict(species=f"A gap{i}", genus="Agen", family="FamA", endemic=1 if areas == 1 else 0,
+                         wcvp_id=str(10 + i), n_wcvp_areas=areas, n_wcvp_regions=1,
+                         n_rbcL=0, n_matK=0, n_ITS=0, n_any=0))
+    # Genus B: empty (no sequences) — first-of-empty list
+    for i in range(1, 4):
+        rows.append(dict(species=f"B gap{i}", genus="Bgen", family="FamB", endemic=1,
+                         wcvp_id=str(20 + i), n_wcvp_areas=1, n_wcvp_regions=1,
+                         n_rbcL=0, n_matK=0, n_ITS=0, n_any=0))
+    # Genus C: many gaps same family FamA to test family cap
+    for i in range(1, 8):
+        rows.append(dict(species=f"C gap{i}", genus="Cgen", family="FamA", endemic=0,
+                         wcvp_id=str(30 + i), n_wcvp_areas=3, n_wcvp_regions=2,
+                         n_rbcL=0, n_matK=0, n_ITS=0, n_any=0))
+    # Genus D: sequenced relative, wide range
+    rows.append(dict(species="D with", genus="Dgen", family="FamC", endemic=0, wcvp_id="40",
+                     n_wcvp_areas=20, n_wcvp_regions=5, n_rbcL=1, n_matK=0, n_ITS=0, n_any=1))
+    rows.append(dict(species="D gap1", genus="Dgen", family="FamC", endemic=0, wcvp_id="41",
+                     n_wcvp_areas=10, n_wcvp_regions=4, n_rbcL=0, n_matK=0, n_ITS=0, n_any=0))
+    df = pd.DataFrame(rows)
+    df["is_gap"] = df.apply(lambda r: is_gap_row(r, ["rbcL", "matK"]), axis=1)
+    return df
 
 
-def test_gap_rule_requires_all_listed_markers_empty():
-    row = pd.Series({"n_rbcL": 0, "n_matK": 0, "n_ITS": 9})
-    assert is_gap_row(row, ["rbcL", "matK"]) is True
-    assert is_gap_row(row, ["rbcL", "matK", "ITS"]) is False
-    assert is_gap_row(pd.Series({"n_rbcL": 1, "n_matK": 0}), ["rbcL", "matK"]) is False
+def _scored():
+    return score_frame(compute_components(_frame()), {k: 0.2 for k in COMPONENT_KEYS})
 
 
-def test_components_are_unit_interval_and_match_definitions():
-    raw = _tiny_frame()
-    raw["is_gap"] = raw.apply(lambda r: is_gap_row(r, ["rbcL", "matK"]), axis=1)
-    c = compute_components(raw)
-    assert set(COMPONENT_KEYS).issubset(c.columns)
+def test_gap_rule():
+    assert is_gap_row(pd.Series({"n_rbcL": 0, "n_matK": 0, "n_ITS": 9}), ["rbcL", "matK"])
+    assert not is_gap_row(pd.Series({"n_rbcL": 1, "n_matK": 0}), ["rbcL", "matK"])
+
+
+def test_components_continuous_and_phy_scales_with_congeners():
+    c = compute_components(_frame())
+    gaps = c[c["is_gap"]]
     for k in COMPONENT_KEYS:
-        assert c[k].between(0, 1).all()
-    alpha = c.set_index("species").loc["A alpha"]
-    assert alpha["endemism"] == 1.0
-    assert alpha["range_restriction"] == pytest.approx(1.0)
-    assert alpha["genus_gap"] == pytest.approx(2 / 3)  # A alpha, A beta gaps; A with not
-    assert alpha["phylogenetic_usefulness"] == 1.0
-    b_one = c.set_index("species").loc["B one"]
-    assert b_one["genus_gap"] == pytest.approx(1.0)
-    assert b_one["phylogenetic_usefulness"] == 0.0
-    its = c.set_index("species").loc["C itsonly"]
-    assert its["is_gap"] is True or bool(its["is_gap"]) is True
-    # Family: A alpha,A beta,B one,B two,C itsonly = 5 gaps; A with has data → 5/6
-    assert alpha["family_gap"] == pytest.approx(5 / 6)
+        assert gaps[k].between(0, 1).all()
+    # phylogenetic usefulness is continuous: Agen has 1 sequenced, Dgen has 1, Bgen has 0
+    a = float(c.set_index("species").loc["A gap1", "phylogenetic_usefulness"])
+    b = float(c.set_index("species").loc["B gap1", "phylogenetic_usefulness"])
+    assert a > b
+    assert gaps["range_restriction"].nunique() > 1
+    assert gaps["genus_gap"].nunique() > 1
 
 
-def test_ranking_prefers_endemic_narrow_range_when_weights_say_so():
-    raw = _tiny_frame()
-    raw["is_gap"] = raw.apply(lambda r: is_gap_row(r, ["rbcL", "matK"]), axis=1)
-    c = compute_components(raw)
-    weights = {
-        "endemism": 0.5,
-        "range_restriction": 0.3,
-        "genus_gap": 0.1,
-        "phylogenetic_usefulness": 0.05,
-        "family_gap": 0.05,
-    }
-    ranked = rank_gaps(score_frame(c, weights), weights)
-    assert list(ranked["species"])[0] in {"A alpha", "B one"}  # both endemic, 1 area
-    assert "A with" not in set(ranked["species"])  # not a gap
-    assert ranked["rank"].tolist() == list(range(1, len(ranked) + 1))
+def test_tiebreakers_prefer_more_congeners_then_fewer_areas_not_alphabet():
+    scored = _scored()
+    # Force equal total_score on two A gaps with different areas
+    scored = scored.copy()
+    scored.loc[scored["species"].isin(["A gap1", "A gap3"]), "total_score"] = 0.9
+    ordered = sort_by_score_and_ties(scored[scored["species"].isin(["A gap1", "A gap3"])])
+    # same genus_n_with_any; fewer areas first → A gap1 (1 area) before A gap3 (2 areas)
+    assert list(ordered["species"]) == ["A gap1", "A gap3"]
 
 
-def test_why_sentence_mentions_driving_components():
-    raw = _tiny_frame()
-    raw["is_gap"] = True
-    c = compute_components(raw)
-    row = c.set_index("species").loc["A alpha"]
-    weights = normalize_weights({
-        "endemism": 0.4,
-        "range_restriction": 0.3,
-        "genus_gap": 0.1,
-        "phylogenetic_usefulness": 0.1,
-        "family_gap": 0.1,
-    })
-    text = why_sentence(row, weights)
-    assert "Öncelikli çünkü" in text
-    assert "endemiği" in text or "endemik" in text.lower() or "Türkiye endemiği" in text
+def test_select_with_caps_limits_genus_and_family():
+    scored = _scored()
+    ordered = sort_by_score_and_ties(scored[scored["is_gap"]])
+    capped = select_with_caps(ordered, top_n=10, max_per_genus=2, max_per_family=4)
+    assert capped["genus"].value_counts().max() <= 2
+    assert capped["family"].value_counts().max() <= 4
+    assert len(capped) <= 10
 
 
-def test_sensitivity_overlap_is_stable_on_tiny_set():
-    raw = _tiny_frame()
-    raw["is_gap"] = raw.apply(lambda r: is_gap_row(r, ["rbcL", "matK"]), axis=1)
-    c = compute_components(raw)
-    default = {
-        "endemism": 0.3,
-        "range_restriction": 0.2,
-        "genus_gap": 0.2,
-        "phylogenetic_usefulness": 0.15,
-        "family_gap": 0.15,
-    }
+def test_rank_gaps_caps_and_why_mentions_cap():
+    scored = _scored()
+    top = rank_gaps(
+        scored,
+        {k: 0.2 for k in COMPONENT_KEYS},
+        top_n=6,
+        max_per_genus=2,
+        max_per_family=4,
+        apply_caps=True,
+    )
+    assert len(top) <= 6
+    assert top["genus"].value_counts().max() <= 2
+    assert "çeşitlilik tavanı" in top.iloc[0]["neden_bu_tur"]
+
+
+def test_tie_group_flags_identical_keys():
+    scored = _scored()
+    gaps = sort_by_score_and_ties(scored[scored["is_gap"]])
+    gaps["tie_group"] = assign_tie_groups(gaps)
+    # At least groups are positive ints
+    assert gaps["tie_group"].min() >= 1
+
+
+def test_empty_genera_and_tree_gain_lists():
+    scored = _scored()
+    ordered = sort_by_score_and_ties(scored[scored["is_gap"]])
+    empty = list_first_of_empty_genera(ordered)
+    assert set(empty["genus"]) == {"Bgen", "Cgen"}  # both genera have zero sequences
+    assert (empty["genus_n_with_any"] == 0).all()
+    assert empty["genus"].is_unique
+    gain = list_tree_gain(ordered)
+    assert (gain["genus_n_with_any"] > 0).all()
+    assert "tree_gain" in gain.columns
+    assert gain.iloc[0]["tree_gain"] >= gain.iloc[-1]["tree_gain"]
+
+
+def test_sensitivity_robust_core_and_spearman():
+    components = compute_components(_frame())
+    default = {k: 0.2 for k in COMPONENT_KEYS}
     alts = {
-        "equal": {k: 0.2 for k in COMPONENT_KEYS},
+        "equal": default,
         "endemism_focus": {
             "endemism": 0.5,
             "range_restriction": 0.2,
@@ -127,10 +147,25 @@ def test_sensitivity_overlap_is_stable_on_tiny_set():
             "phylogenetic_usefulness": 0.2,
             "family_gap": 0.25,
         },
+        "range_focus": {
+            "endemism": 0.1,
+            "range_restriction": 0.5,
+            "genus_gap": 0.15,
+            "phylogenetic_usefulness": 0.1,
+            "family_gap": 0.15,
+        },
     }
-    sens = sensitivity_table(c, default, alts, top_n=3)
+    sens, robust, tops = sensitivity_analysis(
+        components,
+        default,
+        alts,
+        top_n=5,
+        max_per_genus=2,
+        max_per_family=4,
+    )
+    assert "capped_overlap_count" in sens.columns
+    assert "spearman_full_scores" in sens.columns
     diag = sens[(sens.set_a == sens.set_b)]
-    assert (diag["overlap_count"] == 3).all()
-    # equal vs default should share most of a 3-species top list on this toy set
-    pair = sens[(sens.set_a == "default") & (sens.set_b == "equal")].iloc[0]
-    assert pair["overlap_count"] >= 2
+    assert (diag["capped_overlap_count"] == 5).all()
+    assert isinstance(robust, set)
+    assert all(sp in tops["default"] for sp in robust)

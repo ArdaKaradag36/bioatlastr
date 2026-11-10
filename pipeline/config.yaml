@@ -66,17 +66,20 @@ names:
   # leaves out iNaturalist (CC BY-NC) and IUCN (non-commercial). Rebuild: scripts/names_rebuild.sh
   include_non_commercial: false
 
-# First-100 sequencing priority (data gaps only; no IUCN). Weights are placeholders for the biologist.
+# First-100 sequencing priority (data gaps only; no IUCN). Weights/caps are placeholders for the biologist.
 priority:
   gap_rule:
     # Species is a gap when EVERY marker listed here has zero sequences (default: no rbcL and no matK).
     required_markers: [rbcL, matK]
   weights:
-    endemism: 0.30
-    range_restriction: 0.20
+    endemism: 0.25
+    range_restriction: 0.25
     genus_gap: 0.20
     phylogenetic_usefulness: 0.15
     family_gap: 0.15
+  max_per_genus: 3
+  max_per_family: 12
+  top_per_family: 3
   sensitivity_weight_sets:
     equal:
       endemism: 0.20
@@ -85,8 +88,8 @@ priority:
       phylogenetic_usefulness: 0.20
       family_gap: 0.20
     endemism_focus:
-      endemism: 0.50
-      range_restriction: 0.20
+      endemism: 0.45
+      range_restriction: 0.25
       genus_gap: 0.10
       phylogenetic_usefulness: 0.10
       family_gap: 0.10
@@ -96,5 +99,18 @@ priority:
       genus_gap: 0.35
       phylogenetic_usefulness: 0.20
       family_gap: 0.25
+    range_focus:
+      endemism: 0.15
+      range_restriction: 0.45
+      genus_gap: 0.15
+      phylogenetic_usefulness: 0.10
+      family_gap: 0.15
+    phylo_focus:
+      endemism: 0.15
+      range_restriction: 0.15
+      genus_gap: 0.15
+      phylogenetic_usefulness: 0.40
+      family_gap: 0.15
   top_n: 100
+
 

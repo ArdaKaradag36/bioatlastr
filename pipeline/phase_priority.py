@@ -23,10 +23,12 @@ def main() -> None:
     args = parser.parse_args()
     summary = run_priority(load_config(args.config))
     print(
-        f"gaps={summary['n_gaps']} top_endemic_in_100={summary['top_endemic_in_100']} "
-        f"top5={summary['top_species']}",
+        f"gaps={summary['n_gaps']} endemic={summary['top_endemic_in_100']} "
+        f"genera={summary['top_genera']} families={summary['top_families']} "
+        f"robust_core={summary['robust_core_size']} remaining_ties={summary['remaining_ties']}",
         flush=True,
     )
+    print("top10=" + ", ".join(summary["top_species"]), flush=True)
 
 
 if __name__ == "__main__":
