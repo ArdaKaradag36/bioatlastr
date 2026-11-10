@@ -95,3 +95,39 @@ def test_combination_table_definition_and_n():
     assert row["definition"] == COMBINATION_DEFINITION == "strict_combined_distance"
     assert int(row["species_evaluated"]) == 2
     assert int(row["success"]) == 2
+    assert int(row["rbcL_alone_success"]) == 2
+    assert int(row["matK_alone_success"]) == 2
+    assert abs(float(row["rbcL_alone_success_rate"]) - 1.0) < 1e-9
+
+
+def test_alone_columns_use_combination_species_subset():
+    # rbcL alone separates A from B; matK alone fails for A (inter closer than intra).
+    # Combined mean can still succeed. Alone rates must be on the shared A,B set only.
+    rbcl = (["A", "B", "C"], mat([
+        [0.01, 0.10, 0.20],
+        [0.10, 0.01, 0.20],
+        [0.20, 0.20, 0.01],
+    ]))
+    matk = (["A", "B"], mat([
+        [0.10, 0.05],
+        [0.05, 0.10],
+    ]))
+    species_level = {("Fam", "rbcL"): rbcl, ("Fam", "matK"): matk}
+    species_df = pd.DataFrame([
+        {"species": "A", "family": "Fam"},
+        {"species": "B", "family": "Fam"},
+        {"species": "C", "family": "Fam"},
+    ])
+    out = combination_table(species_level, species_df, ["rbcL", "matK", "ITS"])
+    row = out[(out["scope"] == "ALL") & (out["combination"] == "rbcL+matK")].iloc[0]
+    assert int(row["species_evaluated"]) == 2  # C lacks matK
+    assert int(row["rbcL_alone_success"]) == 2
+    assert abs(float(row["rbcL_alone_success_rate"]) - 1.0) < 1e-9
+    assert int(row["matK_alone_success"]) == 0
+    assert abs(float(row["matK_alone_success_rate"]) - 0.0) < 1e-9
+    # Alone rates use the same n as the combination row.
+    assert abs(float(row["rbcL_alone_success"]) / float(row["species_evaluated"]) - float(row["rbcL_alone_success_rate"])) < 1e-9
+    assert pd.isna(row["ITS_alone_success"]) and pd.isna(row["ITS_alone_success_rate"])
+    single = out[(out["scope"] == "ALL") & (out["combination"] == "rbcL")].iloc[0]
+    assert int(single["rbcL_alone_success"]) == int(single["success"])
+    assert pd.isna(single["matK_alone_success"])

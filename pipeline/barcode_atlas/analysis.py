@@ -364,6 +364,29 @@ def analyse(cfg: dict[str, Any]) -> dict[str, Any]:
 COMBINATION_DEFINITION = "strict_combined_distance"
 
 
+def _status_counts(st: dict[str, str]) -> dict[str, Any]:
+    c = pd.Series(list(st.values())).value_counts().to_dict() if st else {}
+    n = len(st)
+    return {
+        "species_evaluated": n,
+        "success": c.get("success", 0),
+        "ambiguous": c.get("ambiguous", 0),
+        "fail": c.get("fail", 0),
+        "success_rate": (c.get("success", 0) / n) if n else None,
+    }
+
+
+def _alone_submatrix(mats: dict, marker: str, names: list[str]) -> tuple[list[str], np.ndarray]:
+    """Restrict one marker's species distance matrix to ``names`` (same order)."""
+    mnames, sd = mats[marker]
+    local = {n: i for i, n in enumerate(mnames)}
+    keep = [n for n in names if n in local]
+    if not keep:
+        return [], np.zeros((0, 0))
+    idx = [local[n] for n in keep]
+    return keep, np.asarray(sd, dtype=np.float64)[np.ix_(idx, idx)]
+
+
 def combination_table(species_level: dict, species_df: pd.DataFrame, markers: list[str]) -> pd.DataFrame:
     """Species-level success for each marker and each marker combination.
 
@@ -372,13 +395,19 @@ def combination_table(species_level: dict, species_df: pd.DataFrame, markers: li
     nearest-neighbour rule as single markers (``species_level_status``). Only species with
     sequences in every marker of the combination are evaluated; ``species_evaluated`` is that n.
     This is combined power, not the intersection of per-marker success flags.
+
+    For multi-marker rows, also report each marker alone on that same species subset
+    (``{marker}_alone_success`` / ``{marker}_alone_success_rate``) so combinations can be
+    compared fairly with singles. Alone columns for markers not in the combination are null.
     """
     family_of = dict(zip(species_df["species"], species_df["family"]))
     keys = sorted({k for k, _ in species_level})
     combos = [list(c) for n in range(1, len(markers) + 1) for c in itertools.combinations(markers, n)]
+    alone_cols = [f"{m}_alone_success" for m in markers] + [f"{m}_alone_success_rate" for m in markers]
     rows: list[dict[str, Any]] = []
     for combo in combos:
         status: dict[str, str] = {}
+        alone: dict[str, dict[str, str]] = {m: {} for m in combo}
         for key in keys:
             if not all((key, m) in species_level for m in combo):
                 continue  # every marker of the combination must have been analysed for this group
@@ -386,23 +415,45 @@ def combination_table(species_level: dict, species_df: pd.DataFrame, markers: li
             names, comb = combined_species_distance(
                 mats, combo, min_markers=len(combo), require_all_markers=True,
             )
-            status.update(species_level_status(names, comb))
-        scopes = [("ALL", status)] + [
-            (fam, {s: v for s, v in status.items() if family_of.get(s) == fam})
+            comb_st = species_level_status(names, comb)
+            status.update(comb_st)
+            # Alone rates use the same evaluated species as the combination (fair n).
+            for m in combo:
+                anames, asd = _alone_submatrix(mats, m, names)
+                alone_st = species_level_status(anames, asd)
+                alone[m].update({s: alone_st[s] for s in comb_st if s in alone_st})
+        scopes = [("ALL", status, alone)] + [
+            (
+                fam,
+                {s: v for s, v in status.items() if family_of.get(s) == fam},
+                {m: {s: v for s, v in alone[m].items() if family_of.get(s) == fam} for m in combo},
+            )
             for fam in sorted(set(family_of.values()))
         ]
-        for scope, st in scopes:
+        for scope, st, alone_st in scopes:
             if scope != "ALL" and not st:
                 continue
-            c = pd.Series(list(st.values())).value_counts().to_dict() if st else {}
-            n = len(st)
-            rows.append({"scope": scope, "combination": "+".join(combo), "n_markers": len(combo),
-                         "species_evaluated": n, "success": c.get("success", 0),
-                         "ambiguous": c.get("ambiguous", 0), "fail": c.get("fail", 0),
-                         "success_rate": (c.get("success", 0) / n) if n else None,
-                         "definition": COMBINATION_DEFINITION})
-    return pd.DataFrame(rows, columns=["scope", "combination", "n_markers", "species_evaluated", "success",
-                                       "ambiguous", "fail", "success_rate", "definition"])
+            row: dict[str, Any] = {
+                "scope": scope,
+                "combination": "+".join(combo),
+                "n_markers": len(combo),
+                **_status_counts(st),
+                "definition": COMBINATION_DEFINITION,
+            }
+            for m in markers:
+                if m in alone_st:
+                    ac = _status_counts(alone_st[m])
+                    row[f"{m}_alone_success"] = ac["success"]
+                    row[f"{m}_alone_success_rate"] = ac["success_rate"]
+                else:
+                    row[f"{m}_alone_success"] = None
+                    row[f"{m}_alone_success_rate"] = None
+            rows.append(row)
+    return pd.DataFrame(
+        rows,
+        columns=["scope", "combination", "n_markers", "species_evaluated", "success",
+                 "ambiguous", "fail", "success_rate", "definition", *alone_cols],
+    )
 
 
 def data_gaps(species_df: pd.DataFrame, table: pd.DataFrame, markers: list[str]) -> dict[str, pd.DataFrame]:

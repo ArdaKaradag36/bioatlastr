@@ -91,7 +91,7 @@ export default function PriorityTable({
           <span className="text-stone-600">Sütun başlığına tıklayınca sıralama değişir. “Çekirdek” = tüm ağırlık kümelerinde ilk 100’de.</span>
         </div>
       ) : null}
-      <div className="overflow-x-auto rounded-2xl border border-stone-200 bg-white shadow-card">
+      <div tabIndex={0} className="overflow-x-auto rounded-2xl border border-stone-200 bg-white shadow-card">
         <table className="min-w-full text-sm">
           <thead className="border-b border-stone-200 bg-stone-50">
             <tr>

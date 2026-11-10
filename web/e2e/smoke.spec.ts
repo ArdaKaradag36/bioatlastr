@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-const PAGES = ["/", "/turler", "/turler/acanthus-mollis", "/agaclar", "/dizi-ara", "/en"];
+const PAGES = ["/", "/turler", "/turler/acanthus-mollis", "/agaclar", "/dizi-ara", "/en", "/oncelik", "/rehber"];
 
 test("main routes return 200", async ({ page }) => {
   for (const path of PAGES) {

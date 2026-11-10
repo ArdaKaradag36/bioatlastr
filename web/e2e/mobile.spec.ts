@@ -13,6 +13,8 @@ const PAGES = [
   { name: "dizi-ara", path: "/dizi-ara" },
   { name: "en", path: "/en" },
   { name: "bosluk", path: "/veri-bosluklari" },
+  { name: "oncelik", path: "/oncelik" },
+  { name: "rehber", path: "/rehber" },
 ];
 
 const shotDir = path.join(process.cwd(), "e2e", "screenshots");

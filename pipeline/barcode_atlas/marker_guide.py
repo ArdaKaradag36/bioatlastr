@@ -4,8 +4,10 @@ Raw success rates are NOT compared across markers (different species sets).
 For each family (and each genus in split families), markers are compared only on
 species evaluated under the site's strict species-level criterion in BOTH markers.
 
-Combined-marker definition on this branch is ``mean_min_distance``, not
-``strict_combined_distance`` — combinations are skipped until that lands.
+Marker combinations (``strict_combined_distance``) are skipped here: the guide is
+built from per-sequence single-marker statuses + McNemar pair tests. Adding
+combination recommendations would need species-distance matrices per group and a
+different comparison design — not a drop-in change.
 """
 
 from __future__ import annotations
@@ -367,7 +369,10 @@ def compare_scope(
             "genus": genus,
             **cmp,
             "sentence": sentence,
-            "combinations_skipped": "strict_combined_distance not on this branch (mean_min_distance only)",
+            "combinations_skipped": (
+                "skipped: guide uses paired single-marker McNemar; "
+                "strict_combined_distance combinations need a separate design"
+            ),
         })
     return rows
 
@@ -532,8 +537,8 @@ def run_marker_guide(cfg: dict[str, Any] | None = None) -> dict[str, Any]:
             "(FWER control; preferred over BH/FDR because recommendations are actionable claims)"
         ),
         "combinations": (
-            "skipped: this branch has mean_min_distance combinations only; "
-            "strict_combined_distance is not merged"
+            "skipped: paired single-marker McNemar guide; "
+            "strict_combined_distance combinations need a separate design"
         ),
         "caveat": (
             "Sonuçlar bu veri setine aittir: aile/cins içi eşiksiz en-yakın-komşu, "

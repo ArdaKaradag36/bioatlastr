@@ -200,7 +200,10 @@ def export_all(cfg: dict[str, Any], res: dict[str, Any]) -> None:
             "species_with_3_markers": int((sp_tab["markers_with_data"] == len(markers)).sum()),
             "suspect_sequences": int(sum(1 for e in sm.values() for x in e["sequences"] if x.get("suspect"))),
         },
-        "combinations": combos[combos["scope"] == "ALL"].drop(columns="scope").to_dict("records"),
+        "combinations": [
+            {k: _nan_to_none(v) for k, v in row.items()}
+            for row in combos[combos["scope"] == "ALL"].drop(columns="scope").to_dict("records")
+        ],
         "markers": marker_stats,
         "families": family_stats,
         "genera": genera,

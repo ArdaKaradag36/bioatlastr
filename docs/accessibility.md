@@ -15,5 +15,9 @@
 | `/dizi-ara` | 0 |
 | `/en` | 0 |
 | `/veri-bosluklari` | 0 |
+| `/oncelik` | 0 |
+| `/rehber` | 0 |
 
 **Result:** test passed — no serious or critical axe violations on the pages above. Moderate/minor findings were not asserted by the suite.
+
+**Integration notes:** `/rehber` filter `<select>` wrapped in a visible `<label>`; scrollable combination/priority tables use `tabIndex={0}` (`scrollable-region-focusable`).

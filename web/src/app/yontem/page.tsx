@@ -306,8 +306,38 @@ export default function MethodPage() {
         (en az tüm bölgeler katkı vermelidir). Sonra tek bölgedekiyle aynı katı tür düzeyi kuralı uygulanır:
         türün kendi iç mesafesi, en yakın başka türe olan mesafeden küçükse başarılıdır.
         Bu, bölgelerde ayrı ayrı &quot;başarılı&quot; olmanın kesişimi değildir; mesafeler birleştirilir.
+        Adil karşılaştırma için aynı n üzerinde her bölgenin tek başına başarı oranı da hesaplanır
+        (<code className="rounded bg-stone-100 px-1">*_alone_success_rate</code> sütunları; ana sayfa ve{" "}
+        <code className="rounded bg-stone-100 px-1">results/discrimination_combinations.csv</code>).
         Mesafesi 0 olan tür çiftleri ve her türün en yakın {num(meta.n_nearest)} akrabası ayrıca verilir.
       </p>
+      <div tabIndex={0} className="mt-4 overflow-x-auto rounded-2xl border border-stone-200 bg-white">
+        <table className="w-full text-sm">
+          <caption className="sr-only">Kombinasyon ve aynı tür kümesinde tek bölge başarı oranları</caption>
+          <thead className="bg-stone-50 text-left text-stone-700">
+            <tr>
+              <th scope="col" className="p-2">Kombinasyon</th>
+              <th scope="col" className="p-2 text-right">n</th>
+              <th scope="col" className="p-2 text-right">Birleşik</th>
+              <th scope="col" className="p-2 text-right">rbcL yalnız</th>
+              <th scope="col" className="p-2 text-right">matK yalnız</th>
+              <th scope="col" className="p-2 text-right">ITS yalnız</th>
+            </tr>
+          </thead>
+          <tbody>
+            {stats.combinations.filter((c) => c.n_markers > 1).map((c) => (
+              <tr key={c.combination} className="border-t border-stone-100">
+                <th scope="row" className="p-2 text-left font-medium">{c.combination.replaceAll("+", " + ")}</th>
+                <td className="p-2 text-right">{num(c.species_evaluated)}</td>
+                <td className="p-2 text-right font-semibold">{pct(c.success_rate)}</td>
+                <td className="p-2 text-right">{c.rbcL_alone_success_rate == null ? "—" : pct(c.rbcL_alone_success_rate)}</td>
+                <td className="p-2 text-right">{c.matK_alone_success_rate == null ? "—" : pct(c.matK_alone_success_rate)}</td>
+                <td className="p-2 text-right">{c.ITS_alone_success_rate == null ? "—" : pct(c.ITS_alone_success_rate)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
 </Section>
 

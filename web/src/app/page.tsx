@@ -240,19 +240,20 @@ export default function HomePage() {
         Aşağıdaki tablo <strong>birleşik mesafe</strong> tanımıdır (<code className="rounded bg-stone-100 px-1">strict_combined_distance</code>):
         yalnızca kombinasyondaki bütün bölgelerde dizisi olan türler alınır (sütundaki n). Türler arası mesafe, paylaşılan
         bölgelerdeki p-mesafelerinin ortalamasıdır; başarı kuralı tek bölgedeki katı tür düzeyi en-yakın-komşu ile aynıdır.
-        Bu, her bölgede ayrı başarıların kesişimi değildir.
+        Bu, her bölgede ayrı başarıların kesişimi değildir. Sağdaki sütunlar, <em>aynı tür kümesinde</em> her bölgenin tek başına
+        başarısını verir (adil karşılaştırma).
       </p>
       <div tabIndex={0} className="overflow-x-auto rounded-2xl border border-stone-200 bg-white shadow-card">
         <table className="w-full text-[0.95rem]">
-          <caption className="sr-only">Barkod bölgesi kombinasyonlarına göre tür düzeyinde ayırt etme sonuçları</caption>
+          <caption className="sr-only">Barkod bölgesi kombinasyonlarına göre tür düzeyinde ayırt etme sonuçları; tek bölge başarıları aynı tür kümesinde</caption>
           <thead className="bg-stone-50 text-left text-stone-700">
             <tr>
               <th scope="col" className="p-3">Bölge / kombinasyon</th>
               <th scope="col" className="p-3 text-right">Değerlendirilen tür</th>
-              <th scope="col" className="p-3 text-right">Ayırt edilen</th>
-              <th scope="col" className="p-3 text-right">Belirsiz</th>
-              <th scope="col" className="p-3 text-right">Ayırt edilemeyen</th>
-              <th scope="col" className="p-3 text-right">Başarı oranı</th>
+              <th scope="col" className="p-3 text-right">Birleşik başarı</th>
+              <th scope="col" className="p-3 text-right">rbcL yalnız</th>
+              <th scope="col" className="p-3 text-right">matK yalnız</th>
+              <th scope="col" className="p-3 text-right">ITS yalnız</th>
             </tr>
           </thead>
           <tbody>
@@ -260,17 +261,17 @@ export default function HomePage() {
               <tr key={c.combination} className="border-t border-stone-100">
                 <th scope="row" className="p-3 text-left font-medium">{c.combination.replaceAll("+", " + ")}</th>
                 <td className="p-3 text-right">{num(c.species_evaluated)}</td>
-                <td className="p-3 text-right">{num(c.success)}</td>
-                <td className="p-3 text-right">{num(c.ambiguous)}</td>
-                <td className="p-3 text-right">{num(c.fail)}</td>
                 <td className="p-3 text-right font-semibold text-link">{pct(c.success_rate)}</td>
+                <td className="p-3 text-right">{c.rbcL_alone_success_rate == null ? "—" : pct(c.rbcL_alone_success_rate)}</td>
+                <td className="p-3 text-right">{c.matK_alone_success_rate == null ? "—" : pct(c.matK_alone_success_rate)}</td>
+                <td className="p-3 text-right">{c.ITS_alone_success_rate == null ? "—" : pct(c.ITS_alone_success_rate)}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
       <p className="mt-2 text-sm text-stone-600">
-        &quot;Belirsiz&quot;: en küçük fark hem kendi türüne hem başka bir türe aynı çıktı. Başarı oranı = ayırt edilen / değerlendirilen tür.
+        Birleşik başarı = ayırt edilen / değerlendirilen tür (aynı n). &quot;Yalnız&quot; sütunları o n tür üzerinde tek bölge katı başarısıdır.
       </p>
 
       {/* ---------------- Families */}

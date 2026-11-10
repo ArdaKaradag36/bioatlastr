@@ -269,6 +269,13 @@ export interface CombinationRow {
   fail: number;
   success_rate: number | null;
   definition?: string; // "strict_combined_distance" = mean of shared-marker p-distances + strict species NN
+  /** Single-marker success on the same species subset as this combination (fair comparison). */
+  rbcL_alone_success?: number | null;
+  matK_alone_success?: number | null;
+  ITS_alone_success?: number | null;
+  rbcL_alone_success_rate?: number | null;
+  matK_alone_success_rate?: number | null;
+  ITS_alone_success_rate?: number | null;
 }
 
 export interface GapsFile {

@@ -104,13 +104,16 @@ export default function HomeMobile({
         </p>
       </Fold>
 
-      <Fold title="Bölgeleri birlikte kullanırsak?" lead="Birleşik mesafe (strict_combined_distance); n = tüm bölgelerde dizisi olan türler.">
+      <Fold title="Bölgeleri birlikte kullanırsak?" lead="Birleşik mesafe (strict_combined_distance); n = tüm bölgelerde dizisi olan türler; yalnız sütunları aynı n.">
         <ul className="space-y-3">
           {comboRows.map((c) => (
             <li key={c.combination} className="rounded-xl border border-stone-200 p-3">
               <div className="font-semibold">{c.combination.replaceAll("+", " + ")}</div>
               <p className="text-sm text-stone-700">
-                n = {num(c.species_evaluated)} · başarı {pct(c.success_rate)} · ayırt edilen {num(c.success)}
+                n = {num(c.species_evaluated)} · birleşik {pct(c.success_rate)}
+                {c.rbcL_alone_success_rate != null && <> · rbcL {pct(c.rbcL_alone_success_rate)}</>}
+                {c.matK_alone_success_rate != null && <> · matK {pct(c.matK_alone_success_rate)}</>}
+                {c.ITS_alone_success_rate != null && <> · ITS {pct(c.ITS_alone_success_rate)}</>}
               </p>
             </li>
           ))}

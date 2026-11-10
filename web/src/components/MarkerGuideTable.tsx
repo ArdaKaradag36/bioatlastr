@@ -47,19 +47,22 @@ export default function MarkerGuideTable({ rows }: { rows: FamilyGuideRow[] }) {
             placeholder="Aile adı…"
           />
         </label>
-        <select
-          className="min-h-11 rounded-xl border border-stone-300 bg-white px-3 text-sm"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value as typeof filter)}
-        >
-          <option value="all">Tümü ({num(rows.length)})</option>
-          <option value="recommended">Öneri var</option>
-          <option value="belirsiz">Fark belirsiz</option>
-          <option value="yetersiz">Yetersiz veri</option>
-        </select>
+        <label className="flex min-h-11 items-center gap-2 rounded-xl border border-stone-300 bg-white px-3 text-sm">
+          <span className="text-stone-600">Filtre</span>
+          <select
+            className="bg-transparent outline-none"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value as typeof filter)}
+          >
+            <option value="all">Tümü ({num(rows.length)})</option>
+            <option value="recommended">Öneri var</option>
+            <option value="belirsiz">Fark belirsiz</option>
+            <option value="yetersiz">Yetersiz veri</option>
+          </select>
+        </label>
       </div>
       <p className="text-sm text-stone-600">{num(filtered.length)} aile gösteriliyor.</p>
-      <div className="overflow-x-auto rounded-2xl border border-stone-200 bg-white shadow-card">
+      <div tabIndex={0} className="overflow-x-auto rounded-2xl border border-stone-200 bg-white shadow-card">
         <table className="min-w-full text-sm">
           <thead className="border-b border-stone-200 bg-stone-50 text-left">
             <tr>
