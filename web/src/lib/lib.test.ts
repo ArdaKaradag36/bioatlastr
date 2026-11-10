@@ -131,5 +131,6 @@ test("citation text matches site identity fields", () => {
 test("static path list stays small and includes English summary", async () => {
   const { STATIC_PATHS } = await import("./site");
   assert.ok(STATIC_PATHS.includes("/en"));
+  assert.ok(STATIC_PATHS.includes("/oncelik"));
   assert.ok(STATIC_PATHS.length < 50);
 });

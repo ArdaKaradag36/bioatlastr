@@ -124,6 +124,16 @@ export const GLOSSARY: GlossaryEntry[] = [
     more: "Boşluk, o türün önemsiz olduğunu değil, yalnızca arşivlerde uygun dizisinin bulunmadığını gösterir. Veri boşlukları sayfası bunları listeler.",
     analogy: "Kütüphane kataloğunda henüz fişi çıkarılmamış kitaplar gibi.",
   },
+  {
+    id: "oncelik-listesi", term: "Öncelik listesi", aka: "ilk 100 dizilenecek tür", group: "Sonuçları okumak",
+    short: "Açık veriyle puanlanarak sıralanmış, önce dizilmesi önerilen türler listesi.",
+    more: "Puan; endemizm, WCVP alan sayısı, cins/aile boşluğu ve filogenetik yarar bileşenlerinden oluşur. Ağırlıklar yapılandırmadadır ve uzman tarafından değiştirilebilir. Liste öneridir; tehdit veya örnek bulunabilirliği gibi bilgiler elle eklenmelidir.",
+  },
+  {
+    id: "wcvp-alan", term: "WCVP alanı (TDWG düzey-3)", aka: "TDWG alan yayılış", group: "Bitki sınıflandırması",
+    short: "WCVP’nin bitkinin doğal yayılışını yazdığı coğrafi birimler; sayı azsa tür daha dar yayılışlı sayılır.",
+    more: "Öncelik puanında “dar yayılış” bileşeni 1/(alan sayısı) ile hesaplanır. Türkiye tek alan (TUR) ise ve başka doğal alan yoksa tür endemiktir.",
+  },
   // ---- Mesafe ve ağaç
   {
     id: "hizalama", term: "Hizalama", group: "Mesafe ve ağaç",

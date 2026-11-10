@@ -25,6 +25,7 @@ export const STATIC_PATHS = [
   "/turler",
   "/agaclar",
   "/veri-bosluklari",
+  "/oncelik",
   "/dizi-ara",
   "/sozluk",
   "/yontem",

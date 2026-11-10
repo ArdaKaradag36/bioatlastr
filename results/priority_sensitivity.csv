@@ -1,0 +1,11 @@
+set_a,set_b,top_n,overlap_count,overlap_fraction
+default,default,100,100,1.0
+default,equal,100,100,1.0
+default,endemism_focus,100,100,1.0
+default,coverage_focus,100,100,1.0
+equal,equal,100,100,1.0
+equal,endemism_focus,100,100,1.0
+equal,coverage_focus,100,100,1.0
+endemism_focus,endemism_focus,100,100,1.0
+endemism_focus,coverage_focus,100,100,1.0
+coverage_focus,coverage_focus,100,100,1.0
